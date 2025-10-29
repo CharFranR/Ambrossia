@@ -110,3 +110,8 @@ git merge --no-ff hotfix/nombre
 - Utilizar reviewers en Pull Requests.
 - Evitar commits que rompan la compilación del proyecto (Django y Next.js deben correr localmente).
 - Mantener PRs pequeños y enfocados en una sola feature o bugfix.
+
+## Migraciones
+
+- docker exec -it drf_backend python manage.py makemigrations
+- docker exec -it drf_backend python manage.py migrate

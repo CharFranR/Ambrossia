@@ -122,3 +122,6 @@ pytest_cache/
 *.bak
 *.tmp
 *.temp
+
+# Cosas de Oscar
+.github/
