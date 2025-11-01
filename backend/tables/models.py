@@ -19,7 +19,7 @@ class order(models.Model):
         ('cooking', 'Cooking'),
         ('ready', 'Ready'),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notCooking')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notcooking')
     createdAt = models.DateTimeField(auto_now_add=True)
     closedAt = models.DateTimeField(null=True, blank=True)
     note = models.TextField(blank=True)
