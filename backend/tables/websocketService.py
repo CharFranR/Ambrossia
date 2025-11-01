@@ -13,22 +13,22 @@ from django.core.cache import cache
 def tableStateNotification():
     # primero creamos una tabla hash con los estados de las mesas 
     tables = list(table.objects.values('id', 'status').order_by('id'))
-    hashTables = hashlib.md5(str(mesas).encode()).hexdigest()
+    hashTables = hashlib.md5(str(tables).encode()).hexdigest()
 
     # ahora comparamos la tabla hash actual con la guardad en caché
     # como la primera vez no hay caché se establece y manda el mensaje en automatico
 
-    if hasTables != cache.get('tablesStatus'):
+    if hasTables != cache.get('tableStatus'):
         # entonces actualizamos la caché
         cache.set('tableStatus', hashTables)
 
         # la magia pues, mandamos el mensaje por el websocket
 
-        tables = tables.object.all()
+        tables = table.object.all()
         tablesData = tableSerializer(tables, many=True).data
 
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            'mesas',
-            {'type': 'actualizar_mesas', 'datos': datos}
+            'tables',
+            {'type': 'tables_actualization', 'datos': tablesData}
         )
