@@ -22,7 +22,7 @@ Ejemplos de nombres:
 
 Se recomienda usar Conventional Commits:
 
-```
+``` powershell
 <tipo>(<área>): <descripción corta>
 
 [body opcional]
@@ -50,7 +50,7 @@ Reglas generales:
 - Body opcional para explicar qué y por qué.
 - Footer opcional para issues o breaking changes:
 
-```
+```powershell
 BREAKING CHANGE: cambia el formato de respuesta de /api/users
 Closes #42
 ```
@@ -113,5 +113,5 @@ git merge --no-ff hotfix/nombre
 
 ## Migraciones
 
-- docker exec -it drf_backend python manage.py makemigrations
+- docker exec -it drf_backend python manage.py makemigrations.
 - docker exec -it drf_backend python manage.py migrate

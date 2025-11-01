@@ -1,4 +1,9 @@
 Django>=5.0
 djangorestframework
 psycopg2-binary>=2.9
-python-dotenv
+django-redis
+daphne
+channels[daphne]
+channels 
+channels-redis 
+redis
