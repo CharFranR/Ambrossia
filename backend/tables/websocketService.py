@@ -18,13 +18,13 @@ def tableStateNotification():
     # ahora comparamos la tabla hash actual con la guardad en caché
     # como la primera vez no hay caché se establece y manda el mensaje en automatico
 
-    if hasTables != cache.get('tableStatus'):
+    if hashTables != cache.get('tableStatus'):
         # entonces actualizamos la caché
         cache.set('tableStatus', hashTables)
 
         # la magia pues, mandamos el mensaje por el websocket
 
-        tables = table.object.all()
+        tables = table.objects.all()
         tablesData = tableSerializer(tables, many=True).data
 
         channel_layer = get_channel_layer()
