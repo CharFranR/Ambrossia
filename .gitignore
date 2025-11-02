@@ -18,6 +18,7 @@ env/
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache
 
 # Archivos temporales
 *.log
@@ -122,3 +123,7 @@ pytest_cache/
 *.bak
 *.tmp
 *.temp
+
+# Cosas de Oscar
+.github/
+/myenv
