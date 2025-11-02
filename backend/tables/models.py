@@ -15,11 +15,11 @@ class order(models.Model):
     product = models.ForeignKey(product, on_delete=models.CASCADE, default=1)
     bill = models.ForeignKey('bill', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     STATUS_CHOICES = [
-        ('notcooking','notCooking'),
+        ('notCooking','notCooking'),
         ('cooking', 'Cooking'),
         ('ready', 'Ready'),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notcooking')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notCooking')
     createdAt = models.DateTimeField(auto_now_add=True)
     closedAt = models.DateTimeField(null=True, blank=True)
     note = models.TextField(blank=True)
