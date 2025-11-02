@@ -11,7 +11,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 1) Crear producto
 
-- Método y ruta: `POST /addProduct/`
+- Método y ruta: `POST /product/`
 
 - Descripción: Crea un nuevo producto del menú.
 
@@ -39,7 +39,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 2) Listar productos
 
-- Método y ruta: `GET /getAllProducts/`
+- Método y ruta: `GET /Products/All`
 
 - Descripción: Obtiene todos los productos.
 
@@ -54,7 +54,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 3) Actualizar producto
 
-- Método y ruta: `PUT /updateProduct/{id}/`
+- Método y ruta: `PUT /product/{id}/`
 
 - Descripción: Actualización parcial de `name` y/o `price`.
 
@@ -86,7 +86,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 4) Crear mesa
 
-- Método y ruta: `POST /addTable/`
+- Método y ruta: `POST /tables/`
 
 - Descripción: Crea una mesa nueva en estado `available`.
 
@@ -103,7 +103,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 5) Obtener estado de una mesa
 
-- Método y ruta: `GET /getStatusPerTable/{id}/`
+- Método y ruta: `GET /tables/{id}/`
 
 - Descripción: Retorna el estado de la mesa (`available`, `occupied`, `reserved`, `in_cleaning`).
 
@@ -121,7 +121,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 6) Actualizar estado de una mesa
 
-- Método y ruta: `PUT /updateStatusPerTable/{id}/`
+- Método y ruta: `PUT /tables/{id}/`
 
 - Descripción: Cambia el estado de la mesa.
 
@@ -147,7 +147,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 7) Crear pedido (order) para una mesa
 
-- Método y ruta: `POST /{table_id}/orders/`
+- Método y ruta: `POST /tables/{table_id}/orders/`
 
 - Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado `occupied`.
 
@@ -183,7 +183,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 8) Crear factura para una mesa
 
-- Método y ruta: `POST /{table_id}/createBill/`
+- Método y ruta: `POST /tables/{table_id}/bills/`
 
 - Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.
 
@@ -237,7 +237,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 10) Listar facturas no pagadas
 
-- Método y ruta: `GET /getNotPayedBills/`
+- Método y ruta: `GET /bills/not-payed/`
 
 - Descripción: Lista las facturas con estado `notPayed`.
 
@@ -257,7 +257,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 11) Listar facturas pagadas
 
-- Método y ruta: `GET /getPayedBills/`
+- Método y ruta: `GET /bills/payed/`
 
 - Descripción: Lista las facturas con estado `payed`.
 

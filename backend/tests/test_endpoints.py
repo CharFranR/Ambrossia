@@ -30,7 +30,7 @@ def _wait_server(max_wait_s=10):
 
 
 def add_table():
-    resp = _post("/addTable/")
+    resp = _post("/tables/")
     assert resp.status_code == 200
     data = resp.json()
     assert "id" in data and "status" in data
@@ -38,7 +38,7 @@ def add_table():
 
 
 def add_product(name="Test", price=10):
-    resp = _post("/addProduct/", json={"name": name, "price": price})
+    resp = _post("/product/", json={"name": name, "price": price})
     assert resp.status_code == 200
     data = resp.json()
     assert data["name"] == name and data["price"] == price
@@ -46,7 +46,7 @@ def add_product(name="Test", price=10):
 
 
 def add_order(table_id: int, product_id: int):
-    resp = _post(f"/{table_id}/orders/", json={"product": product_id})
+    resp = _post(f"/tables/{table_id}/orders/", json={"product": product_id})
     assert resp.status_code == 200
     data = resp.json()
     assert data["table"] == table_id and data["product"] == product_id
@@ -54,7 +54,7 @@ def add_order(table_id: int, product_id: int):
 
 
 def create_bill(table_id: int):
-    resp = _post(f"/{table_id}/createBill/")
+    resp = _post(f"/tables/{table_id}/bills/")
     assert resp.status_code == 200
     data = resp.json()
     assert data["status"] == "notPayed"
@@ -68,7 +68,6 @@ def update_bill_status(bill_id: int, status: str):
     assert data["status"] == status
 
 
-def test_endpoints_flow():
     # Ensure server is up (when running under Docker)
     assert _wait_server(), "API server is not reachable on http://localhost:8000"
 
@@ -76,18 +75,18 @@ def test_endpoints_flow():
     table_id = add_table()
 
     # 2) Check table status
-    resp = _get(f"/getStatusPerTable/{table_id}/")
+    resp = _get(f"/tables/{table_id}/")
     assert resp.status_code == 200
     assert resp.json()["status"] == "available"
 
     # 3) Update table status
-    resp = _put(f"/updateStatusPerTable/{table_id}/", json={"new_status": "reserved"})
+    resp = _put(f"/tables/{table_id}/", json={"new_status": "reserved"})
     assert resp.status_code == 200
     assert resp.json()["status"] == "reserved"
 
     # 4) Create a product and list products
     prod_id = add_product(name="Pizza", price=25)
-    resp = _get("/getAllProducts/")
+    resp = _get("/Products/All")
     assert resp.status_code == 200
     assert any(p["id"] == prod_id for p in resp.json())
 
@@ -98,7 +97,7 @@ def test_endpoints_flow():
     bill_id = create_bill(table_id)
 
     # 7) Not payed bills should include ours
-    resp = _get("/getNotPayedBills/")
+    resp = _get("/bills/not-payed/")
     assert resp.status_code == 200
     assert any(b["id"] == bill_id for b in resp.json())
 
@@ -106,6 +105,6 @@ def test_endpoints_flow():
     update_bill_status(bill_id, "payed")
 
     # 9) Payed bills should include ours
-    resp = _get("/getPayedBills/")
+    resp = _get("/bills/payed/")
     assert resp.status_code == 200
     assert any(b["id"] == bill_id for b in resp.json())
