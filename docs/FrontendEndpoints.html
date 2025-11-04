@@ -136,19 +136,41 @@
   <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/orders/</span></p>
     <p>Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado <code>occupied</code>.</p>
     <p>Body (JSON):</p>
-    <pre><code>{
-  "product": 1
-}</code></pre>
+    <pre><code>
+  [
+  {
+    "product": 1,
+    "quantity": 2
+  },
+  {
+    "product": 2,
+    "quantity": 2
+  }
+]
+</code></pre>
     <p>Respuesta 200 (JSON):</p>
-    <pre><code>{
-  "id": 5,
-  "table": 10,
-  "product": 1,
-  "status": "notCooking",
-  "createdAt": "2025-11-01T20:15:30Z",
-  "closedAt": null,
-  "note": ""
-}</code></pre>
+    <pre><code>
+  [
+  {
+    "id": 1,
+    "table": 2,
+    "product": 1,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.734590Z",
+    "closedAt": null,
+    "note": ""
+  },
+  {
+    "id": 2,
+    "table": 2,
+    "product": 2,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.743490Z",
+    "closedAt": null,
+    "note": ""
+  }
+]
+</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si <code>product</code> no existe o el body es inválido.</li>

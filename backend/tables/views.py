@@ -8,12 +8,10 @@ from .websocketService import tableStateNotification
 from channels.consumer import SyncConsumer
 
 
-def _safe_notify_tables():
-    """Best-effort notify over websockets; ignore errors in test/dev."""
+def notifyTables():
     try:
         tableStateNotification()
     except Exception:
-        # Notifications are non-critical for API correctness
         pass
 
 
@@ -46,7 +44,7 @@ def updateStatusPerTable(request, id):
     tableObj.status = new_status
     tableObj.save()
     serializer = tableSerializer(tableObj)
-    _safe_notify_tables()
+    notifyTables()
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -65,18 +63,21 @@ def getPayedBills (request):
 
 @api_view(['POST'])
 def addOrder (request, id):
+    instance = list ()
     # cambiamos el estatus de la mesa a ocupado
     table_obj = get_object_or_404(table, pk=id)
     table_obj.status = 'occupied'
     table_obj.save()
-    _safe_notify_tables()
+    notifyTables()
     # creamos las ordenes de cada mesa
     data = request.data.copy()
-    data['table'] = id
-    serializer = orderSerializer(data=data)
-    serializer.is_valid(raise_exception=True)
-    instance = serializer.save()
-    orderData = orderSerializer(instance).data
+    for item in data:
+        dataContent = item.copy()
+        dataContent['table'] = id
+        serializer = orderSerializer(data=dataContent)
+        serializer.is_valid(raise_exception=True)
+        instance.append(serializer.save())
+    orderData = orderSerializer(instance, many=True).data
     return Response(orderData)
 
 

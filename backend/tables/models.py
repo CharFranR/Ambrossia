@@ -13,6 +13,7 @@ class table(models.Model):
 class order(models.Model):
     table = models.ForeignKey(table, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(product, on_delete=models.CASCADE, default=1)
+    quantity = models.IntegerField(default=1) # ok, ahora me obliga a poderles un default, antes no que yo recuerde
     bill = models.ForeignKey('bill', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     STATUS_CHOICES = [
         ('notCooking','notCooking'),

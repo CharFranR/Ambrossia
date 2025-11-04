@@ -154,23 +154,43 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 - Body (JSON):
 
 ```json
-{
-  "product": 1
-}
+
+[
+  {
+    "product": 1,
+    "quantity": 2
+  },
+  {
+    "product": 2,
+    "quantity": 2
+  }
+]
+
 ```
 
 - Respuesta 200 (JSON):
 
 ```json
-{
-  "id": 5,
-  "table": 10,
-  "product": 1,
-  "status": "notCooking",
-  "createdAt": "2025-11-01T20:15:30Z",
-  "closedAt": null,
-  "note": ""
-}
+[
+  {
+    "id": 1,
+    "table": 2,
+    "product": 1,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.734590Z",
+    "closedAt": null,
+    "note": ""
+  },
+  {
+    "id": 2,
+    "table": 2,
+    "product": 2,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.743490Z",
+    "closedAt": null,
+    "note": ""
+  }
+]
 ```
 
 - Errores comunes:
