@@ -1,5 +1,6 @@
 from django.db import models
 from menu.models import product
+from bill.models import bill
 
 class table(models.Model):
     STATUS_CHOICES = [
@@ -14,7 +15,7 @@ class order(models.Model):
     table = models.ForeignKey(table, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(product, on_delete=models.CASCADE, default=1)
     quantity = models.IntegerField(default=1) # ok, ahora me obliga a poderles un default, antes no que yo recuerde
-    bill = models.ForeignKey('bill', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
+    bill = models.ForeignKey(bill, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     STATUS_CHOICES = [
         ('notCooking','notCooking'),
         ('cooking', 'Cooking'),
@@ -24,13 +25,3 @@ class order(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     closedAt = models.DateTimeField(null=True, blank=True)
     note = models.TextField(blank=True)
-    
-
-class bill(models.Model):
-    STATUS_CHOICES = [
-        ('notPayed', 'NotPayed'),
-        ('payed', 'Payed'),
-    ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notPayed')
-    createdAt = models.DateTimeField(auto_now_add=True)
-    closedAt = models.DateTimeField(null=True, blank=True) 

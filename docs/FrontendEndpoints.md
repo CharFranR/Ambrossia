@@ -119,9 +119,10 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 - Errores comunes:
   - 404 si la mesa no existe.
 
+
 ### 6) Actualizar estado de una mesa
 
-- Método y ruta: `PUT /tables/{id}/`
+- Método y ruta: `PUT /tables/{id}/update`
 
 - Descripción: Cambia el estado de la mesa.
 
@@ -211,19 +212,25 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 - Respuesta 200 (JSON):
 
+
 ```json
 {
   "id": 3,
   "status": "notPayed",
   "createdAt": "2025-11-01T20:20:00Z",
   "closedAt": null,
-  "orders": [5, 6]
+  "orders": [5, 6],
+  "amount": 100.0,
+  "IVA": 15.0,
+  "discount": 0.0,
+  "total": 115.0
 }
 ```
 
 - Errores comunes:
   - 400 si la mesa no tiene órdenes pendientes de facturar.
   - 404 si `table_id` no existe.
+
 
 ### 9) Actualizar estado de una factura
 
@@ -253,6 +260,41 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 - Errores comunes:
   - 400 si `status` no es válido.
+  - 404 si `bill_id` no existe.
+
+### 10) Actualizar valores de una factura
+
+- Método y ruta: `PUT /bills/{bill_id}`
+
+- Descripción: Actualiza los valores de IVA, descuento y total de una factura (siempre que no esté pagada).
+
+- Body (JSON):
+
+```json
+{
+  "IVA": 15,        // porcentaje (opcional)
+  "discount": 10    // valor absoluto (opcional)
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 3,
+  "status": "notPayed",
+  "createdAt": "2025-11-01T20:20:00Z",
+  "closedAt": null,
+  "orders": [5, 6],
+  "amount": 100.0,
+  "IVA": 15.0,
+  "discount": 10.0,
+  "total": 105.0
+}
+```
+
+- Errores comunes:
+  - 400 si la factura ya está pagada.
   - 404 si `bill_id` no existe.
 
 ### 10) Listar facturas no pagadas

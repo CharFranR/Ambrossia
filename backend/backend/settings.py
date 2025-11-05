@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'daphne',
     'tables',
     'menu',
+    'bill',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
