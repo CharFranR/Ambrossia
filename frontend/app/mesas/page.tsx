@@ -2,25 +2,16 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import AreaDropdown from "./AreaDropdown";
+import AreaDropdown from "./components/AreaDropdown";
+import TableOptionsModal from "./components/TableOptionModal";
+import TablesCard, { EstadoMesa } from "./components/TableCard";
+
 import { Pencil } from "lucide-react";
 import { Table } from "@/types/models";
 import { useTables } from "@/hooks/api/useTables";
-import TablesCard, { EstadoMesa } from "./TablesCard";
-import anime from "animejs";
+import { useAnimateTables, useTableHandlers } from "./hooks";
 
-const useAnimateTables = () => {
-  return () => {
-    anime({
-      targets: ".table-card",
-      translateX: anime.random(-20, 20),
-      translateY: anime.random(-20, 20),
-      easing: "easeInOutSine",
-      duration: 400,
-      direction: "alternate",
-    });
-  };
-};
+
 
 const mapTableStatus = (status: string): EstadoMesa => {
   switch (status) {
@@ -39,12 +30,15 @@ const mapTableStatus = (status: string): EstadoMesa => {
 
 export default function TablesPage() {
   const [area, setArea] = useState("0");
+  const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const { data: tables, isLoading, error } = useTables();
   const animateShuffle = useAnimateTables();
 
+  const { takeOrder, closeBill, reserve } = useTableHandlers();
+  useAnimateTables();
+
   if (isLoading) return <div>Cargando mesas...</div>;
   if (error) return <div>Error al cargar mesas: {error.message}</div>;
-
 
   return (
     <div className="flex flex-col gap-5 text-center p-6">
@@ -60,15 +54,31 @@ export default function TablesPage() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-5 mt-4">
-        {tables?.map((table: Table) => (
-          <div key={table.id} className="table-card">
-            <TablesCard
-              numero={table.id}
-              estado={mapTableStatus(table.status)}
-            />
-          </div>
-        ))}
-      </div>
+      {tables?.map((table: Table) => (
+        <div
+          key={table.id}
+          className="table-card"
+          onClick={() => setSelectedTable(table)} // al click, se abre el modal
+        >
+          <TablesCard
+            numero={table.id}
+            estado={mapTableStatus(table.status)}
+          />
+        </div>
+      ))}
+    </div>
+
+    {selectedTable && (
+      <TableOptionsModal
+        table={selectedTable}
+        open={!!selectedTable}
+        onOpenChange={(open) => !open && setSelectedTable(null)}
+        onTakeOrder={(id) => takeOrder(id)}
+        onCloseBill={(id) => console.log('Cerrar cuenta mesa', id)}
+        onReserve={(id) => console.log('Reservar mesa', id)}
+      />
+    )}
+
     </div>
   );
 }

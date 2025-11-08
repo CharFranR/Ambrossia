@@ -1,6 +1,6 @@
 'use client';
 
-import TablesCard, { EstadoMesa } from "./TablesCard";
+import TableCard, { EstadoMesa } from "./TableCard";
 import { Card } from "@/components/ui/card";
 import { useTables } from "@/hooks/api/useTables";
 
@@ -30,7 +30,7 @@ export default function Tables() {
     <div className="flex flex-wrap justify-center gap-5 p-10">
       {tables?.map((table) => (
         <Card key={table.id}>
-          <TablesCard
+          <TableCard
             numero={table.id}
             estado={mapTableStatus(table.status)}
           />
