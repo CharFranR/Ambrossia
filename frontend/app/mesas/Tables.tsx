@@ -1,39 +1,41 @@
+'use client';
+
 import TablesCard, { EstadoMesa } from "./TablesCard";
 import { Card } from "@/components/ui/card";
-function Tables() {
+import { useTables } from "@/hooks/api/useTables";
+
+// Función para mapear los estados de la API a tu enum EstadoMesa
+const mapTableStatus = (status: string): EstadoMesa => {
+  switch (status) {
+    case "available":
+      return EstadoMesa.Libre;
+    case "occupied":
+      return EstadoMesa.Ocupado;
+    case "reserved":
+      return EstadoMesa.Reservado;
+    case "in_cleaning":
+      return EstadoMesa.Limpiando;
+    default:
+      return EstadoMesa.Libre;
+  }
+};
+
+export default function Tables() {
+  const { data: tables, isLoading, error } = useTables();
+
+  if (isLoading) return <div>Cargando mesas...</div>;
+  if (error) return <div>Error al cargar mesas: {error.message}</div>;
+
   return (
-    <div
-      style={{
-        padding: "40px", // separación del borde del contenedor
-        display: "flex",
-        gap: "20px", // separación entre botones
-        flexWrap: "wrap", // permite que se acomoden si no caben
-        justifyContent: "center",
-      }}
-    >
-      <Card variant="outline">
-        <TablesCard numero={1} estado={EstadoMesa.Libre} />
-      </Card>
-      <Card variant="outline">
-        <TablesCard numero={2} estado={EstadoMesa.Ocupado} />
-      </Card>
-      <Card variant="outline">
-        <TablesCard numero={3} estado={EstadoMesa.Reservado} />
-      </Card>
-      <Card variant="outline">
-        <TablesCard numero={4} estado={EstadoMesa.Libre} />
-      </Card>
-      <Card variant="outline">
-        <TablesCard numero={5} estado={EstadoMesa.Libre} />
-      </Card>
-      <Card variant="outline">
-        <TablesCard numero={6} estado={EstadoMesa.Libre} />
-      </Card>
-      <Card variant="outline">
-        <TablesCard numero={7} estado={EstadoMesa.Ocupado} />
-      </Card>
+    <div className="flex flex-wrap justify-center gap-5 p-10">
+      {tables?.map((table) => (
+        <Card key={table.id}>
+          <TablesCard
+            numero={table.id}
+            estado={mapTableStatus(table.status)}
+          />
+        </Card>
+      ))}
     </div>
   );
 }
-
-export default Tables;

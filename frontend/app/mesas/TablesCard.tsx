@@ -1,7 +1,10 @@
+import { MdTableRestaurant } from "react-icons/md";
+
 export enum EstadoMesa {
   Libre,
   Ocupado,
   Reservado,
+  Limpiando,
 }
 
 interface TablesCardProps {
@@ -10,44 +13,36 @@ interface TablesCardProps {
 }
 
 function TablesCard({ estado, numero }: TablesCardProps) {
-  let backgroundColor = "";
+  let bgColor = "";
   let text = "";
 
   switch (estado) {
     case EstadoMesa.Libre:
-      backgroundColor = "green";
+      bgColor = "bg-green-500";
       text = "Libre";
       break;
     case EstadoMesa.Ocupado:
-      backgroundColor = "red";
+      bgColor = "bg-red-500";
       text = "Ocupada";
       break;
     case EstadoMesa.Reservado:
-      backgroundColor = "gray";
+      bgColor = "bg-gray-500";
       text = "Reservada";
+      break;
+    case EstadoMesa.Limpiando:
+      bgColor = "bg-yellow-500";
+      text = "Limpiando";
       break;
   }
 
   return (
-    <>
-      <button
-        style={{
-          backgroundColor,
-          color: "white",
-          fontSize: "20px",
-          padding: "20px",
-          border: "none",
-          borderRadius: "10px",
-          width: "200px",
-          height: "200px",
-          cursor: "pointer",
-        }}
-      >
-        <span> Mesa {numero} </span>
-        <br />
-        <span>{text}</span>
-      </button>
-    </>
+    <button
+      className={`${bgColor} text-white flex flex-col items-center justify-center gap-2 p-5 rounded-xl w-40 h-40 hover:scale-105 transition-transform`}
+    >
+      <MdTableRestaurant className="text-5xl" />
+      <span className="font-bold text-lg">Mesa {numero}</span>
+      <span className="capitalize">{text}</span>
+    </button>
   );
 }
 
