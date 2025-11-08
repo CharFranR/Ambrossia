@@ -1,5 +1,5 @@
 import TablesCard, { EstadoMesa } from "./TablesCard";
-
+import { Card } from "@/components/ui/card";
 function Tables() {
   return (
     <div
@@ -11,13 +11,27 @@ function Tables() {
         justifyContent: "center",
       }}
     >
-      <TablesCard numero={1} estado={EstadoMesa.Libre} />
-      <TablesCard numero={2} estado={EstadoMesa.Ocupado} />
-      <TablesCard numero={3} estado={EstadoMesa.Reservado} />
-      <TablesCard numero={4} estado={EstadoMesa.Libre} />
-      <TablesCard numero={5} estado={EstadoMesa.Libre} />
-      <TablesCard numero={6} estado={EstadoMesa.Libre} />
-      <TablesCard numero={7} estado={EstadoMesa.Ocupado} />
+      <Card variant="outline">
+        <TablesCard numero={1} estado={EstadoMesa.Libre} />
+      </Card>
+      <Card variant="outline">
+        <TablesCard numero={2} estado={EstadoMesa.Ocupado} />
+      </Card>
+      <Card variant="outline">
+        <TablesCard numero={3} estado={EstadoMesa.Reservado} />
+      </Card>
+      <Card variant="outline">
+        <TablesCard numero={4} estado={EstadoMesa.Libre} />
+      </Card>
+      <Card variant="outline">
+        <TablesCard numero={5} estado={EstadoMesa.Libre} />
+      </Card>
+      <Card variant="outline">
+        <TablesCard numero={6} estado={EstadoMesa.Libre} />
+      </Card>
+      <Card variant="outline">
+        <TablesCard numero={7} estado={EstadoMesa.Ocupado} />
+      </Card>
     </div>
   );
 }
