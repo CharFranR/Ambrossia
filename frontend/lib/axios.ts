@@ -5,13 +5,14 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-instance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Manejo global de errores (401, 403, etc.)
-    console.error("API Error:", error.response?.status, error.message);
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    const status = error.response?.status ?? "No Response";
+    console.error("API Error:", status, error.message);
     return Promise.reject(error);
   }
 );
+
 
 export default instance;
