@@ -58,6 +58,10 @@ def create_bill(table_id: int):
     assert resp.status_code == 200
     data = resp.json()
     assert data["status"] == "notPayed"
+    # Validar campos nuevos
+    for field in ["amount", "IVA", "discount", "total"]:
+        assert field in data, f"Falta campo {field} en la respuesta de bill"
+        assert isinstance(data[field], (int, float)), f"{field} debe ser numérico"
     return data["id"]
 
 
@@ -96,15 +100,31 @@ def update_bill_status(bill_id: int, status: str):
     # 6) Create a bill for that table
     bill_id = create_bill(table_id)
 
-    # 7) Not payed bills should include ours
+
+    # 7) Not payed bills should include ours y tener los campos nuevos
     resp = _get("/bills/not-payed/")
     assert resp.status_code == 200
-    assert any(b["id"] == bill_id for b in resp.json())
+    found = False
+    for b in resp.json():
+        if b["id"] == bill_id:
+            found = True
+            for field in ["amount", "IVA", "discount", "total"]:
+                assert field in b, f"Falta campo {field} en bill listada"
+                assert isinstance(b[field], (int, float)), f"{field} debe ser numérico"
+    assert found, "La bill creada no aparece en la lista de not-payed"
 
     # 8) Update bill status to payed
     update_bill_status(bill_id, "payed")
 
-    # 9) Payed bills should include ours
+
+    # 9) Payed bills should include ours y tener los campos nuevos
     resp = _get("/bills/payed/")
     assert resp.status_code == 200
-    assert any(b["id"] == bill_id for b in resp.json())
+    found = False
+    for b in resp.json():
+        if b["id"] == bill_id:
+            found = True
+            for field in ["amount", "IVA", "discount", "total"]:
+                assert field in b, f"Falta campo {field} en bill listada"
+                assert isinstance(b[field], (int, float)), f"{field} debe ser numérico"
+    assert found, "La bill pagada no aparece en la lista de payed"

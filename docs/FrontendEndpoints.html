@@ -136,19 +136,41 @@
   <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/orders/</span></p>
     <p>Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado <code>occupied</code>.</p>
     <p>Body (JSON):</p>
-    <pre><code>{
-  "product": 1
-}</code></pre>
+    <pre><code>
+  [
+  {
+    "product": 1,
+    "quantity": 2
+  },
+  {
+    "product": 2,
+    "quantity": 2
+  }
+]
+</code></pre>
     <p>Respuesta 200 (JSON):</p>
-    <pre><code>{
-  "id": 5,
-  "table": 10,
-  "product": 1,
-  "status": "notCooking",
-  "createdAt": "2025-11-01T20:15:30Z",
-  "closedAt": null,
-  "note": ""
-}</code></pre>
+    <pre><code>
+  [
+  {
+    "id": 1,
+    "table": 2,
+    "product": 1,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.734590Z",
+    "closedAt": null,
+    "note": ""
+  },
+  {
+    "id": 2,
+    "table": 2,
+    "product": 2,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.743490Z",
+    "closedAt": null,
+    "note": ""
+  }
+]
+</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si <code>product</code> no existe o el body es inválido.</li>
@@ -167,12 +189,16 @@
     <p>Body: vacío</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>{
-  "id": 3,
-  "status": "notPayed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6]
-}</code></pre>
+    "id": 3,
+    "status": "notPayed",
+    "createdAt": "2025-11-01T20:20:00Z",
+    "closedAt": null,
+    "orders": [5, 6],
+    "amount": 100.0,
+    "IVA": 15.0,
+    "discount": 0.0,
+    "total": 115.0
+  }</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si la mesa no tiene órdenes pendientes de facturar.</li>
@@ -185,17 +211,21 @@
     <p><span class="method PUT">PUT</span> <span class="route">/bills/{bill_id}/status/</span></p>
     <p>Descripción: Cambia el estado de la factura a <code>notPayed</code> o <code>payed</code>.</p>
     <p>Body (JSON):</p>
-    <pre><code>{
-  "status": "payed"
-}</code></pre>
-    <p>Respuesta 200 (JSON):</p>
-    <pre><code>{
-  "id": 3,
-  "status": "payed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6]
-}</code></pre>
+      <pre><code>{
+      "status": "payed"
+    }</code></pre>
+      <p>Respuesta 200 (JSON):</p>
+      <pre><code>{
+      "id": 3,
+      "status": "payed",
+      "createdAt": "2025-11-01T20:20:00Z",
+      "closedAt": null,
+      "orders": [5, 6],
+      "amount": 100.0,
+      "IVA": 15.0,
+      "discount": 0.0,
+      "total": 115.0
+    }</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si <code>status</code> no es válido.</li>
@@ -225,14 +255,18 @@
     <p>Descripción: Lista las facturas con estado <code>payed</code>.</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>[
-  {
-    "id": 4,
-    "status": "payed",
-    "createdAt": "2025-11-01T20:30:00Z",
-    "closedAt": null,
-    "orders": [7]
-  }
-]</code></pre>
+    {
+      "id": 4,
+      "status": "payed",
+      "createdAt": "2025-11-01T20:30:00Z",
+      "closedAt": null,
+      "orders": [7],
+      "amount": 50.0,
+      "IVA": 7.5,
+      "discount": 0.0,
+      "total": 57.5
+    }
+  ]</code></pre>
   </div>
 
   <hr />

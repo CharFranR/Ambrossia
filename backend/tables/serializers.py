@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import table, order, bill
+from .models import table, order
+from bill.models import bill
 from menu.models import product
 
 class tableSerializer(serializers.ModelSerializer):
@@ -17,12 +18,6 @@ class productSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return product.objects.create(**validated_data)
-
-class billSerializer(serializers.ModelSerializer):
-    orders = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    class Meta:
-        model = bill
-        fields = ['id', 'status','createdAt', 'closedAt', 'orders']
 
 class orderSerializer(serializers.ModelSerializer):
     table = serializers.PrimaryKeyRelatedField(queryset=table.objects.all())

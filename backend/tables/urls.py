@@ -1,8 +1,7 @@
 from django.urls import path
 from .views import (
     getStatusPerTable, addTable, updateStatusPerTable,
-    addOrder, createBill, updateBillStatus,
-    getNotPayedBills, getPayedBills
+    addOrder
 )
 
 urlpatterns = [
@@ -18,10 +17,10 @@ urlpatterns = [
 
     path('tables/', addTable, name="table-list-create"),                              # POST
     path('tables/<int:id>/', getStatusPerTable, name="table-detail"),                 # GET
-    path('tables/<int:id>/', updateStatusPerTable, name="table-update"),              # PUT
+    path('tables/<int:id>/update', updateStatusPerTable, name="table-update"),        # PUT
     path('tables/<int:id>/orders/', addOrder, name="order-create"),                   # POST 
-    path('tables/<int:table_id>/bills/', createBill, name="bill-create"),             # POST
-    path('bills/not-payed/', getNotPayedBills, name="bill-not-payed-list"),           # GET
-    path('bills/payed/', getPayedBills, name="bill-payed-list"),                      # GET
-    path('bills/<int:bill_id>/status/', updateBillStatus, name="bill-status-update"), # PUT
+    
 ]
+
+#  path('tables/<int:id>/update', updateStatusPerTable, name="table-update"),se podria quitar el sufijo /update pero habria que utilizar una misma funcion
+#  preparada para dos metodos (view, y update), y no se me hace bien asi que por el momento se queda asi
