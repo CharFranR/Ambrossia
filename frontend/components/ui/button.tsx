@@ -16,6 +16,8 @@ const buttonVariants = cva(
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        item:
+          "w-full justify-start text-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded-md px-4 py-2 text-sm font-medium shadow-sm hover:shadow-md active:scale-[0.98] active:shadow-sm data-[state=open]:bg-gray-100 dark:data-[state=open]:bg-gray-700 focus:ring-2 focus:ring-primary/20 focus:outline-none",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
