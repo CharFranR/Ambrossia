@@ -1,16 +1,11 @@
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from .models import table
-from .serializers import tableSerializer
-
-# pues chapi me sopló la respuesta, me dijo que usara una tabla hash de los estados de la mesa y que 
-# mandara un mensaje por websocket solo cuando el hash cambiara, porque originalmente pensaba solo actualizar
-# el estado de las mesas cada segundo
 import hashlib
 from django.core.cache import cache
 
-
 def tableStateNotification():
+    from .models import table
+    from .serializers import tableSerializer
     # primero creamos una tabla hash con los estados de las mesas 
     tables = list(table.objects.values('id', 'status').order_by('id'))
     hashTables = hashlib.md5(str(tables).encode()).hexdigest()
@@ -32,3 +27,14 @@ def tableStateNotification():
             'tables',
             {'type': 'tables_actualization', 'datos': tablesData}
         )
+
+def ordersNotification():
+    from .models import order
+    from .serializers import orderSerializer
+    orders = order.objects.all()
+    ordersData = orderSerializer(orders, many=True).data
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        'orders',
+        {'type': 'orders_actualization', 'datos': ordersData}
+    )

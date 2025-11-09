@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documentación de Endpoints del Backend (Frontend)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; line-height: 1.6; padding: 24px; max-width: 900px; margin: 0 auto; color: #111; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow: auto; border: 1px solid #eaecef; }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { margin-top: 0; }
+    hr { border: none; border-top: 1px solid #eaecef; margin: 24px 0; }
+    .endpoint { margin-bottom: 28px; }
+    .method { display: inline-block; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #fff; font-size: 0.9rem; }
+    .GET { background: #0366d6; }
+    .POST { background: #22863a; }
+    .PUT { background: #b08800; }
+    .route { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    ul { margin: 0.25rem 0 0.75rem 1.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Documentación de Endpoints del Backend (para Frontend)</h1>
+  <p>Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los JSON que reciben y responden.</p>
+  <ul>
+    <li>Base URL (desarrollo): <code>http://localhost:8000</code></li>
+    <li>Formato: <code>application/json</code></li>
+    <li>Las rutas usan barra final <code>/</code> (importante en Django REST).</li>
+    <li>No hay autenticación en este proyecto (a la fecha).</li>
+  </ul>
+
+  <h2>Mesas (tables)</h2>
+  <div class="endpoint">
+    <h3>Endpoints RESTful generados por el viewset</h3>
+    <ul>
+      <li><span class="method GET">GET</span> <span class="route">/tables/</span> — Listar todas las mesas</li>
+      <li><span class="method POST">POST</span> <span class="route">/tables/</span> — Crear una nueva mesa</li>
+      <li><span class="method GET">GET</span> <span class="route">/tables/{id}/</span> — Obtener detalles de una mesa específica</li>
+      <li><span class="method PUT">PUT</span> <span class="route">/tables/{id}/</span> — Actualizar completamente una mesa</li>
+      <li><span class="method PATCH">PATCH</span> <span class="route">/tables/{id}/</span> — Actualizar parcialmente una mesa</li>
+      <li><span class="method DELETE">DELETE</span> <span class="route">/tables/{id}/</span> — Eliminar una mesa</li>
+    </ul>
+    <p>Ejemplo de respuesta al crear una mesa:</p>
+    <pre><code>{
+  "id": 10,
+  "status": "reserved"
+}</code></pre>
+    <p>Body (JSON) para actualizar estado:</p>
+    <pre><code>{
+  "new_status": "reserved"
+}</code></pre>
+    <p>Ejemplo de respuesta al consultar una mesa:</p>
+    <pre><code>{
+  "id": 10,
+  "status": "reserved"
+}</code></pre>
+    <p>Errores comunes:</p>
+    <ul>
+      <li>404 si la mesa no existe.</li>
+    </ul>
+    <p>Si existen acciones personalizadas (como pedidos u órdenes), se documentarán aparte.</p>
+  </div>
+
+  <div class="endpoint">
+    <h3>7) Crear pedido (order) para una mesa</h3>
+    <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/orders/</span></p>
+    <p>Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado <code>occupied</code>.</p>
+    <p>Body (JSON):</p>
+    <pre><code>[
+  {
+    "product": 1,
+    "quantity": 2
+  },
+  {
+    "product": 2,
+    "quantity": 2
+  }
+]</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>[
+  {
+    "id": 1,
+    "table": 2,
+    "product": 1,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.734590Z",
+    "closedAt": null,
+    "note": ""
+  },
+  {
+    "id": 2,
+    "table": 2,
+    "product": 2,
+    "status": "notCooking",
+    "createdAt": "2025-11-04T01:36:27.743490Z",
+    "closedAt": null,
+    "note": ""
+  }
+]</code></pre>
+    <p>Errores comunes:</p>
+    <ul>
+      <li>400 si <code>product</code> no existe o el body es inválido.</li>
+      <li>404 si <code>table_id</code> no existe.</li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <h2>Facturación (Bills)</h2>
+
+  <div class="endpoint">
+    <h3>8) Crear factura para una mesa</h3>
+    <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/bills/</span></p>
+    <p>Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.</p>
+    <p>Body: vacío</p>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "id": 3,
+  "status": "notPayed",
+  "createdAt": "2025-11-01T20:20:00Z",
+  "closedAt": null,
+  "orders": [5, 6],
+  "amount": 100.0,
+  "IVA": 15.0,
+  "discount": 0.0,
+  "total": 115.0
+}</code></pre>
+    <p>Errores comunes:</p>
+    <ul>
+      <li>400 si la mesa no tiene órdenes pendientes de facturar.</li>
+      <li>404 si <code>table_id</code> no existe.</li>
+    </ul>
+  </div>
+
+  <div class="endpoint">
+    <h3>9) Actualizar estado de una factura</h3>
+    <p><span class="method PUT">PUT</span> <span class="route">/bills/{bill_id}/status/</span></p>
+    <p>Descripción: Cambia el estado de la factura a <code>notPayed</code> o <code>payed</code>.</p>
+    <p>Body (JSON):</p>
+    <pre><code>{
+  "status": "payed"
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "id": 3,
+  "status": "payed",
+  "createdAt": "2025-11-01T20:20:00Z",
+  "closedAt": null,
+  "orders": [5, 6],
+  "amount": 100.0,
+  "IVA": 15.0,
+  "discount": 0.0,
+  "total": 115.0
+}</code></pre>
+    <p>Errores comunes:</p>
+    <ul>
+      <li>400 si <code>status</code> no es válido.</li>
+      <li>404 si <code>bill_id</code> no existe.</li>
+    </ul>
+  </div>
+
+  <div class="endpoint">
+    <h3>10) Listar facturas no pagadas</h3>
+    <p><span class="method GET">GET</span> <span class="route">/bills/not-payed/</span></p>
+    <p>Descripción: Lista las facturas con estado <code>notPayed</code>.</p>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>[
+  {
+    "id": 3,
+    "status": "notPayed",
+    "createdAt": "2025-11-01T20:20:00Z",
+    "closedAt": null,
+    "orders": [5, 6]
+  }
+]</code></pre>
+  </div>
+
+  <div class="endpoint">
+    <h3>11) Listar facturas pagadas</h3>
+    <p><span class="method GET">GET</span> <span class="route">/bills/payed/</span></p>
+    <p>Descripción: Lista las facturas con estado <code>payed</code>.</p>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>[
+  {
+    "id": 4,
+        <li><strong>Autenticación JWT disponible</strong> (ver sección de autenticación).</li>
+    "createdAt": "2025-11-01T20:30:00Z",
+    "closedAt": null,
+      <h2>Autenticación</h2>
+      <div class="endpoint">
+        <h3>Obtener token JWT</h3>
+        <p><span class="method POST">POST</span> <span class="route">/api/token/</span></p>
+        <p>Body (JSON):</p>
+        <pre><code>{
+    "orders": [7],
+    "amount": 50.0,
+    "IVA": 7.5,
+        <p>Respuesta 200 (JSON):</p>
+        <pre><code>{
+    "discount": 0.0,
+    "total": 57.5
+  }
+      </div>
+      <div class="endpoint">
+        <h3>Refrescar token JWT</h3>
+        <p><span class="method POST">POST</span> <span class="route">/api/token/refresh/</span></p>
+        <p>Body (JSON):</p>
+        <pre><code>{
+]</code></pre>
+  </div>
+        <p>Respuesta 200 (JSON):</p>
+        <pre><code>{
+
+  <hr />
+      </div>
+      <div class="endpoint">
+        <h3>Registro y login de usuario</h3>
+        <p><span class="method POST">POST</span> <span class="route">/users/login/</span> y <span class="method POST">POST</span> <span class="route">/users/register/</span></p>
+        <p>Body y respuesta: ver implementación en backend (puede requerir username, password, role).</p>
+      </div>
+
+  <h2>Notas útiles para Frontend</h2>
+  <ul>
+    <li>En desarrollo, el backend corre en <code>http://localhost:8000</code> (Docker: <code>docker compose up -d</code>).</li>
+    <li>Todos los endpoints responden JSON; usar encabezado <code>Content-Type: application/json</code> en solicitudes con cuerpo.</li>
+    <li>Estados válidos:
+      <ul>
+        <li>Mesa: <code>available</code>, <code>occupied</code>, <code>reserved</code>, <code>in_cleaning</code>.</li>
+        <li>Factura: <code>notPayed</code>, <code>payed</code>.</li>
+      </ul>
+    </li>
+    <li>Las órdenes incluyen: <code>id</code>, <code>table</code>, <code>product</code>, <code>status</code>, <code>createdAt</code>, <code>closedAt</code>, <code>note</code>.</li>
+  </ul>
+</body>
+</html>
