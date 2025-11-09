@@ -30,44 +30,114 @@
     <li>No hay autenticación en este proyecto (a la fecha).</li>
   </ul>
 
-  <h2>Mesas (tables)</h2>
+  <h2>Productos (Menú)</h2>
+
   <div class="endpoint">
-    <h3>Endpoints RESTful generados por el viewset</h3>
+  <h3>1) Crear producto</h3>
+  <p><span class="method POST">POST</span> <span class="route">/product/</span></p>
+    <p>Descripción: Crea un nuevo producto del menú.</p>
+    <p>Body (JSON):</p>
+    <pre><code>{
+  "name": "Pizza",
+  "price": 25
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "id": 1,
+  "name": "Pizza",
+  "price": 25
+}</code></pre>
+    <p>Errores comunes:</p>
     <ul>
-      <li><span class="method GET">GET</span> <span class="route">/tables/</span> — Listar todas las mesas</li>
-      <li><span class="method POST">POST</span> <span class="route">/tables/</span> — Crear una nueva mesa</li>
-      <li><span class="method GET">GET</span> <span class="route">/tables/{id}/</span> — Obtener detalles de una mesa específica</li>
-      <li><span class="method PUT">PUT</span> <span class="route">/tables/{id}/</span> — Actualizar completamente una mesa</li>
-      <li><span class="method PATCH">PATCH</span> <span class="route">/tables/{id}/</span> — Actualizar parcialmente una mesa</li>
-      <li><span class="method DELETE">DELETE</span> <span class="route">/tables/{id}/</span> — Eliminar una mesa</li>
+      <li>400 si faltan campos requeridos o tipos inválidos.</li>
     </ul>
-    <p>Ejemplo de respuesta al crear una mesa:</p>
+  </div>
+
+  <div class="endpoint">
+  <h3>2) Listar productos</h3>
+  <p><span class="method GET">GET</span> <span class="route">/Products/All</span></p>
+    <p>Descripción: Obtiene todos los productos.</p>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>[
+  { "id": 1, "name": "Pizza", "price": 25 },
+  { "id": 2, "name": "Refresco", "price": 10 }
+]</code></pre>
+  </div>
+
+  <div class="endpoint">
+  <h3>3) Actualizar producto</h3>
+  <p><span class="method PUT">PUT</span> <span class="route">/product/{id}/</span></p>
+    <p>Descripción: Actualización parcial de <code>name</code> y/o <code>price</code>.</p>
+    <p>Body (JSON, cualquiera de los campos):</p>
+    <pre><code>{
+  "name": "Pizza grande",
+  "price": 30
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "id": 1,
+  "name": "Pizza grande",
+  "price": 30
+}</code></pre>
+    <p>Errores comunes:</p>
+    <ul>
+      <li>404 si el <code>id</code> no existe.</li>
+    </ul>
+  </div>
+
+  <hr />
+
+  <h2>Mesas y Pedidos</h2>
+
+  <div class="endpoint">
+  <h3>4) Crear mesa</h3>
+  <p><span class="method POST">POST</span> <span class="route">/tables/</span></p>
+    <p>Descripción: Crea una mesa nueva en estado <code>available</code>.</p>
+    <p>Body: vacío</p>
+    <p>Respuesta 200 (JSON):</p>
     <pre><code>{
   "id": 10,
-  "status": "reserved"
+  "status": "available"
 }</code></pre>
-    <p>Body (JSON) para actualizar estado:</p>
-    <pre><code>{
-  "new_status": "reserved"
-}</code></pre>
-    <p>Ejemplo de respuesta al consultar una mesa:</p>
+  </div>
+
+  <div class="endpoint">
+  <h3>5) Obtener estado de una mesa</h3>
+  <p><span class="method GET">GET</span> <span class="route">/tables/{id}/</span></p>
+    <p>Descripción: Retorna el estado de la mesa (<code>available</code>, <code>occupied</code>, <code>reserved</code>, <code>in_cleaning</code>).</p>
+    <p>Respuesta 200 (JSON):</p>
     <pre><code>{
   "id": 10,
-  "status": "reserved"
+  "status": "available"
 }</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>404 si la mesa no existe.</li>
     </ul>
-    <p>Si existen acciones personalizadas (como pedidos u órdenes), se documentarán aparte.</p>
   </div>
 
   <div class="endpoint">
-    <h3>7) Crear pedido (order) para una mesa</h3>
-    <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/orders/</span></p>
+  <h3>6) Actualizar estado de una mesa</h3>
+  <p><span class="method PUT">PUT</span> <span class="route">/tables/{id}/update_status/</span></p>
+    <p>Descripción: Cambia el estado de la mesa usando el endpoint personalizado.</p>
+    <p>Body (JSON):</p>
+    <pre><code>{
+  "new_status": "reserved"
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "id": 10,
+  "status": "reserved"
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+  <h3>7) Crear pedido (order) para una mesa</h3>
+  <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/orders/</span></p>
     <p>Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado <code>occupied</code>.</p>
     <p>Body (JSON):</p>
-    <pre><code>[
+    <pre><code>
+  [
   {
     "product": 1,
     "quantity": 2
@@ -76,9 +146,11 @@
     "product": 2,
     "quantity": 2
   }
-]</code></pre>
+]
+</code></pre>
     <p>Respuesta 200 (JSON):</p>
-    <pre><code>[
+    <pre><code>
+  [
   {
     "id": 1,
     "table": 2,
@@ -97,7 +169,8 @@
     "closedAt": null,
     "note": ""
   }
-]</code></pre>
+]
+</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si <code>product</code> no existe o el body es inválido.</li>
@@ -110,22 +183,22 @@
   <h2>Facturación (Bills)</h2>
 
   <div class="endpoint">
-    <h3>8) Crear factura para una mesa</h3>
-    <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/bills/</span></p>
+  <h3>8) Crear factura para una mesa</h3>
+  <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/bills/</span></p>
     <p>Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.</p>
     <p>Body: vacío</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>{
-  "id": 3,
-  "status": "notPayed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6],
-  "amount": 100.0,
-  "IVA": 15.0,
-  "discount": 0.0,
-  "total": 115.0
-}</code></pre>
+    "id": 3,
+    "status": "notPayed",
+    "createdAt": "2025-11-01T20:20:00Z",
+    "closedAt": null,
+    "orders": [5, 6],
+    "amount": 100.0,
+    "IVA": 15.0,
+    "discount": 0.0,
+    "total": 115.0
+  }</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si la mesa no tiene órdenes pendientes de facturar.</li>
@@ -135,24 +208,24 @@
 
   <div class="endpoint">
     <h3>9) Actualizar estado de una factura</h3>
-    <p><span class="method PUT">PUT</span> <span class="route">/bills/{bill_id}/status/</span></p>
+    <p><span class="method PUT">PUT</span> <span class="route">/bills/updateBillStatus/{bill_id}/</span></p>
     <p>Descripción: Cambia el estado de la factura a <code>notPayed</code> o <code>payed</code>.</p>
     <p>Body (JSON):</p>
-    <pre><code>{
-  "status": "payed"
-}</code></pre>
-    <p>Respuesta 200 (JSON):</p>
-    <pre><code>{
-  "id": 3,
-  "status": "payed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6],
-  "amount": 100.0,
-  "IVA": 15.0,
-  "discount": 0.0,
-  "total": 115.0
-}</code></pre>
+      <pre><code>{
+      "status": "payed"
+    }</code></pre>
+      <p>Respuesta 200 (JSON):</p>
+      <pre><code>{
+      "id": 3,
+      "status": "payed",
+      "createdAt": "2025-11-01T20:20:00Z",
+      "closedAt": null,
+      "orders": [5, 6],
+      "amount": 100.0,
+      "IVA": 15.0,
+      "discount": 0.0,
+      "total": 115.0
+    }</code></pre>
     <p>Errores comunes:</p>
     <ul>
       <li>400 si <code>status</code> no es válido.</li>
@@ -161,8 +234,8 @@
   </div>
 
   <div class="endpoint">
-    <h3>10) Listar facturas no pagadas</h3>
-    <p><span class="method GET">GET</span> <span class="route">/bills/not-payed/</span></p>
+  <h3>10) Listar facturas no pagadas</h3>
+  <p><span class="method GET">GET</span> <span class="route">/bills/getNotPayedBills/</span></p>
     <p>Descripción: Lista las facturas con estado <code>notPayed</code>.</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>[
@@ -177,48 +250,26 @@
   </div>
 
   <div class="endpoint">
-    <h3>11) Listar facturas pagadas</h3>
-    <p><span class="method GET">GET</span> <span class="route">/bills/payed/</span></p>
+  <h3>11) Listar facturas pagadas</h3>
+  <p><span class="method GET">GET</span> <span class="route">/bills/getPayedBills/</span></p>
     <p>Descripción: Lista las facturas con estado <code>payed</code>.</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>[
-  {
-    "id": 4,
-        <li><strong>Autenticación JWT disponible</strong> (ver sección de autenticación).</li>
-    "createdAt": "2025-11-01T20:30:00Z",
-    "closedAt": null,
-      <h2>Autenticación</h2>
-      <div class="endpoint">
-        <h3>Obtener token JWT</h3>
-        <p><span class="method POST">POST</span> <span class="route">/api/token/</span></p>
-        <p>Body (JSON):</p>
-        <pre><code>{
-    "orders": [7],
-    "amount": 50.0,
-    "IVA": 7.5,
-        <p>Respuesta 200 (JSON):</p>
-        <pre><code>{
-    "discount": 0.0,
-    "total": 57.5
-  }
-      </div>
-      <div class="endpoint">
-        <h3>Refrescar token JWT</h3>
-        <p><span class="method POST">POST</span> <span class="route">/api/token/refresh/</span></p>
-        <p>Body (JSON):</p>
-        <pre><code>{
-]</code></pre>
+    {
+      "id": 4,
+      "status": "payed",
+      "createdAt": "2025-11-01T20:30:00Z",
+      "closedAt": null,
+      "orders": [7],
+      "amount": 50.0,
+      "IVA": 7.5,
+      "discount": 0.0,
+      "total": 57.5
+    }
+  ]</code></pre>
   </div>
-        <p>Respuesta 200 (JSON):</p>
-        <pre><code>{
 
   <hr />
-      </div>
-      <div class="endpoint">
-        <h3>Registro y login de usuario</h3>
-        <p><span class="method POST">POST</span> <span class="route">/users/login/</span> y <span class="method POST">POST</span> <span class="route">/users/register/</span></p>
-        <p>Body y respuesta: ver implementación en backend (puede requerir username, password, role).</p>
-      </div>
 
   <h2>Notas útiles para Frontend</h2>
   <ul>

@@ -9,6 +9,9 @@ from rest_framework.decorators import action
 class ProductViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsMesero]
 
+    queryset = product.objects.all()
+    serializer_class = productSerializer
+
     @action(detail=False, methods=['get'])
     def getAllProducts(self, request):
         allProducts = product.objects.all()
@@ -17,6 +20,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         
 class ProductAdminViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAdmin]
+
+    queryset = product.objects.all()
+    serializer_class = productSerializer
 
     @action(detail=False, methods=['post'])
     def addProduct(self, request):

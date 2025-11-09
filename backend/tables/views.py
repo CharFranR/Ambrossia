@@ -1,72 +1,66 @@
-from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+
 from .models import table, order
-from bill.models import bill
 from .serializers import tableSerializer, orderSerializer
 from .websocketService import tableStateNotification
-from channels.consumer import SyncConsumer
-from .websocketService import ordersNotification
-from users.permissions import IsMesero
-from rest_framework.decorators import action
 
-class tablesViewSet(viewsets.ViewSet):
-    # permission_classes = [IsMesero]
-    @action(detail=True, methods=['post'])
-    def addTable(request):
-        serializer = tableSerializer(data = {})
+class TableViewSet(viewsets.ModelViewSet):
+    queryset = table.objects.all()
+    serializer_class = tableSerializer
+
+    # Sobrescribir create() para replicar addTable
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data={})
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
-        productData = tableSerializer(instance).data
-        return Response(productData)
+        # Retornar datos serializados
+        return Response(self.get_serializer(instance).data)
 
-    @action(detail=True, methods=['get'])
-    def getStatusPerTable(request,id):
-        tableObj = get_object_or_404(table, pk=id)
-        serializer = tableSerializer (tableObj)
-        return Response(serializer.data)
-
-    # @api_view(['Get'])
-    # def getAllStatus(resquet):
-    #     all_tables = table.objects.all()
-    #     serializer = tableSerializer(all_tables, many=True)
-    #     return Response(serializer.data)
-
+    # Acción personalizada para actualizar status (similar a updateStatusPerTable)
     @action(detail=True, methods=['put'])
-    def updateStatusPerTable(request, id):
+    def update_status(self, request, pk=None):
+        table_obj = self.get_object()
         new_status = request.data.get('new_status')
-        tableObj = get_object_or_404(table, pk=id)
-        tableObj.status = new_status
-        tableObj.save()
-        serializer = tableSerializer(tableObj)
-
-        # Notificamos a los meseros mediante el websocket
-        tableStateNotification()
+        if new_status:
+            table_obj.status = new_status
+            table_obj.save()
+            # Notificar cambios vía websocket
+            try:
+                tableStateNotification()
+            except Exception:
+                pass
+        serializer = self.get_serializer(table_obj)
         return Response(serializer.data)
 
+    # Acción personalizada para agregar órdenes a una mesa (similar a addOrder)
     @action(detail=True, methods=['post'])
-    def addOrder (request, id):
-        instance = list ()
-        # cambiamos el estatus de la mesa a ocupado
-        table_obj = get_object_or_404(table, pk=id)
+    def add_order(self, request, pk=None):
+        table_obj = self.get_object()
         table_obj.status = 'occupied'
         table_obj.save()
+        # Notificar cambios
+        try:
+            tableStateNotification()
+        except Exception:
+            pass
 
-        # Notificamos a los meseros mediante el websocket
-
-        tableStateNotification()
-        # creamos las ordenes de cada mesa
+        instances = []
         data = request.data.copy()
         for item in data:
-            dataContent = item.copy()
-            dataContent['table'] = id
-            serializer = orderSerializer(data=dataContent)
+            item['table'] = pk
+            serializer = orderSerializer(data=item)
             serializer.is_valid(raise_exception=True)
-            instance.append(serializer.save())
-        orderData = orderSerializer(instance, many=True).data
+            instances.append(serializer.save())
 
-        # Notificamos a cocina mediante el websocket
-        ordersNotification()
-
-        return Response(orderData)
+        return Response(orderSerializer(instances, many=True).data)
+    
+    @action(detail=True, methods=['get'])
+    def orders(self, request, pk=None):
+        """Devuelve todas las órdenes de esta mesa"""
+        table_obj = self.get_object()
+        orders = table_obj.order_set.all() 
+        serializer = orderSerializer(orders, many=True)
+        return Response(serializer.data)
