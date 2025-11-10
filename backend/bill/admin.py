@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import bill
+
 # Register your models here.
 
 @admin.register(bill)

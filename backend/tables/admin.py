@@ -1,6 +1,7 @@
-# tables/admin.py
 from django.contrib import admin
 from .models import table, order
+
+# Register your models here.
 
 @admin.register(table)
 class TableAdmin(admin.ModelAdmin):

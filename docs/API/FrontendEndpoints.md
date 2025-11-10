@@ -39,7 +39,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 2) Listar productos
 
-- Método y ruta: `GET /Products/All`
+- Método y ruta: `GET /product/`
 
 - Descripción: Obtiene todos los productos.
 
@@ -122,7 +122,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 6) Actualizar estado de una mesa
 
-- Método y ruta: `PUT /tables/{id}/update`
+- Método y ruta: `/tables/{id}/update_status/`
 
 - Descripción: Cambia el estado de la mesa.
 
@@ -148,14 +148,13 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 7) Crear pedido (order) para una mesa
 
-- Método y ruta: `POST /tables/{table_id}/orders/`
+- Método y ruta: `POST /tables/{table_id}/add_order/`
 
 - Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado `occupied`.
 
 - Body (JSON):
 
 ```json
-
 [
   {
     "product": 1,
@@ -166,7 +165,6 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
     "quantity": 2
   }
 ]
-
 ```
 
 - Respuesta 200 (JSON):
@@ -204,7 +202,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 8) Crear factura para una mesa
 
-- Método y ruta: `POST /tables/{table_id}/bills/`
+- Método y ruta: `POST /bills/createBill/{table_id}/`
 
 - Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.
 
@@ -212,18 +210,26 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 - Respuesta 200 (JSON):
 
-
 ```json
 {
-  "id": 3,
-  "status": "notPayed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6],
-  "amount": 100.0,
-  "IVA": 15.0,
-  "discount": 0.0,
-  "total": 115.0
+  "bill": {
+    "id": 3,
+    "status": "notPayed",
+    "createdAt": "2025-11-01T20:20:00Z",
+    "closedAt": null,
+    "amount": 100.0,
+    "IVA": 15.0,
+    "discount": 0.0,
+    "total": 115.0
+  },
+  "orders": [
+    {
+      "product": "Pizza",
+      "price": 25,
+      "quantity": 2,
+      "amount": 50
+    }
+  ]
 }
 ```
 
@@ -232,9 +238,10 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
   - 404 si `table_id` no existe.
 
 
+
 ### 9) Actualizar estado de una factura
 
-- Método y ruta: `PUT /bills/{bill_id}/status/`
+- Método y ruta: `PUT /bills/updateBillStatus/{bill_id}/`
 
 - Descripción: Cambia el estado de la factura a `notPayed` o `payed`.
 
@@ -264,7 +271,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 10) Actualizar valores de una factura
 
-- Método y ruta: `PUT /bills/{bill_id}`
+- Método y ruta: `PUT /bills/updateBill/{bill_id}/`
 
 - Descripción: Actualiza los valores de IVA, descuento y total de una factura (siempre que no esté pagada).
 
@@ -299,7 +306,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 10) Listar facturas no pagadas
 
-- Método y ruta: `GET /bills/not-payed/`
+- Método y ruta: `GET /bills/getNotPayedBills/`
 
 - Descripción: Lista las facturas con estado `notPayed`.
 
@@ -319,7 +326,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ### 11) Listar facturas pagadas
 
-- Método y ruta: `GET /bills/payed/`
+- Método y ruta: `GET /bills/getPayedBills/`
 
 - Descripción: Lista las facturas con estado `payed`.
 

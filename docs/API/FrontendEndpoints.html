@@ -118,8 +118,8 @@
 
   <div class="endpoint">
   <h3>6) Actualizar estado de una mesa</h3>
-  <p><span class="method PUT">PUT</span> <span class="route">/tables/{id}/</span></p>
-    <p>Descripción: Cambia el estado de la mesa.</p>
+  <p><span class="method PUT">PUT</span> <span class="route">/tables/{id}/update_status/</span></p>
+    <p>Descripción: Cambia el estado de la mesa usando el endpoint personalizado.</p>
     <p>Body (JSON):</p>
     <pre><code>{
   "new_status": "reserved"
@@ -208,7 +208,7 @@
 
   <div class="endpoint">
     <h3>9) Actualizar estado de una factura</h3>
-    <p><span class="method PUT">PUT</span> <span class="route">/bills/{bill_id}/status/</span></p>
+    <p><span class="method PUT">PUT</span> <span class="route">/bills/updateBillStatus/{bill_id}/</span></p>
     <p>Descripción: Cambia el estado de la factura a <code>notPayed</code> o <code>payed</code>.</p>
     <p>Body (JSON):</p>
       <pre><code>{
@@ -235,7 +235,7 @@
 
   <div class="endpoint">
   <h3>10) Listar facturas no pagadas</h3>
-  <p><span class="method GET">GET</span> <span class="route">/bills/not-payed/</span></p>
+  <p><span class="method GET">GET</span> <span class="route">/bills/getNotPayedBills/</span></p>
     <p>Descripción: Lista las facturas con estado <code>notPayed</code>.</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>[
@@ -251,7 +251,7 @@
 
   <div class="endpoint">
   <h3>11) Listar facturas pagadas</h3>
-  <p><span class="method GET">GET</span> <span class="route">/bills/payed/</span></p>
+  <p><span class="method GET">GET</span> <span class="route">/bills/getPayedBills/</span></p>
     <p>Descripción: Lista las facturas con estado <code>payed</code>.</p>
     <p>Respuesta 200 (JSON):</p>
     <pre><code>[

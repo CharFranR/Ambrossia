@@ -24,7 +24,7 @@ class orderSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=product.objects.all())
     class Meta:
         model = order
-        fields = ['id','table', 'product', 'status','createdAt', 'closedAt', 'note']
+        fields = ['id','table', 'product', 'quantity', 'status', 'status','createdAt', 'closedAt', 'note']
 
     def create(self, validated_data):
         return order.objects.create(**validated_data)
