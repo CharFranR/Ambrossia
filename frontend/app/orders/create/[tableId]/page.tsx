@@ -1,26 +1,39 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { createOrder } from '@/hooks/api/useOrders';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { OrderForm } from '@/app/orders/components/OrderForm';
 
 export default function CreateOrderPage() {
+  const router = useRouter();
   const params = useParams();
-  const tableId = params.tableId;
-
-  if (!tableId) return <div>Mesa no seleccionada</div>;
+  const tableId = Array.isArray(params.tableId) ? params.tableId[0] : params.tableId;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createOrderMutation = createOrder();
 
+  const handleCreateOrder = () => {
+    if (!tableId) return;
+    
+    setIsSubmitting(true);
+    createOrderMutation.mutate({ 
+      table: parseInt(tableId as string),
+      status: 'notCooking',
+    });
+  };
+
+  if (!tableId) {
+    return <div>Mesa no seleccionada</div>;
+  }
+
   return (
-    <div>
-      <h1>Tomar Orden para la Mesa {tableId}</h1>
-      <button
-        onClick={() =>
-          createOrderMutation.mutate({ table: parseInt(tableId as string) })
-        }
-      >
-        Crear Orden
-      </button>
-    </div>
+    <OrderForm 
+      tableId={tableId}
+      isSubmitting={isSubmitting}
+      onCreateOrder={handleCreateOrder}
+      onCancel={() => router.push('/tables')}
+    />
   );
 }
