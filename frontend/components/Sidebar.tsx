@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Home, Settings, Table, Menu, BarChart } from "lucide-react";
+import {
+  Home,
+  Settings,
+  Table,
+  Menu,
+  BarChart,
+  CookingPot,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function Sidebar() {
@@ -41,12 +48,21 @@ export default function Sidebar() {
           {open && <span>Inicio</span>}
         </Link>
         <Link
-          href="/mesas"
+          href="/tables"
           className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
         >
           <Table size={18} />
           {open && <span>Mesas</span>}
         </Link>
+
+        <Link
+          href="/kitchen"
+          className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
+        >
+          <CookingPot size={18} />
+          {open && <span>Cocina</span>}
+        </Link>
+
         <Link
           href="/analytics"
           className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
