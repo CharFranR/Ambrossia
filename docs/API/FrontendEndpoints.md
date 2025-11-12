@@ -5,7 +5,101 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 - Base URL (desarrollo): `http://localhost:8000`
 - Formato: `application/json`
 - Las rutas usan barra final `/` (importante en Django REST).
-- No hay autenticación en este proyecto (a la fecha).
+
+## Autenticación (JWT)
+
+### 0) Obtener token JWT
+
+- Método y ruta: `POST /api/token/`
+- Body (JSON):
+
+```json
+{
+  "username": "usuario",
+  "password": "contraseña"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "refresh": "...",
+  "access": "..."
+}
+```
+
+### 0.1) Refrescar token JWT
+
+- Método y ruta: `POST /api/token/refresh/`
+- Body (JSON):
+
+```json
+{
+  "refresh": "..."
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "access": "..."
+}
+```
+
+## Usuarios
+
+### 0.2) Registrar usuario
+
+- Método y ruta: `POST /users/`
+- Body (JSON):
+
+```json
+{
+  "username": "nuevo",
+  "password": "secreta",
+  "role": "mesero"  // Opcional: mesero, cocina, caja, admin
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "token": "...",
+  "user": {
+    "username": "nuevo",
+    ...otros campos...
+  }
+}
+```
+
+### 0.3) Login usuario
+
+- Método y ruta: `POST /users/login/`
+- Body (JSON):
+
+```json
+{
+  "username": "usuario",
+  "password": "secreta"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "token": "...",
+  "user": {
+    "username": "usuario",
+    ...otros campos...
+  }
+}
+```
+
+---
 
 ## Productos (Menú)
 
