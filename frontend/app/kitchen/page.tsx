@@ -1,6 +1,6 @@
-import VistaCocina from "./VistaCocina";
+import VistaCocina from "./components/KitchenView";
 
-export default function Cocina() {
+export default function Kitchen() {
   return (
     <div>
       <div className="flex justify-center mt-6">

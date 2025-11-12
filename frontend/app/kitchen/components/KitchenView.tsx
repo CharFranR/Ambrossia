@@ -5,11 +5,11 @@
 // el cliente. Next.js en el directorio `app/` crea componentes server por
 // defecto. La directiva "use client" arriba obliga a que este módulo se
 // renderice en el cliente y así podemos invocar hooks como useQuery.
-import CartaOrden from "./CartaOrden";
+import OrderCard from "./OrderCard";
 import { useOrders } from "@/hooks/api/useOrders";
 import type { Order } from "@/types/models/orders";
 
-export default function Cocina() {
+export default function CookView() {
   const { data: orders, isLoading, isError } = useOrders();
 
   if (isLoading)
@@ -84,10 +84,10 @@ export default function Cocina() {
 
       return (
         <div key={String(tableId)} className="shrink-0">
-          <CartaOrden
-            mesa={tableId}
-            mesero={mesero}
-            hora={hora}
+          <OrderCard
+            table={tableId}
+            waiter={mesero}
+            time={hora}
             items={items}
           />
         </div>

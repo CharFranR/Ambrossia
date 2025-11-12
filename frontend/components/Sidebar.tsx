@@ -48,7 +48,7 @@ export default function Sidebar() {
           {open && <span>Inicio</span>}
         </Link>
         <Link
-          href="/mesas"
+          href="/tables"
           className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
         >
           <Table size={18} />
@@ -56,7 +56,7 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          href="/cocina"
+          href="/kitchen"
           className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
         >
           <CookingPot size={18} />
