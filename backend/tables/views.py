@@ -64,3 +64,8 @@ class TableViewSet(viewsets.ModelViewSet):
         orders = table_obj.order_set.all() 
         serializer = orderSerializer(orders, many=True)
         return Response(serializer.data)
+    
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = order.objects.all()
+    serializer_class = orderSerializer
