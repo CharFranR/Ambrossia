@@ -1,6 +1,7 @@
 Django>=5.0
 djangorestframework
 django-cors-headers
+rest_framework_simplejwt
 psycopg2-binary>=2.9
 daphne
 channels

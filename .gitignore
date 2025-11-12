@@ -127,3 +127,8 @@ pytest_cache/
 # Cosas de Oscar
 .github/
 /myenv
+
+# Cosas de Ari
+*.mp4
+avatars/
+performance/

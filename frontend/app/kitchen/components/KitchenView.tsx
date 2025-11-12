@@ -9,8 +9,9 @@ import OrderCard from "./OrderCard";
 import { useOrders } from "@/hooks/api/useOrders";
 import type { Order } from "@/types/models/orders";
 
-export default function CookView() {
+export default function KitchenView() {
   const { data: orders, isLoading, isError } = useOrders();
+  console.log("KitchenView orders:", orders);
 
   if (isLoading)
     return <div className="p-6 text-center">Cargando órdenes...</div>;
@@ -45,6 +46,7 @@ export default function CookView() {
         number | string,
         { productName: string; quantity: number; notes: string[] }
       >();
+      
       ordersForTable.forEach((o) => {
         const pid =
           typeof o.product === "number"

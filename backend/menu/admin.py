@@ -6,4 +6,5 @@ from .models import product
 class MenuAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "price")
     search_fields = ("name",)
-    
+
+admin.site.register(product, MenuAdmin)
