@@ -27,13 +27,79 @@
     <li>Base URL (desarrollo): <code>http://localhost:8000</code></li>
     <li>Formato: <code>application/json</code></li>
     <li>Las rutas usan barra final <code>/</code> (importante en Django REST).</li>
-    <li>No hay autenticación en este proyecto (a la fecha).</li>
   </ul>
+
+  <h2>Autenticación (JWT)</h2>
+  <div class="endpoint">
+  <h3>1) Obtener token JWT</h3>
+  <p><span class="method POST">POST</span> <span class="route">/api/token/</span></p>
+    <p>Body:</p>
+    <pre><code>{
+  "username": "usuario",
+  "password": "contraseña"
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "refresh": "...",
+  "access": "..."
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+  <h3>2) Refrescar token JWT</h3>
+  <p><span class="method POST">POST</span> <span class="route">/api/token/refresh/</span></p>
+    <p>Body:</p>
+    <pre><code>{
+  "refresh": "..."
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "access": "..."
+}</code></pre>
+  </div>
+
+  <h2>Usuarios</h2>
+  <div class="endpoint">
+  <h3>3) Registrar usuario</h3>
+  <p><span class="method POST">POST</span> <span class="route">/users/</span></p>
+    <p>Body:</p>
+    <pre><code>{
+  "username": "nuevo",
+  "password": "secreta",
+  "role": "mesero"  // Opcional: mesero, cocina, caja, admin
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "token": "...",
+  "user": {
+    "username": "nuevo",
+    ...otros campos...
+  }
+}</code></pre>
+  </div>
+
+  <div class="endpoint">
+  <h3>4) Login usuario</h3>
+  <p><span class="method POST">POST</span> <span class="route">/users/login/</span></p>
+    <p>Body:</p>
+    <pre><code>{
+  "username": "usuario",
+  "password": "secreta"
+}</code></pre>
+    <p>Respuesta 200 (JSON):</p>
+    <pre><code>{
+  "token": "...",
+  "user": {
+    "username": "usuario",
+    ...otros campos...
+  }
+}</code></pre>
+  </div>
 
   <h2>Productos (Menú)</h2>
 
   <div class="endpoint">
-  <h3>1) Crear producto</h3>
+  <h3>5) Crear producto</h3>
   <p><span class="method POST">POST</span> <span class="route">/product/</span></p>
     <p>Descripción: Crea un nuevo producto del menú.</p>
     <p>Body (JSON):</p>
@@ -54,7 +120,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>2) Listar productos</h3>
+  <h3>6) Listar productos</h3>
   <p><span class="method GET">GET</span> <span class="route">/Products/All</span></p>
     <p>Descripción: Obtiene todos los productos.</p>
     <p>Respuesta 200 (JSON):</p>
@@ -65,7 +131,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>3) Actualizar producto</h3>
+  <h3>7) Actualizar producto</h3>
   <p><span class="method PUT">PUT</span> <span class="route">/product/{id}/</span></p>
     <p>Descripción: Actualización parcial de <code>name</code> y/o <code>price</code>.</p>
     <p>Body (JSON, cualquiera de los campos):</p>
@@ -90,7 +156,7 @@
   <h2>Mesas y Pedidos</h2>
 
   <div class="endpoint">
-  <h3>4) Crear mesa</h3>
+  <h3>8) Crear mesa</h3>
   <p><span class="method POST">POST</span> <span class="route">/tables/</span></p>
     <p>Descripción: Crea una mesa nueva en estado <code>available</code>.</p>
     <p>Body: vacío</p>
@@ -102,7 +168,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>5) Obtener estado de una mesa</h3>
+  <h3>9) Obtener estado de una mesa</h3>
   <p><span class="method GET">GET</span> <span class="route">/tables/{id}/</span></p>
     <p>Descripción: Retorna el estado de la mesa (<code>available</code>, <code>occupied</code>, <code>reserved</code>, <code>in_cleaning</code>).</p>
     <p>Respuesta 200 (JSON):</p>
@@ -117,7 +183,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>6) Actualizar estado de una mesa</h3>
+  <h3>10) Actualizar estado de una mesa</h3>
   <p><span class="method PUT">PUT</span> <span class="route">/tables/{id}/update_status/</span></p>
     <p>Descripción: Cambia el estado de la mesa usando el endpoint personalizado.</p>
     <p>Body (JSON):</p>
@@ -132,7 +198,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>7) Crear pedido (order) para una mesa</h3>
+  <h3>11) Crear pedido (order) para una mesa</h3>
   <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/orders/</span></p>
     <p>Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado <code>occupied</code>.</p>
     <p>Body (JSON):</p>
@@ -183,7 +249,7 @@
   <h2>Facturación (Bills)</h2>
 
   <div class="endpoint">
-  <h3>8) Crear factura para una mesa</h3>
+  <h3>12) Crear factura para una mesa</h3>
   <p><span class="method POST">POST</span> <span class="route">/tables/{table_id}/bills/</span></p>
     <p>Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.</p>
     <p>Body: vacío</p>
@@ -207,7 +273,7 @@
   </div>
 
   <div class="endpoint">
-    <h3>9) Actualizar estado de una factura</h3>
+    <h3>13) Actualizar estado de una factura</h3>
     <p><span class="method PUT">PUT</span> <span class="route">/bills/updateBillStatus/{bill_id}/</span></p>
     <p>Descripción: Cambia el estado de la factura a <code>notPayed</code> o <code>payed</code>.</p>
     <p>Body (JSON):</p>
@@ -234,7 +300,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>10) Listar facturas no pagadas</h3>
+  <h3>14) Listar facturas no pagadas</h3>
   <p><span class="method GET">GET</span> <span class="route">/bills/getNotPayedBills/</span></p>
     <p>Descripción: Lista las facturas con estado <code>notPayed</code>.</p>
     <p>Respuesta 200 (JSON):</p>
@@ -250,7 +316,7 @@
   </div>
 
   <div class="endpoint">
-  <h3>11) Listar facturas pagadas</h3>
+  <h3>15) Listar facturas pagadas</h3>
   <p><span class="method GET">GET</span> <span class="route">/bills/getPayedBills/</span></p>
     <p>Descripción: Lista las facturas con estado <code>payed</code>.</p>
     <p>Respuesta 200 (JSON):</p>

@@ -6,3 +6,5 @@ daphne
 channels
 djangorestframework-simplejwt
 reportlab
+django-redis
+channels_redis
