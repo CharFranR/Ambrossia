@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'daphne',
+    'corsheaders',
     'tables',
     'menu',
     'bill',
@@ -51,6 +52,7 @@ ASGI_APPLICATION = "backend.asgi.application"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
