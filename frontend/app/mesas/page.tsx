@@ -75,7 +75,7 @@ export default function TablesPage() {
             Área: {area}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="z-50 rounded-md shadow-lg p-2">
           <DropdownMenuLabel>
             <Button variant="item" size="lg" onClick={() => setArea("1")}>
               Área: 1
