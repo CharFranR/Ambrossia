@@ -61,6 +61,13 @@ class TableViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(table_obj)
         return Response(serializer.data)
 
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar órdenes.
+    """
+    queryset = order.objects.all()
+    serializer_class = orderSerializer
+
     @action(detail=True, methods=['post'])
     def add_order(self, request, pk=None):
         """
@@ -68,11 +75,6 @@ class TableViewSet(viewsets.ModelViewSet):
         La orden incluye el waiterId que referencia al sistema de permisos.
         """
         table_obj = self.get_object()
-        
-        # waiterId es IntegerField - referencia al sistema de permisos de users app
-        # Para obtener el usuario actual autenticado, usar: request.user.id
-        # y validar que tiene permiso 'mesero_access' mediante users.permissions.IsMesero
-        
         table_obj.status = 'occupied'
         table_obj.save()
         
@@ -94,7 +96,7 @@ class TableViewSet(viewsets.ModelViewSet):
             orderSerializer(order_instance).data, 
             status=status.HTTP_201_CREATED
         )
-    
+
     @action(detail=True, methods=['get'])
     def get_orders(self, request, pk=None):
         """
@@ -104,14 +106,6 @@ class TableViewSet(viewsets.ModelViewSet):
         orders = order.objects.filter(tableId=table_obj)
         serializer = orderSerializer(orders, many=True)
         return Response(serializer.data)
-
-
-class OrderViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet para gestionar órdenes.
-    """
-    queryset = order.objects.all()
-    serializer_class = orderSerializer
 
     @action(detail=True, methods=['put'])
     def update_status(self, request, pk=None):

@@ -21,9 +21,6 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
         El cashierId debe ser pasado en el request.
         """
         cashier_id = request.data.get('cashierId')
-        # cashierId es CharField - referencia al sistema de permisos de users app
-        # Para obtener el usuario actual autenticado, usar: request.user.id
-        # y validar que tiene permiso 'caja_access' mediante users.permissions.IsCaja
         
         if not cashier_id:
             return Response(

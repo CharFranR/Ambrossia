@@ -6,6 +6,7 @@ from django.utils import timezone
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+import os, tempfile
 
 from .models import bill
 from .serializers import billSerializer
@@ -69,6 +70,8 @@ class BillViewSet(viewsets.ModelViewSet):
             paymentMethod=payment_method,
             cashier=cashier,
             paidAmount=0,
+            IVA = 0,
+            discount = 0,
             total=0
         )
 
@@ -81,7 +84,7 @@ class BillViewSet(viewsets.ModelViewSet):
             items = orderItem.objects.filter(orderId=ord)
             for item in items:
                 amount = item.quantity * item.productId.price
-                subtotal += amount
+                bill_obj.paidAmount += amount
                 
                 order_details.append({
                     'product': item.productId.name,
@@ -95,14 +98,14 @@ class BillViewSet(viewsets.ModelViewSet):
             ord.save()
         
         # Calcular IVA (15%)
-        bill_obj.IVA = round(0.15 * subtotal, 2)
+        bill_obj.IVA = round(0.15 * bill_obj.paidAmount, 2)
 
         # Aplicar descuentos
         discount_percent = float(request.data.get('discount', 0))
-        bill_obj.discount = round(subtotal * (discount_percent / 100), 2)
+        bill_obj.discount = round(bill_obj.paidAmount * (discount_percent / 100), 2)
 
         # Calcular precio final a pagar
-        bill_obj.total = round(subtotal + bill_obj.IVA - bill_obj.discount, 2)
+        bill_obj.total = round(bill_obj.paidAmount + bill_obj.IVA - bill_obj.discount, 2)
         bill_obj.save()
 
         # Generar PDF
@@ -114,7 +117,8 @@ class BillViewSet(viewsets.ModelViewSet):
                 bill_obj.total, 
                 table_id
             )
-            pdf_path = f"/tmp/factura_{bill_obj.id}.pdf"
+            
+            pdf_path = f"/factura_{getattr(bill_obj, 'pk')}.pdf"
             
             with open(pdf_path, "wb") as f:
                 f.write(pdf_buffer.getvalue())

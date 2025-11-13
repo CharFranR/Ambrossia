@@ -16,6 +16,6 @@ class bill(models.Model):
 
     # Los siguientes campos no habian sido considerados, mal ahi por el mae qeu hizo los diagramas
 
-    IVA = models.IntegerField(null=True, blank=True)
-    discount = models.FloatField(null=True, blank=True)
+    IVA = models.FloatField()
+    discount = models.FloatField()
     total = models.FloatField()
