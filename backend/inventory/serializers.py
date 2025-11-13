@@ -8,7 +8,6 @@ from .models import (
     inventoryMovement,
 )
 
-
 class InventoryProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = inventoryProduct
@@ -40,7 +39,6 @@ class InventoryMovementTypeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return inventoryMovementType.objects.create(**validated_data)
-
 
 class InventoryMovementSerializer(serializers.ModelSerializer):
     itemType = serializers.PrimaryKeyRelatedField(queryset=inventoryItemType.objects.all())

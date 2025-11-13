@@ -18,7 +18,6 @@ from .serializers import (
     InventoryMovementSerializer,
 )
 
-
 class InventoryProductViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar productos en inventario.
