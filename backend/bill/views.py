@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import bill
-from tables.models import order
+from tables.models import order, table, orderItem
 from rest_framework.response import Response
 from .serializers import billSerializer
 from rest_framework.decorators import action
@@ -32,36 +32,62 @@ class BillViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='createBill/(?P<table_id>[^/.]+)')
     def createBill(self, request, table_id):
+        """
+        Create a bill for all unbilled orders from a table.
+        Works with the new order/orderItem model structure.
+        """
+        # Get the table object
+        table_obj = get_object_or_404(table, pk=table_id)
+        
         # Obtiene todas las órdenes de la mesa que no tienen bill asociada
-        orders = order.objects.filter(table_id=table_id, bill__isnull=True)
+        orders = order.objects.filter(tableId=table_obj, billId__isnull=True)
         if not orders.exists():
             return Response({'error': 'No hay órdenes para esta mesa'}, status=400)
 
         # Crea una bill y asocia todas las órdenes a esa factura
-        billObj = bill.objects.create(status='notPayed', amount=0)
+        billObj = bill.objects.create(
+            status='notPayed',
+            tableId=table_obj,
+            paidAmount=0,
+            paymentMethod='',
+            cashier='',
+            total=0
+        )
+        
         orderDetails = []
+        total_amount = 0
+        
+        # Iterate through orders and their items
         for ord in orders:
-            amount = ord.quantity * ord.product.price
-            billObj.amount += amount
-            ord.bill = billObj
+            # Get all order items for this order
+            items = orderItem.objects.filter(orderId=ord)
+            
+            for item in items:
+                amount = item.quantity * item.productId.price
+                total_amount += amount
+                
+                orderDetails.append({
+                    'product': item.productId.name,
+                    'price': item.productId.price,
+                    'quantity': item.quantity,
+                    'amount': amount
+                })
+            
+            # Associate order with bill
+            ord.billId = billObj
             ord.save()
-
-            orderDetails.append({
-                'product': ord.product.name,
-                'price': ord.product.price,
-                'quantity': ord.quantity,
-                'amount': amount
-            })
+        
+        billObj.paidAmount = total_amount
         
         # calcular IVA
-        billObj.IVA = 0.15 * billObj.amount
+        billObj.IVA = int(0.15 * total_amount)
 
         # aplicar descuentos (como si dieran)
         discount = request.data.get('discount', 0) # El descuento va en porcentaje
-        billObj.discount = billObj.amount * (int(discount)/100)
+        billObj.discount = total_amount * (int(discount)/100) if discount else 0
 
         # Calcular precio final a pagar
-        billObj.total = round(billObj.amount + billObj.IVA - billObj.discount, 2)
+        billObj.total = round(total_amount + billObj.IVA - billObj.discount, 2)
         billObj.save()
 
         pdfBuffer = billPDf(orderDetails, billObj.IVA, billObj.discount, billObj.total, table_id)

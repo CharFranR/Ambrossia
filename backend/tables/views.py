@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
-from .models import table, order
-from .serializers import tableSerializer, orderSerializer
+from .models import table, order, orderItem
+from .serializers import tableSerializer, orderSerializer, orderItemSerializer, OrderItemLegacySerializer
 from .websocketService import tableStateNotification
 
 class TableViewSet(viewsets.ModelViewSet):
@@ -38,6 +38,11 @@ class TableViewSet(viewsets.ModelViewSet):
     # Acción personalizada para agregar órdenes a una mesa (similar a addOrder)
     @action(detail=True, methods=['post'])
     def add_order(self, request, pk=None):
+        """
+        Create order items for a table.
+        Expects: [{"product": product_id, "quantity": qty, "note": "optional"}]
+        Returns: Legacy format order items with backward compatibility
+        """
         table_obj = self.get_object()
         table_obj.status = 'occupied'
         table_obj.save()
@@ -47,15 +52,39 @@ class TableViewSet(viewsets.ModelViewSet):
         except Exception:
             pass
 
-        instances = []
-        data = request.data.copy()
-        for item in data:
-            item['table'] = pk
-            serializer = orderSerializer(data=item)
-            serializer.is_valid(raise_exception=True)
-            instances.append(serializer.save())
+        # Create a single order for this table (order header)
+        order_obj = order.objects.create(
+            tableId=table_obj,
+            status='notCooking',
+            waiterId=request.data.get('waiterId', 1) if isinstance(request.data, dict) else 1
+        )
 
-        return Response(orderSerializer(instances, many=True).data)
+        # Create order items from the request
+        order_items = []
+        items_data = request.data if isinstance(request.data, list) else [request.data]
+        
+        for item_data in items_data:
+            product_id = item_data.get('product')
+            quantity = item_data.get('quantity', 1)
+            note = item_data.get('note', '')
+            
+            if not product_id:
+                continue
+                
+            from menu.models import product
+            product_obj = get_object_or_404(product, pk=product_id)
+            
+            order_item = orderItem.objects.create(
+                orderId=order_obj,
+                productId=product_obj,
+                quantity=quantity,
+                note=note
+            )
+            order_items.append(order_item)
+
+        # Return in legacy format for backward compatibility
+        serializer = OrderItemLegacySerializer(order_items, many=True)
+        return Response(serializer.data)
     
     @action(detail=True, methods=['get'])
     def orders(self, request, pk=None):
