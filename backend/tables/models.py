@@ -1,4 +1,5 @@
 from django.db import models
+from menu.models import product
 
 class table(models.Model):
     STATUS_CHOICES = [
@@ -9,7 +10,7 @@ class table(models.Model):
     ]
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
-    tableNumer = models.IntegerField()
+    tableNumber = models.IntegerField()
 
 class order(models.Model):
 
@@ -21,8 +22,13 @@ class order(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notCooking')
     tableId = models.ForeignKey(table, on_delete= models.CASCADE)
-    # Use a lazy string reference to avoid circular import with bill.models
     billId = models.ForeignKey('bill.bill', on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True, blank=True)
     waiterId = models.IntegerField()
+
+class orderItem(models.Model):
+    orderId = models.ForeignKey(order, on_delete=models.CASCADE)
+    productId = models.ForeignKey(product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    note = models.TextField()

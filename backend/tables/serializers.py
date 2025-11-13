@@ -1,30 +1,31 @@
 from rest_framework import serializers
-from .models import table, order
-from bill.models import bill
+from .models import table, order, orderItem
 from menu.models import product
 
 class tableSerializer(serializers.ModelSerializer):
     class Meta:
         model = table
-        fields = ['id', 'status']
+        fields = ['id', 'status','tableNumber']
 
     def create(self, validated_data):
         return table.objects.create(**validated_data)
 
-class productSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = product
-        fields = ['id', 'name', 'price']
-
-    def create(self, validated_data):
-        return product.objects.create(**validated_data)
-
 class orderSerializer(serializers.ModelSerializer):
-    table = serializers.PrimaryKeyRelatedField(queryset=table.objects.all())
-    product = serializers.PrimaryKeyRelatedField(queryset=product.objects.all())
+    tableId = serializers.PrimaryKeyRelatedField(queryset=table.objects.all())
     class Meta:
         model = order
-        fields = ['id','table', 'product', 'quantity', 'status', 'status','createdAt', 'closedAt', 'note']
+        fields = ['id','tableId', 'status','createdAt', 'updatedAt', 'waiterId']
 
     def create(self, validated_data):
         return order.objects.create(**validated_data)
+    
+class orderItemSerializer(serializers.ModelSerializer):
+    productId = serializers.PrimaryKeyRelatedField(queryset=product.objects.all())
+    orderId = serializers.PrimaryKeyRelatedField(queryset=order.objects.all())
+
+    class Meta:
+        model = orderItem
+        fields = ('id','orderId','productId','quantity','note')
+
+    def create(self, validated_data):
+        return orderItem.objects.create(**validated_data)

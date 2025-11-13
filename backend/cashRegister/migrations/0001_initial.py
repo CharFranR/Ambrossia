@@ -12,14 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='bill',
+            name='cashRegister',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('notPayed', 'NotPayed'), ('payed', 'Payed')], default='notPayed', max_length=20)),
                 ('createdAt', models.DateTimeField(auto_now_add=True)),
                 ('closedAt', models.DateTimeField(blank=True, null=True)),
-                ('paidAmount', models.FloatField(default=0)),
-                ('paymentMethod', models.CharField(max_length=20)),
+                ('status', models.CharField(max_length=200)),
             ],
         ),
     ]
