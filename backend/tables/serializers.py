@@ -54,7 +54,7 @@ class OrderItemLegacySerializer(serializers.Serializer):
     quantity = serializers.IntegerField(default=1)
     status = serializers.CharField(source='orderId.status', read_only=True)
     createdAt = serializers.DateTimeField(source='orderId.createdAt', read_only=True)
-    closedAt = serializers.DateTimeField(source='orderId.closedAt', read_only=True, allow_null=True)
+    closedAt = serializers.DateTimeField(read_only=True, allow_null=True, required=False)
     note = serializers.CharField(default='', allow_blank=True)
     
     def to_representation(self, instance):
@@ -66,6 +66,6 @@ class OrderItemLegacySerializer(serializers.Serializer):
             'quantity': instance.quantity,
             'status': instance.orderId.status,
             'createdAt': instance.orderId.createdAt,
-            'closedAt': getattr(instance.orderId, 'closedAt', None),
+            'closedAt': None,  # order model doesn't have closedAt
             'note': instance.note
         }
