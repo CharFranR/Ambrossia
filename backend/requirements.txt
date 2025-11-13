@@ -9,3 +9,4 @@ djangorestframework-simplejwt
 reportlab
 django-redis
 channels_redis
+corsheaders
