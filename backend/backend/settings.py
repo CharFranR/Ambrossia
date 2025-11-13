@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'daphne',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
     'tables',
     'menu',
     'bill',
