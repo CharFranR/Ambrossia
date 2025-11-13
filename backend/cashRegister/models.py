@@ -4,4 +4,4 @@ class cashRegister (models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     closedAt = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=200)
-    # cashierId
+    cashierId = models.CharField(max_length=200)
