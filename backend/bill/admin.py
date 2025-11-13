@@ -5,6 +5,6 @@ from .models import bill
 
 @admin.register(bill)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("id", "status", "createdAt", "closedAt", "amount", "IVA", "discount", "total")
+    list_display = ("id", "status", "tableId", "createdAt", "closedAt", "paidAmount", "paymentMethod")
     list_filter = ("status",)
-    search_fields = ("id",)
+    search_fields = ("id", "tableId__id")

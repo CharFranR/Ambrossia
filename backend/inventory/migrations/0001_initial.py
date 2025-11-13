@@ -13,43 +13,45 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='cookbook',
+            name='inventoryIngredient',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('ingredientId', models.IntegerField()),
+                ('quantity', models.IntegerField()),
+                ('lastUpdated', models.DateTimeField()),
+            ],
+        ),
+        migrations.CreateModel(
+            name='inventoryItemType',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('note', models.TextField(blank=True)),
             ],
         ),
         migrations.CreateModel(
-            name='ingredient',
+            name='inventoryMovementType',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('unit', models.CharField(max_length=200)),
             ],
         ),
         migrations.CreateModel(
-            name='productCategory',
+            name='inventoryProduct',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
+                ('productId', models.IntegerField()),
+                ('quantity', models.IntegerField()),
+                ('lastUpdated', models.DateTimeField()),
             ],
         ),
         migrations.CreateModel(
-            name='cookbookIngredient',
+            name='inventoryMovement',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='menu.cookbook')),
-                ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='menu.ingredient')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='product',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('price', models.IntegerField()),
-                ('categoryId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='menu.productcategory')),
+                ('createdAt', models.DateTimeField()),
+                ('itemType', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.inventoryitemtype')),
+                ('movementType', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.inventorymovementtype')),
+                ('itemId', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.inventoryproduct')),
             ],
         ),
     ]
