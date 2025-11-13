@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bill',
     'users',
     'inventory',
+    'cashRegister',
     'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
