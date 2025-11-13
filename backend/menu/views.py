@@ -1,47 +1,142 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import product
-from .serializers import productSerializer
-from django.shortcuts import get_object_or_404
-from users.permissions import IsMesero, IsAdmin
 from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+from .models import (
+    product,
+    productCategory,
+    cookbook,
+    ingredient,
+    cookbookIngredient,
+)
+from .serializers import (
+    productSerializer,
+    productCategorySerializer,
+    cookbookSerializer,
+    ingredientSerializer,
+    cookbookIngredientSerializer,
+)
+
 
 class ProductViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar productos del menú.
+    Accesible por meseros para consultar productos.
+    """
     # permission_classes = [IsMesero]
-
+    
     queryset = product.objects.all()
     serializer_class = productSerializer
 
     @action(detail=False, methods=['get'])
-    def getAllProducts(self, request):
-        allProducts = product.objects.all()
-        serializer = productSerializer(allProducts, many=True)
+    def get_all_products(self, request):
+        """
+        Obtener todos los productos disponibles en el menú.
+        """
+        all_products = product.objects.all()
+        serializer = productSerializer(all_products, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def get_by_category(self, request):
+        """
+        Obtener productos filtrados por categoría.
+        """
+        category_id = request.query_params.get('categoryId')
         
-class ProductAdminViewSet(viewsets.ModelViewSet):
-    # permission_classes = [IsAdmin]
+        if not category_id:
+            return Response(
+                {'error': 'categoryId es requerido'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        products = product.objects.filter(categoryId=category_id)
+        serializer = productSerializer(products, many=True)
+        return Response(serializer.data)
 
+
+class ProductAdminViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para administración de productos del menú.
+    Solo accesible por administradores.
+    """
+    # permission_classes = [IsAdmin]
+    
     queryset = product.objects.all()
     serializer_class = productSerializer
 
     @action(detail=False, methods=['post'])
-    def addProduct(self, request):
+    def add_product(self, request):
+        """
+        Agregar un nuevo producto al menú.
+        """
         serializer = productSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
-        productData = productSerializer(instance)
-        return Response (productData.data)
+        product_data = productSerializer(instance)
+        return Response(product_data.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=False, methods=['put'])
-    def updateProduct(self, request, id):
-        product = get_object_or_404(product, pk=id)
-        # Permitir actualización parcial de name y/o price
-        data = {}
-        if 'name' in request.data:
-            data['name'] = request.data['name']
-        if 'price' in request.data:
-            data['price'] = request.data['price']
-        serializer = productSerializer(product, data=data, partial=True)
+    @action(detail=True, methods=['put'])
+    def update_product(self, request, pk=None):
+        """
+        Actualizar un producto existente.
+        """
+        product_obj = self.get_object()
+        serializer = productSerializer(product_obj, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    @action(detail=True, methods=['delete'])
+    def delete_product(self, request, pk=None):
+        """
+        Eliminar un producto del menú.
+        """
+        product_obj = self.get_object()
+        product_obj.delete()
+        return Response(
+            {'message': 'Producto eliminado correctamente'}, 
+            status=status.HTTP_204_NO_CONTENT
+        )
+
+
+class ProductCategoryViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar categorías de productos.
+    """
+    queryset = productCategory.objects.all()
+    serializer_class = productCategorySerializer
+
+
+class CookbookViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar recetas del libro de cocina.
+    """
+    queryset = cookbook.objects.all()
+    serializer_class = cookbookSerializer
+
+    @action(detail=True, methods=['get'])
+    def get_ingredients(self, request, pk=None):
+        """
+        Obtener todos los ingredientes de una receta específica.
+        """
+        recipe = self.get_object()
+        cookbook_ingredients = cookbookIngredient.objects.filter(recipe=recipe)
+        serializer = cookbookIngredientSerializer(cookbook_ingredients, many=True)
+        return Response(serializer.data)
+
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar ingredientes.
+    """
+    queryset = ingredient.objects.all()
+    serializer_class = ingredientSerializer
+
+
+class CookbookIngredientViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para gestionar relaciones entre recetas e ingredientes.
+    """
+    queryset = cookbookIngredient.objects.all()
+    serializer_class = cookbookIngredientSerializer
