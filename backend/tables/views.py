@@ -65,11 +65,11 @@ class TableViewSet(viewsets.ModelViewSet):
     def add_order(self, request, pk=None):
         """
         Agregar una orden a una mesa.
-        La orden incluye el waiterId (CharField) que referencia al sistema de permisos.
+        La orden incluye el waiterId que referencia al sistema de permisos.
         """
         table_obj = self.get_object()
         
-        # waiterId es CharField - referencia al sistema de permisos de users app
+        # waiterId es IntegerField - referencia al sistema de permisos de users app
         # Para obtener el usuario actual autenticado, usar: request.user.id
         # y validar que tiene permiso 'mesero_access' mediante users.permissions.IsMesero
         
