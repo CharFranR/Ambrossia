@@ -6,5 +6,5 @@ class billSerializer(serializers.ModelSerializer):
     orders = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     class Meta:
         model = bill
-        fields = ['id', 'status','createdAt', 'closedAt', 'orders', 'amount', 'IVA', 'discount', 'total']
+        fields = ['id', 'tableId', 'status','createdAt', 'closedAt', 'paidAmount', 'paymentMethod', 'cashier', 'IVA', 'discount', 'total']
         

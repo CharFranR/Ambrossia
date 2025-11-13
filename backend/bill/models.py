@@ -12,4 +12,10 @@ class bill(models.Model):
     closedAt = models.DateTimeField(null=True, blank=True)
     paidAmount = models.FloatField(default=0) 
     paymentMethod = models.CharField(max_length=20)
-    # cashier = models.ForeignKey(cashier, on_delete= models.CASCADE)
+    cashier = models.CharField(max_length=200)
+
+    # Los siguientes campos no habian sido considerados, mal ahi por el mae qeu hizo los diagramas
+
+    IVA = models.IntegerField(null=True, blank=True)
+    discount = models.FloatField(null=True, blank=True)
+    total = models.FloatField()
