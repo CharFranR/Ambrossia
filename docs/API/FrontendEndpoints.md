@@ -1,16 +1,21 @@
 # Documentación de Endpoints del Backend (para Frontend)
 
-Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los JSON que reciben y responden.
+Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, con ejemplos de las peticiones y respuestas en formato JSON.
 
 - Base URL (desarrollo): `http://localhost:8000`
 - Formato: `application/json`
-- Las rutas usan barra final `/` (importante en Django REST).
+- Las rutas usan barra final `/` (importante en Django REST Framework)
+
+---
 
 ## Autenticación (JWT)
 
-### 0) Obtener token JWT
+### 1) Obtener token JWT
 
 - Método y ruta: `POST /api/token/`
+
+- Descripción: Genera tokens de acceso y refresco para autenticación.
+
 - Body (JSON):
 
 ```json
@@ -29,9 +34,12 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 }
 ```
 
-### 0.1) Refrescar token JWT
+### 2) Refrescar token JWT
 
 - Método y ruta: `POST /api/token/refresh/`
+
+- Descripción: Genera un nuevo token de acceso usando el token de refresco.
+
 - Body (JSON):
 
 ```json
@@ -48,18 +56,23 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 }
 ```
 
+---
+
 ## Usuarios
 
-### 0.2) Registrar usuario
+### 3) Registrar usuario
 
-- Método y ruta: `POST /users/`
+- Método y ruta: `POST /users/register/`
+
+- Descripción: Crea un nuevo usuario y devuelve un token de autenticación.
+
 - Body (JSON):
 
 ```json
 {
   "username": "nuevo",
   "password": "secreta",
-  "role": "mesero"  // Opcional: mesero, cocina, caja, admin
+  "role": "mesero"
 }
 ```
 
@@ -70,14 +83,17 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
   "token": "...",
   "user": {
     "username": "nuevo",
-    ...otros campos...
+    "id": 1
   }
 }
 ```
 
-### 0.3) Login usuario
+### 4) Login usuario
 
 - Método y ruta: `POST /users/login/`
+
+- Descripción: Autentica un usuario existente y devuelve un token.
+
 - Body (JSON):
 
 ```json
@@ -94,7 +110,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
   "token": "...",
   "user": {
     "username": "usuario",
-    ...otros campos...
+    "id": 1
   }
 }
 ```
@@ -103,7 +119,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ## Productos (Menú)
 
-### 1) Crear producto
+### 5) Crear producto
 
 - Método y ruta: `POST /product/`
 
@@ -113,153 +129,28 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ```json
 {
-  "name": "Pizza",
-  "price": 25
+  "name": "Pizza Margarita",
+  "price": 250,
+  "categoryId": 1
 }
 ```
 
-- Respuesta 200 (JSON):
+- Respuesta 201 (JSON):
 
 ```json
 {
   "id": 1,
-  "name": "Pizza",
-  "price": 25
+  "name": "Pizza Margarita",
+  "price": 250,
+  "categoryId": 1
 }
 ```
 
-- Errores comunes:
-  - 400 si faltan campos requeridos o tipos inválidos.
-
-### 2) Listar productos
+### 6) Listar todos los productos
 
 - Método y ruta: `GET /product/`
 
-- Descripción: Obtiene todos los productos.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  { "id": 1, "name": "Pizza", "price": 25 },
-  { "id": 2, "name": "Refresco", "price": 10 }
-]
-```
-
-### 3) Actualizar producto
-
-- Método y ruta: `PUT /product/{id}/`
-
-- Descripción: Actualización parcial de `name` y/o `price`.
-
-- Body (JSON, cualquiera de los campos):
-
-```json
-{
-  "name": "Pizza grande",
-  "price": 30
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "Pizza grande",
-  "price": 30
-}
-```
-
-- Errores comunes:
-  - 404 si el `id` no existe.
-
----
-
-## Mesas y Pedidos
-
-### 4) Crear mesa
-
-- Método y ruta: `POST /tables/`
-
-- Descripción: Crea una mesa nueva en estado `available`.
-
-- Body: vacío
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 10,
-  "status": "available"
-}
-```
-
-### 5) Obtener estado de una mesa
-
-- Método y ruta: `GET /tables/{id}/`
-
-- Descripción: Retorna el estado de la mesa (`available`, `occupied`, `reserved`, `in_cleaning`).
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 10,
-  "status": "available"
-}
-```
-
-- Errores comunes:
-  - 404 si la mesa no existe.
-
-
-### 6) Actualizar estado de una mesa
-
-- Método y ruta: `/tables/{id}/update_status/`
-
-- Descripción: Cambia el estado de la mesa.
-
-- Body (JSON):
-
-```json
-{
-  "new_status": "reserved"
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 10,
-  "status": "reserved"
-}
-```
-
-- Errores comunes:
-  - 404 si la mesa no existe.
-
-### 7) Crear pedido (order) para una mesa
-
-- Método y ruta: `POST /tables/{table_id}/add_order/`
-
-- Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado `occupied`.
-
-- Body (JSON):
-
-```json
-[
-  {
-    "product": 1,
-    "quantity": 2
-  },
-  {
-    "product": 2,
-    "quantity": 2
-  }
-]
-```
+- Descripción: Obtiene todos los productos del menú.
 
 - Respuesta 200 (JSON):
 
@@ -267,77 +158,583 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 [
   {
     "id": 1,
-    "table": 2,
-    "product": 1,
-    "status": "notCooking",
-    "createdAt": "2025-11-04T01:36:27.734590Z",
-    "closedAt": null,
-    "note": ""
+    "name": "Pizza Margarita",
+    "price": 250,
+    "categoryId": 1
   },
   {
     "id": 2,
-    "table": 2,
-    "product": 2,
-    "status": "notCooking",
-    "createdAt": "2025-11-04T01:36:27.743490Z",
-    "closedAt": null,
-    "note": ""
+    "name": "Refresco",
+    "price": 35,
+    "categoryId": 2
   }
 ]
 ```
 
-- Errores comunes:
-  - 400 si `product` no existe o el body es inválido.
-  - 404 si `table_id` no existe.
+### 7) Obtener todos los productos (método alternativo)
 
----
+- Método y ruta: `GET /product/get_all_products/`
 
-## Facturación (Bills)
+- Descripción: Obtiene todos los productos disponibles en el menú.
 
-### 8) Crear factura para una mesa
+- Respuesta 200 (JSON):
 
-- Método y ruta: `POST /bills/createBill/{table_id}/`
+```json
+[
+  {
+    "id": 1,
+    "name": "Pizza Margarita",
+    "price": 250,
+    "categoryId": 1
+  }
+]
+```
 
-- Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.
+### 8) Obtener productos por categoría
 
-- Body: vacío
+- Método y ruta: `GET /product/get_by_category/?categoryId={category_id}`
+
+- Descripción: Filtra productos por ID de categoría.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Pizza Margarita",
+    "price": 250,
+    "categoryId": 1
+  }
+]
+```
+
+### 9) Obtener un producto específico
+
+- Método y ruta: `GET /product/{id}/`
+
+- Descripción: Obtiene los detalles de un producto específico.
 
 - Respuesta 200 (JSON):
 
 ```json
 {
+  "id": 1,
+  "name": "Pizza Margarita",
+  "price": 250,
+  "categoryId": 1
+}
+```
+
+### 10) Actualizar producto
+
+- Método y ruta: `PUT /product/{id}/`
+
+- Descripción: Actualiza los datos de un producto existente (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Pizza Grande",
+  "price": 300
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Pizza Grande",
+  "price": 300,
+  "categoryId": 1
+}
+```
+
+### 11) Eliminar producto
+
+- Método y ruta: `DELETE /product/{id}/`
+
+- Descripción: Elimina un producto del menú.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Mesas
+
+### 12) Crear mesa
+
+- Método y ruta: `POST /api/tables/`
+
+- Descripción: Crea una nueva mesa con estado "available".
+
+- Body (JSON):
+
+```json
+{
+  "tableNumber": 10
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "available",
+  "tableNumber": 10
+}
+```
+
+### 13) Listar todas las mesas
+
+- Método y ruta: `GET /api/tables/`
+
+- Descripción: Obtiene todas las mesas del restaurante.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "status": "available",
+    "tableNumber": 10
+  },
+  {
+    "id": 2,
+    "status": "occupied",
+    "tableNumber": 5
+  }
+]
+```
+
+### 14) Obtener estado de una mesa
+
+- Método y ruta: `GET /api/tables/{id}/`
+
+- Descripción: Obtiene el estado y datos de una mesa específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "available",
+  "tableNumber": 10
+}
+```
+
+### 15) Actualizar estado de una mesa
+
+- Método y ruta: `PUT /api/tables/{id}/update_status/`
+
+- Descripción: Cambia el estado de la mesa. Estados válidos: `available`, `occupied`, `reserved`, `in_cleaning`.
+
+- Body (JSON):
+
+```json
+{
+  "status": "reserved"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "reserved",
+  "tableNumber": 10
+}
+```
+
+---
+
+## Órdenes
+
+### 16) Crear orden
+
+- Método y ruta: `POST /api/orders/`
+
+- Descripción: Crea una nueva orden asociada a una mesa.
+
+- Body (JSON):
+
+```json
+{
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": null,
+  "billId": null
+}
+```
+
+### 17) Listar todas las órdenes
+
+- Método y ruta: `GET /api/orders/`
+
+- Descripción: Obtiene todas las órdenes del sistema.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "tableId": 1,
+    "waiterId": 5,
+    "status": "notCooking",
+    "createdAt": "2025-11-13T20:00:00Z",
+    "updatedAt": null,
+    "billId": null
+  }
+]
+```
+
+### 18) Obtener una orden específica
+
+- Método y ruta: `GET /api/orders/{id}/`
+
+- Descripción: Obtiene los detalles de una orden específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": null,
+  "billId": null
+}
+```
+
+### 19) Actualizar orden
+
+- Método y ruta: `PUT /api/orders/{id}/`
+
+- Descripción: Actualiza los datos de una orden (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "status": "cooking",
+  "waiterId": 3
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 3,
+  "status": "cooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": "2025-11-13T20:10:00Z",
+  "billId": null
+}
+```
+
+### 20) Actualizar estado de una orden
+
+- Método y ruta: `PUT /api/orders/{id}/update_status/`
+
+- Descripción: Cambia el estado de una orden. Estados válidos: `notCooking`, `cooking`, `ready`.
+
+- Body (JSON):
+
+```json
+{
+  "status": "cooking"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "cooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": "2025-11-13T20:10:00Z",
+  "billId": null
+}
+```
+
+### 21) Obtener items de una orden
+
+- Método y ruta: `GET /api/orders/{id}/get_items/`
+
+- Descripción: Lista todos los items (productos) de una orden específica.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "orderId": 1,
+    "productId": 1,
+    "quantity": 2,
+    "note": "Sin cebolla"
+  },
+  {
+    "id": 2,
+    "orderId": 1,
+    "productId": 3,
+    "quantity": 1,
+    "note": ""
+  }
+]
+```
+
+### 22) Agregar item a una orden
+
+- Método y ruta: `POST /api/orders/{id}/add_item/`
+
+- Descripción: Agrega un producto (item) a una orden existente.
+
+- Body (JSON):
+
+```json
+{
+  "productId": 1,
+  "quantity": 2,
+  "note": "Sin cebolla"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "orderId": 1,
+  "productId": 1,
+  "quantity": 2,
+  "note": "Sin cebolla"
+}
+```
+
+### 23) Eliminar orden
+
+- Método y ruta: `DELETE /api/orders/{id}/`
+
+- Descripción: Elimina una orden del sistema.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Facturación (Bills)
+
+### 24) Crear factura para una mesa
+
+- Método y ruta: `POST /bills/create_bill/{table_id}/`
+
+- Descripción: Crea una factura agrupando todas las órdenes de la mesa que no tienen factura. Calcula automáticamente IVA (15%) y total.
+
+- Body (JSON):
+
+```json
+{
+  "cashier": "Juan Pérez",
+  "paymentMethod": "cash",
+  "discount": 0
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
   "bill": {
-    "id": 3,
+    "id": 1,
     "status": "notPayed",
-    "createdAt": "2025-11-01T20:20:00Z",
+    "tableId": 1,
+    "createdAt": "2025-11-13T20:30:00Z",
     "closedAt": null,
-    "amount": 100.0,
-    "IVA": 15.0,
+    "paidAmount": 500.0,
+    "paymentMethod": "cash",
+    "cashier": "Juan Pérez",
+    "IVA": 75.0,
     "discount": 0.0,
-    "total": 115.0
+    "total": 575.0
   },
   "orders": [
     {
-      "product": "Pizza",
-      "price": 25,
+      "product": "Pizza Margarita",
+      "price": 250,
       "quantity": 2,
-      "amount": 50
+      "amount": 500
     }
   ]
 }
 ```
 
-- Errores comunes:
-  - 400 si la mesa no tiene órdenes pendientes de facturar.
-  - 404 si `table_id` no existe.
+### 25) Listar todas las facturas
 
+- Método y ruta: `GET /bills/`
 
+- Descripción: Obtiene todas las facturas del sistema.
 
-### 9) Actualizar estado de una factura
+- Respuesta 200 (JSON):
 
-- Método y ruta: `PUT /bills/updateBillStatus/{bill_id}/`
+```json
+[
+  {
+    "id": 1,
+    "status": "notPayed",
+    "tableId": 1,
+    "createdAt": "2025-11-13T20:30:00Z",
+    "closedAt": null,
+    "paidAmount": 500.0,
+    "paymentMethod": "cash",
+    "cashier": "Juan Pérez",
+    "IVA": 75.0,
+    "discount": 0.0,
+    "total": 575.0
+  }
+]
+```
 
-- Descripción: Cambia el estado de la factura a `notPayed` o `payed`.
+### 26) Obtener una factura específica
+
+- Método y ruta: `GET /bills/{id}/`
+
+- Descripción: Obtiene los detalles de una factura específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "notPayed",
+  "tableId": 1,
+  "createdAt": "2025-11-13T20:30:00Z",
+  "closedAt": null,
+  "paidAmount": 500.0,
+  "paymentMethod": "cash",
+  "cashier": "Juan Pérez",
+  "IVA": 75.0,
+  "discount": 0.0,
+  "total": 575.0
+}
+```
+
+### 27) Listar facturas no pagadas
+
+- Método y ruta: `GET /bills/get_not_payed_bills/`
+
+- Descripción: Lista todas las facturas con estado "notPayed".
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "status": "notPayed",
+    "tableId": 1,
+    "createdAt": "2025-11-13T20:30:00Z",
+    "closedAt": null,
+    "paidAmount": 500.0,
+    "paymentMethod": "cash",
+    "cashier": "Juan Pérez",
+    "IVA": 75.0,
+    "discount": 0.0,
+    "total": 575.0
+  }
+]
+```
+
+### 28) Listar facturas pagadas
+
+- Método y ruta: `GET /bills/get_payed_bills/`
+
+- Descripción: Lista todas las facturas con estado "payed".
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 2,
+    "status": "payed",
+    "tableId": 2,
+    "createdAt": "2025-11-13T19:00:00Z",
+    "closedAt": "2025-11-13T19:30:00Z",
+    "paidAmount": 350.0,
+    "paymentMethod": "card",
+    "cashier": "María López",
+    "IVA": 52.5,
+    "discount": 35.0,
+    "total": 367.5
+  }
+]
+```
+
+### 29) Actualizar valores de una factura
+
+- Método y ruta: `PUT /bills/{id}/update_bill/`
+
+- Descripción: Actualiza IVA y descuento de una factura. Solo se puede modificar si no está pagada.
+
+- Body (JSON):
+
+```json
+{
+  "IVA": 15,
+  "discount": 50
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "notPayed",
+  "tableId": 1,
+  "createdAt": "2025-11-13T20:30:00Z",
+  "closedAt": null,
+  "paidAmount": 500.0,
+  "paymentMethod": "cash",
+  "cashier": "Juan Pérez",
+  "IVA": 75.0,
+  "discount": 50.0,
+  "total": 525.0
+}
+```
+
+### 30) Actualizar estado de una factura
+
+- Método y ruta: `PUT /bills/{id}/update_status/`
+
+- Descripción: Cambia el estado de pago de una factura. Estados válidos: `notPayed`, `payed`.
 
 - Body (JSON):
 
@@ -351,100 +748,38 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ```json
 {
-  "id": 3,
+  "id": 1,
   "status": "payed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6]
+  "tableId": 1,
+  "createdAt": "2025-11-13T20:30:00Z",
+  "closedAt": "2025-11-13T20:45:00Z",
+  "paidAmount": 500.0,
+  "paymentMethod": "cash",
+  "cashier": "Juan Pérez",
+  "IVA": 75.0,
+  "discount": 0.0,
+  "total": 575.0
 }
 ```
 
-- Errores comunes:
-  - 400 si `status` no es válido.
-  - 404 si `bill_id` no existe.
+### 31) Eliminar factura
 
-### 10) Actualizar valores de una factura
+- Método y ruta: `DELETE /bills/{id}/`
 
-- Método y ruta: `PUT /bills/updateBill/{bill_id}/`
+- Descripción: Elimina una factura del sistema.
 
-- Descripción: Actualiza los valores de IVA, descuento y total de una factura (siempre que no esté pagada).
-
-- Body (JSON):
-
-```json
-{
-  "IVA": 15,        // porcentaje (opcional)
-  "discount": 10    // valor absoluto (opcional)
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 3,
-  "status": "notPayed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6],
-  "amount": 100.0,
-  "IVA": 15.0,
-  "discount": 10.0,
-  "total": 105.0
-}
-```
-
-- Errores comunes:
-  - 400 si la factura ya está pagada.
-  - 404 si `bill_id` no existe.
-
-### 10) Listar facturas no pagadas
-
-- Método y ruta: `GET /bills/getNotPayedBills/`
-
-- Descripción: Lista las facturas con estado `notPayed`.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 3,
-    "status": "notPayed",
-    "createdAt": "2025-11-01T20:20:00Z",
-    "closedAt": null,
-    "orders": [5, 6]
-  }
-]
-```
-
-### 11) Listar facturas pagadas
-
-- Método y ruta: `GET /bills/getPayedBills/`
-
-- Descripción: Lista las facturas con estado `payed`.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 4,
-    "status": "payed",
-    "createdAt": "2025-11-01T20:30:00Z",
-    "closedAt": null,
-    "orders": [7]
-  }
-]
-```
+- Respuesta 204 (sin contenido)
 
 ---
 
 ## Notas útiles para Frontend
 
-- En desarrollo, el backend corre en `http://localhost:8000` (Docker: `docker compose up -d`).
-- Todos los endpoints responden JSON; usar encabezado `Content-Type: application/json` en solicitudes con cuerpo.
-- Estados válidos:
-  - Mesa: `available`, `occupied`, `reserved`, `in_cleaning`.
-  - Factura: `notPayed`, `payed`.
-- Las órdenes incluyen: `id`, `table`, `product`, `status`, `createdAt`, `closedAt`, `note`.
+- **Base URL de desarrollo**: `http://localhost:8000`
+- **Contenido**: Todos los endpoints esperan y responden JSON. Usar header `Content-Type: application/json`.
+- **Barras finales**: Django REST Framework requiere `/` al final de las rutas.
+- **Estados válidos**:
+  - Mesa: `available`, `occupied`, `reserved`, `in_cleaning`
+  - Orden: `notCooking`, `cooking`, `ready`
+  - Factura: `notPayed`, `payed`
+- **Autenticación**: Usar tokens JWT en header `Authorization: Bearer {token}`
+- **Roles de usuario**: `mesero`, `cocina`, `caja`, `admin`
