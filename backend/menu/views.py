@@ -107,6 +107,27 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = productCategory.objects.all()
     serializer_class = productCategorySerializer
 
+    @action(detail=False, methods=['post'])
+    def add_category(self, request):
+        serializer = productCategorySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(productCategorySerializer(instance).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['put'])
+    def update_category(self, request, pk=None):
+        category = self.get_object()
+        serializer = productCategorySerializer(category, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['delete'])
+    def delete_category(self, request, pk=None):
+        category = self.get_object()
+        category.delete()
+        return Response({'message': 'Categoría eliminada correctamente'}, status=status.HTTP_204_NO_CONTENT)
+
 
 class CookbookViewSet(viewsets.ModelViewSet):
     """
@@ -133,6 +154,27 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = ingredient.objects.all()
     serializer_class = ingredientSerializer
 
+    @action(detail=False, methods=['post'])
+    def add_ingredient(self, request):
+        serializer = ingredientSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(ingredientSerializer(instance).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['put'])
+    def update_ingredient(self, request, pk=None):
+        ingredient_obj = self.get_object()
+        serializer = ingredientSerializer(ingredient_obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['delete'])
+    def delete_ingredient(self, request, pk=None):
+        ingredient_obj = self.get_object()
+        ingredient_obj.delete()
+        return Response({'message': 'Ingrediente eliminado correctamente'}, status=status.HTTP_204_NO_CONTENT)
+
 
 class CookbookIngredientViewSet(viewsets.ModelViewSet):
     """
@@ -140,3 +182,24 @@ class CookbookIngredientViewSet(viewsets.ModelViewSet):
     """
     queryset = cookbookIngredient.objects.all()
     serializer_class = cookbookIngredientSerializer
+
+    @action(detail=False, methods=['post'])
+    def add_cookbook_ingredient(self, request):
+        serializer = cookbookIngredientSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(cookbookIngredientSerializer(instance).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['put'])
+    def update_cookbook_ingredient(self, request, pk=None):
+        obj = self.get_object()
+        serializer = cookbookIngredientSerializer(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['delete'])
+    def delete_cookbook_ingredient(self, request, pk=None):
+        obj = self.get_object()
+        obj.delete()
+        return Response({'message': 'Relación eliminada correctamente'}, status=status.HTTP_204_NO_CONTENT)

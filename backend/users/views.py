@@ -51,30 +51,26 @@ class userViewSet(viewsets.ViewSet):
         serializer = UserSerializers(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
-
-            user = User.objects.get(username=serializer.data['username'])
-            user.set_password(request.data['password'])
-            user.save()
-
-            # Asignar rol basado en permisos personalizados
-            # 'mesero', 'cocina', 'caja', 'admin'
-            role = request.data.get('role')
-            if role:
-                perm_codename = f"{role}_access"
-                try:
-                    perm = Permission.objects.get(codename=perm_codename)
-                    user.user_permissions.add(perm)
-                except Permission.DoesNotExist:
-                    return Response(
-                        {'error': 'Permiso no existe'}, 
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-        
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({
-                'token': token.key,
-                'user': serializer.data
-            }, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            # Validar que user es instancia de User
+            if isinstance(user, User):
+                role = request.data.get('role')
+                if role:
+                    perm_codename = f"{role}_access"
+                    try:
+                        perm = Permission.objects.get(codename=perm_codename)
+                        user.user_permissions.add(perm)
+                    except Permission.DoesNotExist:
+                        return Response(
+                            {'error': 'Permiso no existe'}, 
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'token': token.key,
+                    'user': serializer.data
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'No se pudo crear el usuario correctamente'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
