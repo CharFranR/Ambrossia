@@ -1349,6 +1349,678 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ---
 
+## Inventario - Productos
+
+### 60) Crear producto en inventario
+
+- Método y ruta: `POST /inventoryProduct/`
+
+- Descripción: Crea un nuevo registro de producto en el inventario.
+
+- Body (JSON):
+
+```json
+{
+  "productId": 1,
+  "quantity": 50,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 50,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 61) Listar todos los productos del inventario
+
+- Método y ruta: `GET /inventoryProduct/`
+
+- Descripción: Obtiene todos los productos registrados en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "productId": 1,
+    "quantity": 50,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "productId": 2,
+    "quantity": 30,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  }
+]
+```
+
+### 62) Obtener un producto específico del inventario
+
+- Método y ruta: `GET /inventoryProduct/{id}/`
+
+- Descripción: Obtiene los detalles de un producto específico en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 50,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 63) Actualizar producto en inventario
+
+- Método y ruta: `PUT /inventoryProduct/{id}/`
+
+- Descripción: Actualiza los datos de un producto en el inventario (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 75,
+  "lastUpdated": "2025-11-14T01:00:00Z"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 75,
+  "lastUpdated": "2025-11-14T01:00:00Z"
+}
+```
+
+### 64) Eliminar producto del inventario
+
+- Método y ruta: `DELETE /inventoryProduct/{id}/`
+
+- Descripción: Elimina un producto del inventario.
+
+- Respuesta 204 (sin contenido)
+
+### 65) Agregar producto al inventario (método alternativo)
+
+- Método y ruta: `POST /inventoryProduct/add_product/`
+
+- Descripción: Agrega un nuevo producto al inventario (método alternativo). El campo lastUpdated se genera automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "productId": 3,
+  "quantity": 100
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "productId": 3,
+  "quantity": 100,
+  "lastUpdated": "2025-11-14T00:30:00Z"
+}
+```
+
+### 66) Actualizar cantidad de producto en inventario
+
+- Método y ruta: `PUT /inventoryProduct/{id}/update_quantity/`
+
+- Descripción: Actualiza únicamente la cantidad de un producto en el inventario. El campo lastUpdated se actualiza automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 85
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 85,
+  "lastUpdated": "2025-11-14T01:15:00Z"
+}
+```
+
+---
+
+## Inventario - Ingredientes
+
+### 67) Crear ingrediente en inventario
+
+- Método y ruta: `POST /inventoryIngredient/`
+
+- Descripción: Crea un nuevo registro de ingrediente en el inventario.
+
+- Body (JSON):
+
+```json
+{
+  "ingredientId": 1,
+  "quantity": 200,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 200,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 68) Listar todos los ingredientes del inventario
+
+- Método y ruta: `GET /inventoryIngredient/`
+
+- Descripción: Obtiene todos los ingredientes registrados en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "ingredientId": 1,
+    "quantity": 200,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "ingredientId": 2,
+    "quantity": 150,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  }
+]
+```
+
+### 69) Obtener un ingrediente específico del inventario
+
+- Método y ruta: `GET /inventoryIngredient/{id}/`
+
+- Descripción: Obtiene los detalles de un ingrediente específico en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 200,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 70) Actualizar ingrediente en inventario
+
+- Método y ruta: `PUT /inventoryIngredient/{id}/`
+
+- Descripción: Actualiza los datos de un ingrediente en el inventario (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 180,
+  "lastUpdated": "2025-11-14T01:00:00Z"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 180,
+  "lastUpdated": "2025-11-14T01:00:00Z"
+}
+```
+
+### 71) Eliminar ingrediente del inventario
+
+- Método y ruta: `DELETE /inventoryIngredient/{id}/`
+
+- Descripción: Elimina un ingrediente del inventario.
+
+- Respuesta 204 (sin contenido)
+
+### 72) Agregar ingrediente al inventario (método alternativo)
+
+- Método y ruta: `POST /inventoryIngredient/add_ingredient/`
+
+- Descripción: Agrega un nuevo ingrediente al inventario (método alternativo). El campo lastUpdated se genera automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "ingredientId": 3,
+  "quantity": 250
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "ingredientId": 3,
+  "quantity": 250,
+  "lastUpdated": "2025-11-14T00:30:00Z"
+}
+```
+
+### 73) Actualizar cantidad de ingrediente en inventario
+
+- Método y ruta: `PUT /inventoryIngredient/{id}/update_quantity/`
+
+- Descripción: Actualiza únicamente la cantidad de un ingrediente en el inventario. El campo lastUpdated se actualiza automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 190
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 190,
+  "lastUpdated": "2025-11-14T01:15:00Z"
+}
+```
+
+---
+
+## Inventario - Tipos de Items
+
+### 74) Crear tipo de item
+
+- Método y ruta: `POST /inventoryItemType/`
+
+- Descripción: Crea un nuevo tipo de item para el inventario (ej: "producto", "ingrediente", "material").
+
+- Body (JSON):
+
+```json
+{
+  "name": "producto"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "producto"
+}
+```
+
+### 75) Listar todos los tipos de items
+
+- Método y ruta: `GET /inventoryItemType/`
+
+- Descripción: Obtiene todos los tipos de items definidos en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "producto"
+  },
+  {
+    "id": 2,
+    "name": "ingrediente"
+  }
+]
+```
+
+### 76) Obtener un tipo de item específico
+
+- Método y ruta: `GET /inventoryItemType/{id}/`
+
+- Descripción: Obtiene los detalles de un tipo de item específico.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "producto"
+}
+```
+
+### 77) Actualizar tipo de item
+
+- Método y ruta: `PUT /inventoryItemType/{id}/`
+
+- Descripción: Actualiza el nombre de un tipo de item (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "producto terminado"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "producto terminado"
+}
+```
+
+### 78) Eliminar tipo de item
+
+- Método y ruta: `DELETE /inventoryItemType/{id}/`
+
+- Descripción: Elimina un tipo de item del inventario.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Inventario - Tipos de Movimientos
+
+### 79) Crear tipo de movimiento
+
+- Método y ruta: `POST /inventoryMovementType/`
+
+- Descripción: Crea un nuevo tipo de movimiento para el inventario (ej: "entrada", "salida", "ajuste").
+
+- Body (JSON):
+
+```json
+{
+  "name": "entrada"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "entrada"
+}
+```
+
+### 80) Listar todos los tipos de movimientos
+
+- Método y ruta: `GET /inventoryMovementType/`
+
+- Descripción: Obtiene todos los tipos de movimientos definidos en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "entrada"
+  },
+  {
+    "id": 2,
+    "name": "salida"
+  }
+]
+```
+
+### 81) Obtener un tipo de movimiento específico
+
+- Método y ruta: `GET /inventoryMovementType/{id}/`
+
+- Descripción: Obtiene los detalles de un tipo de movimiento específico.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "entrada"
+}
+```
+
+### 82) Actualizar tipo de movimiento
+
+- Método y ruta: `PUT /inventoryMovementType/{id}/`
+
+- Descripción: Actualiza el nombre de un tipo de movimiento (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "entrada por compra"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "entrada por compra"
+}
+```
+
+### 83) Eliminar tipo de movimiento
+
+- Método y ruta: `DELETE /inventoryMovementType/{id}/`
+
+- Descripción: Elimina un tipo de movimiento del inventario.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Inventario - Movimientos
+
+### 84) Crear movimiento de inventario
+
+- Método y ruta: `POST /inventoryMovement/`
+
+- Descripción: Crea un nuevo registro de movimiento en el inventario.
+
+- Body (JSON):
+
+```json
+{
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 1,
+  "createdAt": "2025-11-14T00:00:00Z"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 1,
+  "createdAt": "2025-11-14T00:00:00Z"
+}
+```
+
+### 85) Listar todos los movimientos de inventario
+
+- Método y ruta: `GET /inventoryMovement/`
+
+- Descripción: Obtiene todos los movimientos registrados en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "itemType": 1,
+    "itemId": 1,
+    "movementType": 1,
+    "createdAt": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "itemType": 1,
+    "itemId": 2,
+    "movementType": 2,
+    "createdAt": "2025-11-14T01:00:00Z"
+  }
+]
+```
+
+### 86) Obtener un movimiento específico
+
+- Método y ruta: `GET /inventoryMovement/{id}/`
+
+- Descripción: Obtiene los detalles de un movimiento específico del inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 1,
+  "createdAt": "2025-11-14T00:00:00Z"
+}
+```
+
+### 87) Actualizar movimiento de inventario
+
+- Método y ruta: `PUT /inventoryMovement/{id}/`
+
+- Descripción: Actualiza los datos de un movimiento de inventario (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "movementType": 2,
+  "createdAt": "2025-11-14T00:30:00Z"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 2,
+  "createdAt": "2025-11-14T00:30:00Z"
+}
+```
+
+### 88) Eliminar movimiento de inventario
+
+- Método y ruta: `DELETE /inventoryMovement/{id}/`
+
+- Descripción: Elimina un movimiento del inventario.
+
+- Respuesta 204 (sin contenido)
+
+### 89) Crear movimiento de inventario (método alternativo)
+
+- Método y ruta: `POST /inventoryMovement/create_movement/`
+
+- Descripción: Crea un nuevo movimiento de inventario (método alternativo). El campo createdAt se genera automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "itemType": 1,
+  "itemId": 3,
+  "movementType": 1
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "itemType": 1,
+  "itemId": 3,
+  "movementType": 1,
+  "createdAt": "2025-11-14T02:00:00Z"
+}
+```
+
+### 90) Obtener movimientos por item
+
+- Método y ruta: `GET /inventoryMovement/get_movements_by_item/?itemId={item_id}`
+
+- Descripción: Obtiene todos los movimientos asociados a un item específico del inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "itemType": 1,
+    "itemId": 1,
+    "movementType": 1,
+    "createdAt": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 4,
+    "itemType": 1,
+    "itemId": 1,
+    "movementType": 2,
+    "createdAt": "2025-11-14T03:00:00Z"
+  }
+]
+```
+
+---
+
 ## Notas útiles para Frontend
 
 - **Base URL de desarrollo**: `http://localhost:8000`
