@@ -21,7 +21,7 @@ class order(models.Model):
     ]
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notCooking')
-    tableId = models.ForeignKey(table, on_delete= models.CASCADE)
+    tableId = models.ForeignKey(table, on_delete= models.CASCADE, null=True, blank=True)
     billId = models.ForeignKey('bill.bill', on_delete=models.CASCADE, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True, blank=True)
@@ -31,4 +31,4 @@ class orderItem(models.Model):
     orderId = models.ForeignKey(order, on_delete=models.CASCADE)
     productId = models.ForeignKey(product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    note = models.TextField()
+    note = models.TextField(null=True, blank=True)

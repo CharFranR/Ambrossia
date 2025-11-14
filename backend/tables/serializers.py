@@ -11,7 +11,7 @@ class tableSerializer(serializers.ModelSerializer):
         return table.objects.create(**validated_data)
 
 class orderSerializer(serializers.ModelSerializer):
-    tableId = serializers.PrimaryKeyRelatedField(queryset=table.objects.all())
+    tableId = serializers.PrimaryKeyRelatedField(queryset=table.objects.all(), required=False, allow_null=True)
     class Meta:
         model = order
         fields = ['id','tableId', 'status','createdAt', 'updatedAt', 'waiterId']
