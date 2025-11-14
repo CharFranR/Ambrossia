@@ -22,7 +22,7 @@ class order(models.Model):
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='notCooking')
     tableId = models.ForeignKey(table, on_delete= models.CASCADE)
-    billId = models.ForeignKey('bill.bill', on_delete=models.CASCADE)
+    billId = models.ForeignKey('bill.bill', on_delete=models.CASCADE, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True, blank=True)
     waiterId = models.IntegerField()

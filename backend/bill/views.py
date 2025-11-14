@@ -118,7 +118,7 @@ class BillViewSet(viewsets.ModelViewSet):
                 table_id
             )
             
-            pdf_path = f"/factura_{getattr(bill_obj, 'pk')}.pdf"
+            pdf_path = f"facturas/factura_{getattr(bill_obj, 'pk')}.pdf"
             
             with open(pdf_path, "wb") as f:
                 f.write(pdf_buffer.getvalue())
