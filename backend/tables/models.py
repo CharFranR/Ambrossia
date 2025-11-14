@@ -25,7 +25,7 @@ class order(models.Model):
     billId = models.ForeignKey('bill.bill', on_delete=models.CASCADE, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True, blank=True)
-    waiterId = models.IntegerField()
+    waiterId = models.IntegerField(null=True, blank=True)
 
 class orderItem(models.Model):
     orderId = models.ForeignKey(order, on_delete=models.CASCADE)
