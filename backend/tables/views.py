@@ -3,10 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-
 from .models import table, order, orderItem
 from .serializers import tableSerializer, orderSerializer, orderItemSerializer
-from .websocketService import tableStateNotification
 
 
 class TableViewSet(viewsets.ModelViewSet):
@@ -52,12 +50,6 @@ class TableViewSet(viewsets.ModelViewSet):
         table_obj.status = new_status
         table_obj.save()
         
-        # Notificar cambios vía websocket
-        try:
-            tableStateNotification()
-        except Exception:
-            pass
-        
         serializer = self.get_serializer(table_obj)
         return Response(serializer.data)
 
@@ -78,12 +70,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         table_obj.status = 'occupied'
         table_obj.save()
         
-        # Notificar cambios
-        try:
-            tableStateNotification()
-        except Exception:
-            pass
-
         # Crear la orden
         order_data = request.data.copy()
         order_data['tableId'] = pk
