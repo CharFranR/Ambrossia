@@ -34,7 +34,10 @@ export const getPayedBills = async (): Promise<Bill[]> => {
   return (res.data as any[]).map(normalizeBill);
 };
 
-export const createBill = async (tableId: number, params?: { discountPercent?: number }) => {
+export const createBill = async (
+  tableId: number,
+  params?: { discountPercent?: number }
+) => {
   const body: any = {};
   if (params?.discountPercent) body.discount = params.discountPercent; // backend expects discount % in createBill
   const res = await rootAxios.post(`/bills/createBill/${tableId}/`, body);
@@ -45,20 +48,29 @@ export const createBill = async (tableId: number, params?: { discountPercent?: n
       price: number;
       quantity: number;
       amount: number;
-    }>;
+    }>,
   };
 };
 
-export const updateBill = async (billId: number, params: { IVAPercent?: number; discountAmount?: number }) => {
+export const updateBill = async (
+  billId: number,
+  params: { IVAPercent?: number; discountAmount?: number }
+) => {
   // Backend updateBill expects IVA as % and discount as absolute amount (inconsistency vs createBill)
   const body: any = {};
   if (params.IVAPercent !== undefined) body.IVA = params.IVAPercent;
-  if (params.discountAmount !== undefined) body.discount = params.discountAmount;
+  if (params.discountAmount !== undefined)
+    body.discount = params.discountAmount;
   const res = await rootAxios.put(`/bills/updateBill/${billId}/`, body);
   return normalizeBill(res.data);
 };
 
-export const updateBillStatus = async (billId: number, status: "notPayed" | "payed") => {
-  const res = await rootAxios.put(`/bills/updateBillStatus/${billId}/`, { status });
+export const updateBillStatus = async (
+  billId: number,
+  status: "notPayed" | "payed"
+) => {
+  const res = await rootAxios.put(`/bills/updateBillStatus/${billId}/`, {
+    status,
+  });
   return normalizeBill(res.data);
 };
