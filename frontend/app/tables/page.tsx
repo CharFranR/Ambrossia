@@ -35,8 +35,8 @@ export default function TablesPage() {
   const { takeOrder, closeBill, reserve } = useTableHandlers();
   useAnimateTables();
 
-  if (isLoading) return <div>Cargando mesas...</div>;
-  if (error) return <div>Error al cargar mesas: {error.message}</div>;
+  if (isLoading) return <div className="flex justify-center mt-6"> <div className="p-6 text-center">Cargando mesas...</div></div>;
+  if (error) return <div className="flex justify-center mt-6">Error al cargar mesas: {error.message}</div>;
 
   return (
     <div className="flex flex-col gap-5 text-center p-6">
