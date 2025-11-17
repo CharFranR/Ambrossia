@@ -1,16 +1,21 @@
 # Documentación de Endpoints del Backend (para Frontend)
 
-Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los JSON que reciben y responden.
+Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, con ejemplos de las peticiones y respuestas en formato JSON.
 
 - Base URL (desarrollo): `http://localhost:8000`
 - Formato: `application/json`
-- Las rutas usan barra final `/` (importante en Django REST).
+- Las rutas usan barra final `/` (importante en Django REST Framework)
+
+---
 
 ## Autenticación (JWT)
 
-### 0) Obtener token JWT
+### 1) Obtener token JWT
 
 - Método y ruta: `POST /api/token/`
+
+- Descripción: Genera tokens de acceso y refresco para autenticación.
+
 - Body (JSON):
 
 ```json
@@ -29,9 +34,12 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 }
 ```
 
-### 0.1) Refrescar token JWT
+### 2) Refrescar token JWT
 
 - Método y ruta: `POST /api/token/refresh/`
+
+- Descripción: Genera un nuevo token de acceso usando el token de refresco.
+
 - Body (JSON):
 
 ```json
@@ -48,18 +56,23 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 }
 ```
 
+---
+
 ## Usuarios
 
-### 0.2) Registrar usuario
+### 3) Registrar usuario
 
-- Método y ruta: `POST /users/`
+- Método y ruta: `POST /users/register/`
+
+- Descripción: Crea un nuevo usuario y devuelve un token de autenticación.
+
 - Body (JSON):
 
 ```json
 {
   "username": "nuevo",
   "password": "secreta",
-  "role": "mesero"  // Opcional: mesero, cocina, caja, admin
+  "role": "mesero"
 }
 ```
 
@@ -70,14 +83,17 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
   "token": "...",
   "user": {
     "username": "nuevo",
-    ...otros campos...
+    "id": 1
   }
 }
 ```
 
-### 0.3) Login usuario
+### 4) Login usuario
 
 - Método y ruta: `POST /users/login/`
+
+- Descripción: Autentica un usuario existente y devuelve un token.
+
 - Body (JSON):
 
 ```json
@@ -94,8 +110,131 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
   "token": "...",
   "user": {
     "username": "usuario",
-    ...otros campos...
+    "id": 1
   }
+}
+```
+
+---
+
+## Categorías de Productos
+
+### 5) Crear categoría
+
+- Método y ruta: `POST /productCategory/`
+
+- Descripción: Crea una nueva categoría de productos.
+
+- Body (JSON):
+
+```json
+{
+  "name": "Bebidas"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Bebidas"
+}
+```
+
+### 6) Listar todas las categorías
+
+- Método y ruta: `GET /productCategory/`
+
+- Descripción: Obtiene todas las categorías de productos.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Bebidas"
+  },
+  {
+    "id": 2,
+    "name": "Pizzas"
+  }
+]
+```
+
+### 7) Obtener una categoría específica
+
+- Método y ruta: `GET /productCategory/{id}/`
+
+- Descripción: Obtiene los detalles de una categoría específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Bebidas"
+}
+```
+
+### 8) Agregar categoría (método alternativo)
+
+- Método y ruta: `POST /productCategory/add_category/`
+
+- Descripción: Crea una nueva categoría de productos (método alternativo).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Postres"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "name": "Postres"
+}
+```
+
+### 9) Actualizar categoría
+
+- Método y ruta: `PUT /productCategory/{id}/update_category/`
+
+- Descripción: Actualiza los datos de una categoría existente.
+
+- Body (JSON):
+
+```json
+{
+  "name": "Bebidas Frías"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Bebidas Frías"
+}
+```
+
+### 10) Eliminar categoría
+
+- Método y ruta: `DELETE /productCategory/{id}/delete_category/`
+
+- Descripción: Elimina una categoría del sistema.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "message": "Categoría eliminada correctamente"
 }
 ```
 
@@ -103,7 +242,7 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ## Productos (Menú)
 
-### 1) Crear producto
+### 11) Crear producto
 
 - Método y ruta: `POST /product/`
 
@@ -113,153 +252,28 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ```json
 {
-  "name": "Pizza",
-  "price": 25
+  "name": "Pizza Margarita",
+  "price": 250,
+  "categoryId": 1
 }
 ```
 
-- Respuesta 200 (JSON):
+- Respuesta 201 (JSON):
 
 ```json
 {
   "id": 1,
-  "name": "Pizza",
-  "price": 25
+  "name": "Pizza Margarita",
+  "price": 250,
+  "categoryId": 1
 }
 ```
 
-- Errores comunes:
-  - 400 si faltan campos requeridos o tipos inválidos.
-
-### 2) Listar productos
+### 12) Listar todos los productos
 
 - Método y ruta: `GET /product/`
 
-- Descripción: Obtiene todos los productos.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  { "id": 1, "name": "Pizza", "price": 25 },
-  { "id": 2, "name": "Refresco", "price": 10 }
-]
-```
-
-### 3) Actualizar producto
-
-- Método y ruta: `PUT /product/{id}/`
-
-- Descripción: Actualización parcial de `name` y/o `price`.
-
-- Body (JSON, cualquiera de los campos):
-
-```json
-{
-  "name": "Pizza grande",
-  "price": 30
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "Pizza grande",
-  "price": 30
-}
-```
-
-- Errores comunes:
-  - 404 si el `id` no existe.
-
----
-
-## Mesas y Pedidos
-
-### 4) Crear mesa
-
-- Método y ruta: `POST /tables/`
-
-- Descripción: Crea una mesa nueva en estado `available`.
-
-- Body: vacío
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 10,
-  "status": "available"
-}
-```
-
-### 5) Obtener estado de una mesa
-
-- Método y ruta: `GET /tables/{id}/`
-
-- Descripción: Retorna el estado de la mesa (`available`, `occupied`, `reserved`, `in_cleaning`).
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 10,
-  "status": "available"
-}
-```
-
-- Errores comunes:
-  - 404 si la mesa no existe.
-
-
-### 6) Actualizar estado de una mesa
-
-- Método y ruta: `/tables/{id}/update_status/`
-
-- Descripción: Cambia el estado de la mesa.
-
-- Body (JSON):
-
-```json
-{
-  "new_status": "reserved"
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 10,
-  "status": "reserved"
-}
-```
-
-- Errores comunes:
-  - 404 si la mesa no existe.
-
-### 7) Crear pedido (order) para una mesa
-
-- Método y ruta: `POST /tables/{table_id}/add_order/`
-
-- Descripción: Crea una orden asociada a la mesa. La mesa pasa a estado `occupied`.
-
-- Body (JSON):
-
-```json
-[
-  {
-    "product": 1,
-    "quantity": 2
-  },
-  {
-    "product": 2,
-    "quantity": 2
-  }
-]
-```
+- Descripción: Obtiene todos los productos del menú.
 
 - Respuesta 200 (JSON):
 
@@ -267,77 +281,1037 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 [
   {
     "id": 1,
-    "table": 2,
-    "product": 1,
-    "status": "notCooking",
-    "createdAt": "2025-11-04T01:36:27.734590Z",
-    "closedAt": null,
-    "note": ""
+    "name": "Pizza Margarita",
+    "price": 250,
+    "categoryId": 1
   },
   {
     "id": 2,
-    "table": 2,
-    "product": 2,
-    "status": "notCooking",
-    "createdAt": "2025-11-04T01:36:27.743490Z",
-    "closedAt": null,
-    "note": ""
+    "name": "Refresco",
+    "price": 35,
+    "categoryId": 2
   }
 ]
 ```
 
-- Errores comunes:
-  - 400 si `product` no existe o el body es inválido.
-  - 404 si `table_id` no existe.
+### 13) Obtener todos los productos (método alternativo)
 
----
+- Método y ruta: `GET /product/get_all_products/`
 
-## Facturación (Bills)
+- Descripción: Obtiene todos los productos disponibles en el menú.
 
-### 8) Crear factura para una mesa
+- Respuesta 200 (JSON):
 
-- Método y ruta: `POST /bills/createBill/{table_id}/`
+```json
+[
+  {
+    "id": 1,
+    "name": "Pizza Margarita",
+    "price": 250,
+    "categoryId": 1
+  }
+]
+```
 
-- Descripción: Crea una factura que agrupa todas las órdenes de la mesa que aún no tienen factura.
+### 14) Obtener productos por categoría
 
-- Body: vacío
+- Método y ruta: `GET /product/get_by_category/?categoryId={category_id}`
+
+- Descripción: Filtra productos por ID de categoría.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Pizza Margarita",
+    "price": 250,
+    "categoryId": 1
+  }
+]
+```
+
+### 15) Obtener un producto específico
+
+- Método y ruta: `GET /product/{id}/`
+
+- Descripción: Obtiene los detalles de un producto específico.
 
 - Respuesta 200 (JSON):
 
 ```json
 {
+  "id": 1,
+  "name": "Pizza Margarita",
+  "price": 250,
+  "categoryId": 1
+}
+```
+
+### 16) Actualizar producto
+
+- Método y ruta: `PUT /product/{id}/`
+
+- Descripción: Actualiza los datos de un producto existente (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Pizza Grande",
+  "price": 300
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Pizza Grande",
+  "price": 300,
+  "categoryId": 1
+}
+```
+
+### 17) Eliminar producto
+
+- Método y ruta: `DELETE /product/{id}/`
+
+- Descripción: Elimina un producto del menú.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Recetas (Cookbook)
+
+### 18) Crear receta
+
+- Método y ruta: `POST /Cookbook/`
+
+- Descripción: Crea una nueva receta en el libro de cocina.
+
+- Body (JSON):
+
+```json
+{
+  "name": "Pizza Margarita Casera",
+  "note": "Receta tradicional italiana con masa artesanal"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Pizza Margarita Casera",
+  "note": "Receta tradicional italiana con masa artesanal"
+}
+```
+
+### 19) Listar todas las recetas
+
+- Método y ruta: `GET /Cookbook/`
+
+- Descripción: Obtiene todas las recetas del libro de cocina.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Pizza Margarita Casera",
+    "note": "Receta tradicional italiana con masa artesanal"
+  },
+  {
+    "id": 2,
+    "name": "Pasta Carbonara",
+    "note": "Receta romana clásica"
+  }
+]
+```
+
+### 20) Obtener una receta específica
+
+- Método y ruta: `GET /Cookbook/{id}/`
+
+- Descripción: Obtiene los detalles de una receta específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Pizza Margarita Casera",
+  "note": "Receta tradicional italiana con masa artesanal"
+}
+```
+
+### 21) Actualizar receta
+
+- Método y ruta: `PUT /Cookbook/{id}/`
+
+- Descripción: Actualiza los datos de una receta existente (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Pizza Margarita Premium",
+  "note": "Receta con ingredientes premium"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Pizza Margarita Premium",
+  "note": "Receta con ingredientes premium"
+}
+```
+
+### 22) Eliminar receta
+
+- Método y ruta: `DELETE /Cookbook/{id}/`
+
+- Descripción: Elimina una receta del libro de cocina.
+
+- Respuesta 204 (sin contenido)
+
+### 23) Obtener ingredientes de una receta
+
+- Método y ruta: `GET /Cookbook/{id}/get_ingredients/`
+
+- Descripción: Lista todos los ingredientes asociados a una receta específica.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "recipe": 1,
+    "ingredient": 5
+  },
+  {
+    "id": 2,
+    "recipe": 1,
+    "ingredient": 8
+  }
+]
+```
+
+---
+
+## Ingredientes
+
+### 24) Crear ingrediente
+
+- Método y ruta: `POST /Ingredient/`
+
+- Descripción: Crea un nuevo ingrediente en el sistema.
+
+- Body (JSON):
+
+```json
+{
+  "name": "Harina de trigo",
+  "unit": "kg"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Harina de trigo",
+  "unit": "kg"
+}
+```
+
+### 25) Listar todos los ingredientes
+
+- Método y ruta: `GET /Ingredient/`
+
+- Descripción: Obtiene todos los ingredientes disponibles.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Harina de trigo",
+    "unit": "kg"
+  },
+  {
+    "id": 2,
+    "name": "Tomate",
+    "unit": "unidad"
+  }
+]
+```
+
+### 26) Obtener un ingrediente específico
+
+- Método y ruta: `GET /Ingredient/{id}/`
+
+- Descripción: Obtiene los detalles de un ingrediente específico.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Harina de trigo",
+  "unit": "kg"
+}
+```
+
+### 27) Actualizar ingrediente
+
+- Método y ruta: `PUT /Ingredient/{id}/`
+
+- Descripción: Actualiza los datos de un ingrediente existente (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Harina de trigo integral",
+  "unit": "kg"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "Harina de trigo integral",
+  "unit": "kg"
+}
+```
+
+### 28) Eliminar ingrediente
+
+- Método y ruta: `DELETE /Ingredient/{id}/`
+
+- Descripción: Elimina un ingrediente del sistema.
+
+- Respuesta 204 (sin contenido)
+
+### 29) Agregar ingrediente (método alternativo)
+
+- Método y ruta: `POST /Ingredient/add_ingredient/`
+
+- Descripción: Crea un nuevo ingrediente en el sistema (método alternativo).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Queso mozzarella",
+  "unit": "kg"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "name": "Queso mozzarella",
+  "unit": "kg"
+}
+```
+
+### 30) Actualizar ingrediente (método alternativo)
+
+- Método y ruta: `PUT /Ingredient/{id}/update_ingredient/`
+
+- Descripción: Actualiza los datos de un ingrediente existente (método alternativo).
+
+- Body (JSON):
+
+```json
+{
+  "name": "Queso mozzarella premium",
+  "unit": "kg"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 3,
+  "name": "Queso mozzarella premium",
+  "unit": "kg"
+}
+```
+
+### 31) Eliminar ingrediente (método alternativo)
+
+- Método y ruta: `DELETE /Ingredient/{id}/delete_ingredient/`
+
+- Descripción: Elimina un ingrediente del sistema (método alternativo).
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "message": "Ingrediente eliminado correctamente"
+}
+```
+
+---
+
+## Ingredientes de Receta (CookbookIngredient)
+
+### 32) Crear relación receta-ingrediente
+
+- Método y ruta: `POST /CookbookIngredient/`
+
+- Descripción: Asocia un ingrediente a una receta del libro de cocina.
+
+- Body (JSON):
+
+```json
+{
+  "recipe": 1,
+  "ingredient": 5
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "recipe": 1,
+  "ingredient": 5
+}
+```
+
+### 33) Listar todas las relaciones receta-ingrediente
+
+- Método y ruta: `GET /CookbookIngredient/`
+
+- Descripción: Obtiene todas las relaciones entre recetas e ingredientes.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "recipe": 1,
+    "ingredient": 5
+  },
+  {
+    "id": 2,
+    "recipe": 1,
+    "ingredient": 8
+  }
+]
+```
+
+### 34) Obtener una relación específica
+
+- Método y ruta: `GET /CookbookIngredient/{id}/`
+
+- Descripción: Obtiene los detalles de una relación receta-ingrediente específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "recipe": 1,
+  "ingredient": 5
+}
+```
+
+### 35) Actualizar relación receta-ingrediente
+
+- Método y ruta: `PUT /CookbookIngredient/{id}/`
+
+- Descripción: Actualiza una relación entre receta e ingrediente (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "recipe": 2,
+  "ingredient": 5
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "recipe": 2,
+  "ingredient": 5
+}
+```
+
+### 36) Eliminar relación receta-ingrediente
+
+- Método y ruta: `DELETE /CookbookIngredient/{id}/`
+
+- Descripción: Elimina una relación entre receta e ingrediente.
+
+- Respuesta 204 (sin contenido)
+
+### 37) Agregar ingrediente a receta (método alternativo)
+
+- Método y ruta: `POST /CookbookIngredient/add_cookbook_ingredient/`
+
+- Descripción: Asocia un ingrediente a una receta (método alternativo).
+
+- Body (JSON):
+
+```json
+{
+  "recipe": 1,
+  "ingredient": 10
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "recipe": 1,
+  "ingredient": 10
+}
+```
+
+### 38) Actualizar ingrediente de receta (método alternativo)
+
+- Método y ruta: `PUT /CookbookIngredient/{id}/update_cookbook_ingredient/`
+
+- Descripción: Actualiza una relación entre receta e ingrediente (método alternativo).
+
+- Body (JSON):
+
+```json
+{
+  "recipe": 2,
+  "ingredient": 12
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 3,
+  "recipe": 2,
+  "ingredient": 12
+}
+```
+
+### 39) Eliminar ingrediente de receta (método alternativo)
+
+- Método y ruta: `DELETE /CookbookIngredient/{id}/delete_cookbook_ingredient/`
+
+- Descripción: Elimina una relación entre receta e ingrediente (método alternativo).
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "message": "Relación eliminada correctamente"
+}
+```
+
+---
+
+## Mesas
+
+### 40) Crear mesa
+
+- Método y ruta: `POST /api/tables/`
+
+- Descripción: Crea una nueva mesa con estado "available".
+
+- Body (JSON):
+
+```json
+{
+  "tableNumber": 10
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "available",
+  "tableNumber": 10
+}
+```
+
+### 41) Listar todas las mesas
+
+- Método y ruta: `GET /api/tables/`
+
+- Descripción: Obtiene todas las mesas del restaurante.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "status": "available",
+    "tableNumber": 10
+  },
+  {
+    "id": 2,
+    "status": "occupied",
+    "tableNumber": 5
+  }
+]
+```
+
+### 42) Obtener estado de una mesa
+
+- Método y ruta: `GET /api/tables/{id}/`
+
+- Descripción: Obtiene el estado y datos de una mesa específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "available",
+  "tableNumber": 10
+}
+```
+
+### 43) Actualizar estado de una mesa
+
+- Método y ruta: `PUT /api/tables/{id}/update_status/`
+
+- Descripción: Cambia el estado de la mesa. Estados válidos: `available`, `occupied`, `reserved`, `in_cleaning`.
+
+- Body (JSON):
+
+```json
+{
+  "status": "reserved"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "reserved",
+  "tableNumber": 10
+}
+```
+
+---
+
+## Órdenes
+
+### 44) Crear orden
+
+- Método y ruta: `POST /api/orders/`
+
+- Descripción: Crea una nueva orden asociada a una mesa.
+
+- Body (JSON):
+
+```json
+{
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": null,
+  "billId": null
+}
+```
+
+### 45) Listar todas las órdenes
+
+- Método y ruta: `GET /api/orders/`
+
+- Descripción: Obtiene todas las órdenes del sistema.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "tableId": 1,
+    "waiterId": 5,
+    "status": "notCooking",
+    "createdAt": "2025-11-13T20:00:00Z",
+    "updatedAt": null,
+    "billId": null
+  }
+]
+```
+
+### 46) Obtener una orden específica
+
+- Método y ruta: `GET /api/orders/{id}/`
+
+- Descripción: Obtiene los detalles de una orden específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": null,
+  "billId": null
+}
+```
+
+### 47) Actualizar orden
+
+- Método y ruta: `PUT /api/orders/{id}/`
+
+- Descripción: Actualiza los datos de una orden (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "status": "cooking",
+  "waiterId": 3
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 3,
+  "status": "cooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": "2025-11-13T20:10:00Z",
+  "billId": null
+}
+```
+
+### 48) Actualizar estado de una orden
+
+- Método y ruta: `PUT /api/orders/{id}/update_status/`
+
+- Descripción: Cambia el estado de una orden. Estados válidos: `notCooking`, `cooking`, `ready`.
+
+- Body (JSON):
+
+```json
+{
+  "status": "cooking"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "cooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": "2025-11-13T20:10:00Z",
+  "billId": null
+}
+```
+
+### 49) Obtener items de una orden
+
+- Método y ruta: `GET /api/orders/{id}/get_items/`
+
+- Descripción: Lista todos los items (productos) de una orden específica.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "orderId": 1,
+    "productId": 1,
+    "quantity": 2,
+    "note": "Sin cebolla"
+  },
+  {
+    "id": 2,
+    "orderId": 1,
+    "productId": 3,
+    "quantity": 1,
+    "note": ""
+  }
+]
+```
+
+### 50) Agregar item a una orden
+
+- Método y ruta: `POST /api/orders/{id}/add_item/`
+
+- Descripción: Agrega un producto (item) a una orden existente.
+
+- Body (JSON):
+
+```json
+{
+  "productId": 1,
+  "quantity": 2,
+  "note": "Sin cebolla"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "orderId": 1,
+  "productId": 1,
+  "quantity": 2,
+  "note": "Sin cebolla"
+}
+```
+
+### 51) Eliminar orden
+
+- Método y ruta: `DELETE /api/orders/{id}/`
+
+- Descripción: Elimina una orden del sistema.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Facturación (Bills)
+
+### 52) Crear factura para una mesa
+
+- Método y ruta: `POST /bills/create_bill/{table_id}/`
+
+- Descripción: Crea una factura agrupando todas las órdenes de la mesa que no tienen factura. Calcula automáticamente IVA (15%) y total.
+
+- Body (JSON):
+
+```json
+{
+  "cashier": "Juan Pérez",
+  "paymentMethod": "cash",
+  "discount": 0
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
   "bill": {
-    "id": 3,
+    "id": 1,
     "status": "notPayed",
-    "createdAt": "2025-11-01T20:20:00Z",
+    "tableId": 1,
+    "createdAt": "2025-11-13T20:30:00Z",
     "closedAt": null,
-    "amount": 100.0,
-    "IVA": 15.0,
+    "paidAmount": 500.0,
+    "paymentMethod": "cash",
+    "cashier": "Juan Pérez",
+    "IVA": 75.0,
     "discount": 0.0,
-    "total": 115.0
+    "total": 575.0
   },
   "orders": [
     {
-      "product": "Pizza",
-      "price": 25,
+      "product": "Pizza Margarita",
+      "price": 250,
       "quantity": 2,
-      "amount": 50
+      "amount": 500
     }
   ]
 }
 ```
 
-- Errores comunes:
-  - 400 si la mesa no tiene órdenes pendientes de facturar.
-  - 404 si `table_id` no existe.
+### 53) Listar todas las facturas
 
+- Método y ruta: `GET /bills/`
 
+- Descripción: Obtiene todas las facturas del sistema.
 
-### 9) Actualizar estado de una factura
+- Respuesta 200 (JSON):
 
-- Método y ruta: `PUT /bills/updateBillStatus/{bill_id}/`
+```json
+[
+  {
+    "id": 1,
+    "status": "notPayed",
+    "tableId": 1,
+    "createdAt": "2025-11-13T20:30:00Z",
+    "closedAt": null,
+    "paidAmount": 500.0,
+    "paymentMethod": "cash",
+    "cashier": "Juan Pérez",
+    "IVA": 75.0,
+    "discount": 0.0,
+    "total": 575.0
+  }
+]
+```
 
-- Descripción: Cambia el estado de la factura a `notPayed` o `payed`.
+### 54) Obtener una factura específica
+
+- Método y ruta: `GET /bills/{id}/`
+
+- Descripción: Obtiene los detalles de una factura específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "notPayed",
+  "tableId": 1,
+  "createdAt": "2025-11-13T20:30:00Z",
+  "closedAt": null,
+  "paidAmount": 500.0,
+  "paymentMethod": "cash",
+  "cashier": "Juan Pérez",
+  "IVA": 75.0,
+  "discount": 0.0,
+  "total": 575.0
+}
+```
+
+### 55) Listar facturas no pagadas
+
+- Método y ruta: `GET /bills/get_not_payed_bills/`
+
+- Descripción: Lista todas las facturas con estado "notPayed".
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "status": "notPayed",
+    "tableId": 1,
+    "createdAt": "2025-11-13T20:30:00Z",
+    "closedAt": null,
+    "paidAmount": 500.0,
+    "paymentMethod": "cash",
+    "cashier": "Juan Pérez",
+    "IVA": 75.0,
+    "discount": 0.0,
+    "total": 575.0
+  }
+]
+```
+
+### 56) Listar facturas pagadas
+
+- Método y ruta: `GET /bills/get_payed_bills/`
+
+- Descripción: Lista todas las facturas con estado "payed".
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 2,
+    "status": "payed",
+    "tableId": 2,
+    "createdAt": "2025-11-13T19:00:00Z",
+    "closedAt": "2025-11-13T19:30:00Z",
+    "paidAmount": 350.0,
+    "paymentMethod": "card",
+    "cashier": "María López",
+    "IVA": 52.5,
+    "discount": 35.0,
+    "total": 367.5
+  }
+]
+```
+
+### 57) Actualizar valores de una factura
+
+- Método y ruta: `PUT /bills/{id}/update_bill/`
+
+- Descripción: Actualiza IVA y descuento de una factura. Solo se puede modificar si no está pagada.
+
+- Body (JSON):
+
+```json
+{
+  "IVA": 15,
+  "discount": 50
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "status": "notPayed",
+  "tableId": 1,
+  "createdAt": "2025-11-13T20:30:00Z",
+  "closedAt": null,
+  "paidAmount": 500.0,
+  "paymentMethod": "cash",
+  "cashier": "Juan Pérez",
+  "IVA": 75.0,
+  "discount": 50.0,
+  "total": 525.0
+}
+```
+
+### 58) Actualizar estado de una factura
+
+- Método y ruta: `PUT /bills/{id}/update_status/`
+
+- Descripción: Cambia el estado de pago de una factura. Estados válidos: `notPayed`, `payed`.
 
 - Body (JSON):
 
@@ -351,30 +1325,113 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ```json
 {
-  "id": 3,
+  "id": 1,
   "status": "payed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6]
+  "tableId": 1,
+  "createdAt": "2025-11-13T20:30:00Z",
+  "closedAt": "2025-11-13T20:45:00Z",
+  "paidAmount": 500.0,
+  "paymentMethod": "cash",
+  "cashier": "Juan Pérez",
+  "IVA": 75.0,
+  "discount": 0.0,
+  "total": 575.0
 }
 ```
 
-- Errores comunes:
-  - 400 si `status` no es válido.
-  - 404 si `bill_id` no existe.
+### 59) Eliminar factura
 
-### 10) Actualizar valores de una factura
+- Método y ruta: `DELETE /bills/{id}/`
 
-- Método y ruta: `PUT /bills/updateBill/{bill_id}/`
+- Descripción: Elimina una factura del sistema.
 
-- Descripción: Actualiza los valores de IVA, descuento y total de una factura (siempre que no esté pagada).
+- Respuesta 204 (sin contenido)
+
+---
+
+## Inventario - Productos
+
+### 60) Crear producto en inventario
+
+- Método y ruta: `POST /inventoryProduct/`
+
+- Descripción: Crea un nuevo registro de producto en el inventario.
 
 - Body (JSON):
 
 ```json
 {
-  "IVA": 15,        // porcentaje (opcional)
-  "discount": 10    // valor absoluto (opcional)
+  "productId": 1,
+  "quantity": 50,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 50,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 61) Listar todos los productos del inventario
+
+- Método y ruta: `GET /inventoryProduct/`
+
+- Descripción: Obtiene todos los productos registrados en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "productId": 1,
+    "quantity": 50,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "productId": 2,
+    "quantity": 30,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  }
+]
+```
+
+### 62) Obtener un producto específico del inventario
+
+- Método y ruta: `GET /inventoryProduct/{id}/`
+
+- Descripción: Obtiene los detalles de un producto específico en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 50,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 63) Actualizar producto en inventario
+
+- Método y ruta: `PUT /inventoryProduct/{id}/`
+
+- Descripción: Actualiza los datos de un producto en el inventario (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 75,
+  "lastUpdated": "2025-11-14T01:00:00Z"
 }
 ```
 
@@ -382,58 +1439,582 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ```json
 {
-  "id": 3,
-  "status": "notPayed",
-  "createdAt": "2025-11-01T20:20:00Z",
-  "closedAt": null,
-  "orders": [5, 6],
-  "amount": 100.0,
-  "IVA": 15.0,
-  "discount": 10.0,
-  "total": 105.0
+  "id": 1,
+  "productId": 1,
+  "quantity": 75,
+  "lastUpdated": "2025-11-14T01:00:00Z"
 }
 ```
 
-- Errores comunes:
-  - 400 si la factura ya está pagada.
-  - 404 si `bill_id` no existe.
+### 64) Eliminar producto del inventario
 
-### 10) Listar facturas no pagadas
+- Método y ruta: `DELETE /inventoryProduct/{id}/`
 
-- Método y ruta: `GET /bills/getNotPayedBills/`
+- Descripción: Elimina un producto del inventario.
 
-- Descripción: Lista las facturas con estado `notPayed`.
+- Respuesta 204 (sin contenido)
+
+### 65) Agregar producto al inventario (método alternativo)
+
+- Método y ruta: `POST /inventoryProduct/add_product/`
+
+- Descripción: Agrega un nuevo producto al inventario (método alternativo). El campo lastUpdated se genera automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "productId": 3,
+  "quantity": 100
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "productId": 3,
+  "quantity": 100,
+  "lastUpdated": "2025-11-14T00:30:00Z"
+}
+```
+
+### 66) Actualizar cantidad de producto en inventario
+
+- Método y ruta: `PUT /inventoryProduct/{id}/update_quantity/`
+
+- Descripción: Actualiza únicamente la cantidad de un producto en el inventario. El campo lastUpdated se actualiza automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 85
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 85,
+  "lastUpdated": "2025-11-14T01:15:00Z"
+}
+```
+
+---
+
+## Inventario - Ingredientes
+
+### 67) Crear ingrediente en inventario
+
+- Método y ruta: `POST /inventoryIngredient/`
+
+- Descripción: Crea un nuevo registro de ingrediente en el inventario.
+
+- Body (JSON):
+
+```json
+{
+  "ingredientId": 1,
+  "quantity": 200,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 200,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 68) Listar todos los ingredientes del inventario
+
+- Método y ruta: `GET /inventoryIngredient/`
+
+- Descripción: Obtiene todos los ingredientes registrados en el inventario.
 
 - Respuesta 200 (JSON):
 
 ```json
 [
   {
-    "id": 3,
-    "status": "notPayed",
-    "createdAt": "2025-11-01T20:20:00Z",
-    "closedAt": null,
-    "orders": [5, 6]
+    "id": 1,
+    "ingredientId": 1,
+    "quantity": 200,
+    "lastUpdated": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "ingredientId": 2,
+    "quantity": 150,
+    "lastUpdated": "2025-11-14T00:00:00Z"
   }
 ]
 ```
 
-### 11) Listar facturas pagadas
+### 69) Obtener un ingrediente específico del inventario
 
-- Método y ruta: `GET /bills/getPayedBills/`
+- Método y ruta: `GET /inventoryIngredient/{id}/`
 
-- Descripción: Lista las facturas con estado `payed`.
+- Descripción: Obtiene los detalles de un ingrediente específico en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 200,
+  "lastUpdated": "2025-11-14T00:00:00Z"
+}
+```
+
+### 70) Actualizar ingrediente en inventario
+
+- Método y ruta: `PUT /inventoryIngredient/{id}/`
+
+- Descripción: Actualiza los datos de un ingrediente en el inventario (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 180,
+  "lastUpdated": "2025-11-14T01:00:00Z"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 180,
+  "lastUpdated": "2025-11-14T01:00:00Z"
+}
+```
+
+### 71) Eliminar ingrediente del inventario
+
+- Método y ruta: `DELETE /inventoryIngredient/{id}/`
+
+- Descripción: Elimina un ingrediente del inventario.
+
+- Respuesta 204 (sin contenido)
+
+### 72) Agregar ingrediente al inventario (método alternativo)
+
+- Método y ruta: `POST /inventoryIngredient/add_ingredient/`
+
+- Descripción: Agrega un nuevo ingrediente al inventario (método alternativo). El campo lastUpdated se genera automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "ingredientId": 3,
+  "quantity": 250
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "ingredientId": 3,
+  "quantity": 250,
+  "lastUpdated": "2025-11-14T00:30:00Z"
+}
+```
+
+### 73) Actualizar cantidad de ingrediente en inventario
+
+- Método y ruta: `PUT /inventoryIngredient/{id}/update_quantity/`
+
+- Descripción: Actualiza únicamente la cantidad de un ingrediente en el inventario. El campo lastUpdated se actualiza automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "quantity": 190
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "ingredientId": 1,
+  "quantity": 190,
+  "lastUpdated": "2025-11-14T01:15:00Z"
+}
+```
+
+---
+
+## Inventario - Tipos de Items
+
+### 74) Crear tipo de item
+
+- Método y ruta: `POST /inventoryItemType/`
+
+- Descripción: Crea un nuevo tipo de item para el inventario (ej: "producto", "ingrediente", "material").
+
+- Body (JSON):
+
+```json
+{
+  "name": "producto"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "producto"
+}
+```
+
+### 75) Listar todos los tipos de items
+
+- Método y ruta: `GET /inventoryItemType/`
+
+- Descripción: Obtiene todos los tipos de items definidos en el inventario.
 
 - Respuesta 200 (JSON):
 
 ```json
 [
   {
+    "id": 1,
+    "name": "producto"
+  },
+  {
+    "id": 2,
+    "name": "ingrediente"
+  }
+]
+```
+
+### 76) Obtener un tipo de item específico
+
+- Método y ruta: `GET /inventoryItemType/{id}/`
+
+- Descripción: Obtiene los detalles de un tipo de item específico.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "producto"
+}
+```
+
+### 77) Actualizar tipo de item
+
+- Método y ruta: `PUT /inventoryItemType/{id}/`
+
+- Descripción: Actualiza el nombre de un tipo de item (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "producto terminado"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "producto terminado"
+}
+```
+
+### 78) Eliminar tipo de item
+
+- Método y ruta: `DELETE /inventoryItemType/{id}/`
+
+- Descripción: Elimina un tipo de item del inventario.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Inventario - Tipos de Movimientos
+
+### 79) Crear tipo de movimiento
+
+- Método y ruta: `POST /inventoryMovementType/`
+
+- Descripción: Crea un nuevo tipo de movimiento para el inventario (ej: "entrada", "salida", "ajuste").
+
+- Body (JSON):
+
+```json
+{
+  "name": "entrada"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "entrada"
+}
+```
+
+### 80) Listar todos los tipos de movimientos
+
+- Método y ruta: `GET /inventoryMovementType/`
+
+- Descripción: Obtiene todos los tipos de movimientos definidos en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "name": "entrada"
+  },
+  {
+    "id": 2,
+    "name": "salida"
+  }
+]
+```
+
+### 81) Obtener un tipo de movimiento específico
+
+- Método y ruta: `GET /inventoryMovementType/{id}/`
+
+- Descripción: Obtiene los detalles de un tipo de movimiento específico.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "entrada"
+}
+```
+
+### 82) Actualizar tipo de movimiento
+
+- Método y ruta: `PUT /inventoryMovementType/{id}/`
+
+- Descripción: Actualiza el nombre de un tipo de movimiento (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "name": "entrada por compra"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "name": "entrada por compra"
+}
+```
+
+### 83) Eliminar tipo de movimiento
+
+- Método y ruta: `DELETE /inventoryMovementType/{id}/`
+
+- Descripción: Elimina un tipo de movimiento del inventario.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Inventario - Movimientos
+
+### 84) Crear movimiento de inventario
+
+- Método y ruta: `POST /inventoryMovement/`
+
+- Descripción: Crea un nuevo registro de movimiento en el inventario.
+
+- Body (JSON):
+
+```json
+{
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 1,
+  "createdAt": "2025-11-14T00:00:00Z"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 1,
+  "createdAt": "2025-11-14T00:00:00Z"
+}
+```
+
+### 85) Listar todos los movimientos de inventario
+
+- Método y ruta: `GET /inventoryMovement/`
+
+- Descripción: Obtiene todos los movimientos registrados en el inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "itemType": 1,
+    "itemId": 1,
+    "movementType": 1,
+    "createdAt": "2025-11-14T00:00:00Z"
+  },
+  {
+    "id": 2,
+    "itemType": 1,
+    "itemId": 2,
+    "movementType": 2,
+    "createdAt": "2025-11-14T01:00:00Z"
+  }
+]
+```
+
+### 86) Obtener un movimiento específico
+
+- Método y ruta: `GET /inventoryMovement/{id}/`
+
+- Descripción: Obtiene los detalles de un movimiento específico del inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 1,
+  "createdAt": "2025-11-14T00:00:00Z"
+}
+```
+
+### 87) Actualizar movimiento de inventario
+
+- Método y ruta: `PUT /inventoryMovement/{id}/`
+
+- Descripción: Actualiza los datos de un movimiento de inventario (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "movementType": 2,
+  "createdAt": "2025-11-14T00:30:00Z"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "itemType": 1,
+  "itemId": 1,
+  "movementType": 2,
+  "createdAt": "2025-11-14T00:30:00Z"
+}
+```
+
+### 88) Eliminar movimiento de inventario
+
+- Método y ruta: `DELETE /inventoryMovement/{id}/`
+
+- Descripción: Elimina un movimiento del inventario.
+
+- Respuesta 204 (sin contenido)
+
+### 89) Crear movimiento de inventario (método alternativo)
+
+- Método y ruta: `POST /inventoryMovement/create_movement/`
+
+- Descripción: Crea un nuevo movimiento de inventario (método alternativo). El campo createdAt se genera automáticamente.
+
+- Body (JSON):
+
+```json
+{
+  "itemType": 1,
+  "itemId": 3,
+  "movementType": 1
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 3,
+  "itemType": 1,
+  "itemId": 3,
+  "movementType": 1,
+  "createdAt": "2025-11-14T02:00:00Z"
+}
+```
+
+### 90) Obtener movimientos por item
+
+- Método y ruta: `GET /inventoryMovement/get_movements_by_item/?itemId={item_id}`
+
+- Descripción: Obtiene todos los movimientos asociados a un item específico del inventario.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "itemType": 1,
+    "itemId": 1,
+    "movementType": 1,
+    "createdAt": "2025-11-14T00:00:00Z"
+  },
+  {
     "id": 4,
-    "status": "payed",
-    "createdAt": "2025-11-01T20:30:00Z",
-    "closedAt": null,
-    "orders": [7]
+    "itemType": 1,
+    "itemId": 1,
+    "movementType": 2,
+    "createdAt": "2025-11-14T03:00:00Z"
   }
 ]
 ```
@@ -442,9 +2023,12 @@ Esta guía resume todos los endpoints disponibles, qué hacen y ejemplos de los 
 
 ## Notas útiles para Frontend
 
-- En desarrollo, el backend corre en `http://localhost:8000` (Docker: `docker compose up -d`).
-- Todos los endpoints responden JSON; usar encabezado `Content-Type: application/json` en solicitudes con cuerpo.
-- Estados válidos:
-  - Mesa: `available`, `occupied`, `reserved`, `in_cleaning`.
-  - Factura: `notPayed`, `payed`.
-- Las órdenes incluyen: `id`, `table`, `product`, `status`, `createdAt`, `closedAt`, `note`.
+- **Base URL de desarrollo**: `http://localhost:8000`
+- **Contenido**: Todos los endpoints esperan y responden JSON. Usar header `Content-Type: application/json`.
+- **Barras finales**: Django REST Framework requiere `/` al final de las rutas.
+- **Estados válidos**:
+  - Mesa: `available`, `occupied`, `reserved`, `in_cleaning`
+  - Orden: `notCooking`, `cooking`, `ready`
+  - Factura: `notPayed`, `payed`
+- **Autenticación**: Usar tokens JWT en header `Authorization: Bearer {token}`
+- **Roles de usuario**: `mesero`, `cocina`, `caja`, `admin`

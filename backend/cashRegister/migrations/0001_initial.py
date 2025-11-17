@@ -12,12 +12,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CustomUser',
+            name='cashRegister',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('createdAt', models.DateTimeField(auto_now_add=True)),
+                ('closedAt', models.DateTimeField(blank=True, null=True)),
+                ('status', models.CharField(max_length=200)),
+                ('cashierId', models.CharField(max_length=200)),
             ],
-            options={
-                'permissions': [('mesero_access', 'Acceso Mesero'), ('cocina_access', 'Acceso Cocina'), ('caja_access', 'Acceso Caja'), ('admin_access', 'Acceso Administrador')],
-            },
         ),
     ]

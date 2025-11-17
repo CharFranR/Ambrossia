@@ -35,10 +35,14 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'daphne',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
     'tables',
     'menu',
     'bill',
     'users',
+    'inventory',
+    'cashRegister',
     'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -139,8 +143,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-        'CONFIG': 'edis://redis:6379/0'
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis', 6379)],
+        },
     },
 }
 
