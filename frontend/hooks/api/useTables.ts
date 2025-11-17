@@ -7,4 +7,3 @@ export const useTables = () => {
     queryFn: tablesService.getTables,
   });
 };
-

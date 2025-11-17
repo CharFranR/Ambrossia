@@ -152,9 +152,17 @@ CHANNEL_LAYERS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Next.js dev server
+    "http://localhost:3001",  # Alternate dev port in use
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Permitir que las peticiones POST desde el frontend pasen validación CSRF.
+# Django 5 exige configurar dominios de confianza para enviar cookies/headers.
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (

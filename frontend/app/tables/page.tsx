@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,6 @@ import { Pencil } from "lucide-react";
 import { Table } from "@/types/models";
 import { useTables } from "@/hooks/api/useTables";
 import { useAnimateTables, useTableHandlers } from "./hooks";
-
-
 
 const mapTableStatus = (status: string): EstadoMesa => {
   switch (status) {
@@ -54,31 +52,30 @@ export default function TablesPage() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-5 mt-4">
-      {tables?.map((table: Table) => (
-        <div
-          key={table.id}
-          className="table-card"
-          onClick={() => setSelectedTable(table)} // al click, se abre el modal
-        >
-          <TablesCard
-            numero={table.id}
-            estado={mapTableStatus(table.status)}
-          />
-        </div>
-      ))}
-    </div>
+        {tables?.map((table: Table) => (
+          <div
+            key={table.id}
+            className="table-card"
+            onClick={() => setSelectedTable(table)} // al click, se abre el modal
+          >
+            <TablesCard
+              numero={table.id}
+              estado={mapTableStatus(table.status)}
+            />
+          </div>
+        ))}
+      </div>
 
-    {selectedTable && (
-      <TableOptionsModal
-        table={selectedTable}
-        open={!!selectedTable}
-        onOpenChange={(open) => !open && setSelectedTable(null)}
-        onTakeOrder={(id) => takeOrder(id)}
-        onCloseBill={(id) => console.log('Cerrar cuenta mesa', id)}
-        onReserve={(id) => console.log('Reservar mesa', id)}
-      />
-    )}
-
+      {selectedTable && (
+        <TableOptionsModal
+          table={selectedTable}
+          open={!!selectedTable}
+          onOpenChange={(open) => !open && setSelectedTable(null)}
+          onTakeOrder={(id) => takeOrder(id)}
+          onCloseBill={(id) => console.log("Cerrar cuenta mesa", id)}
+          onReserve={(id) => console.log("Reservar mesa", id)}
+        />
+      )}
     </div>
   );
 }

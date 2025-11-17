@@ -64,6 +64,14 @@ export default function Sidebar() {
         </Link>
 
         <Link
+          href="/Checkout"
+          className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
+        >
+          <Table size={18} />
+          {open && <span>Checkout</span>}
+        </Link>
+
+        <Link
           href="/analytics"
           className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-muted transition-colors"
         >
