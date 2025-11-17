@@ -11,6 +11,6 @@ class TableAdmin(admin.ModelAdmin):
 
 @admin.register(order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("id", "table", "product", "quantity", "status", "createdAt", "closedAt")
+    list_display = ("id", "tableId", "billId", "status", "createdAt", "updatedAt", "waiterId")
     list_filter = ("status",)
-    search_fields = ("table__id", "product__name")
+    search_fields = ("tableId__id", "waiterId")
