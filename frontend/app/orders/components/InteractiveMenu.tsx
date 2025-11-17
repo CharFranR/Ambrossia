@@ -13,6 +13,8 @@ type Product = {
   name: string
   description?: string
   price: number
+  image?: string
+  category?: string
 }
 
 const fetchProducts = async (): Promise<Product[]> => {
@@ -22,46 +24,66 @@ const fetchProducts = async (): Promise<Product[]> => {
   return res.data
 }
 
-export default function InteractiveMenu({ onAdd }: { onAdd: (product: Product) => void }) {
+export default function InteractiveMenu({
+  onAdd,
+  category,
+}: {
+  onAdd: (product: Product) => void
+  category?: string
+}) {
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: fetchProducts,
   })
 
-  if (isLoading) return <div>Cargando productos...</div>
+  const filtered = category && category !== "all"
+    ? products?.filter((p: Product) => p.category === category)
+    : products
+
+  if (isLoading)
+    return (
+      <div className="text-center py-6 text-gray-500">
+        Cargando productos...
+      </div>
+    )
 
   return (
-    <div className="p-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {products?.map((item: any) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {filtered?.map((item: Product) => (
         <motion.div
           key={item.id}
           whileHover={{ scale: 1.03 }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: item.id * 0.1, duration: 0.4 }}
+          transition={{ duration: 0.4 }}
         >
-          <Card className="overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 bg-black">
+          <Card className="overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 bg-background text-foreground">
             <CardHeader>
               <CardTitle className="text-lg font-semibold">{item.name}</CardTitle>
               <CardDescription>{item.description}</CardDescription>
             </CardHeader>
-            <CardContent className="p-0 relative">
-              <Image
-                src={item.image}
-                alt={item.name}
-                className="aspect-video object-cover w-full h-56 rounded-b-2xl"
-                width={500}
-                height={500}
-              />
+            <CardContent className="relative p-0">
+              {item.image && (
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  className="aspect-video object-cover w-full h-56 rounded-b-2xl"
+                  width={500}
+                  height={500}
+                />
+              )}
               <div className="absolute bottom-3 right-3">
                 <Button
                   variant="default"
                   size="sm"
-                  className="flex items-center gap-1 bg-white-600 hover:bg-white-700"
+                  className="flex items-center gap-1"
                   onClick={() => onAdd(item)}
                 >
-                  <PlusCircle className="h-4 w-4" /> Add
+                  <PlusCircle className="h-4 w-4" /> Agregar
                 </Button>
+              </div>
+              <div className="absolute bottom-3 left-3 font-bold text-sky-700 bg-white/80 px-2 py-1 rounded">
+                ${item.price?.toFixed(2)}
               </div>
             </CardContent>
           </Card>
