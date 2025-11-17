@@ -5,68 +5,34 @@ import { Card, CardContent, CardHeader, CardDescription, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
 import Image from 'next/image'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
-type MenuItem = {
+type Product = {
   id: number
   name: string
-  description: string
-  image: string
+  description?: string
   price: number
 }
 
-const menuItems: MenuItem[] = [
-  {
-    id: 1,
-    name: 'Garfield Lasagna',
-    description: 'Classic lasagna with tomato, mozzarella & basil.',
-    image: '/Lasagna.jpg',
-    price: 8.5,
-  },
-  {
-    id: 2,
-    name: 'Papyrus Spaguetti',
-    description: 'Spaguetti with pancetta & parmesan cheese.',
-    image: '/Spaguetti.jpg',
-    price: 10.0,
-  },
-  {
-    id: 3,
-    name: 'Slurp',
-    description: 'The clasic and favorite slurp flavor for all the family.',
-    image: '/Slurp.jpg',
-    price: 6.5,
-  },
-  {
-    id: 4,
-    name: 'Roast Basilisk',
-    description: 'A well cooked basilisk with a side of garlic and herbs.',
-    image: '/Roast_Basilisk.png',
-    price: 8.5,
-  },
-  {
-    id: 5,
-    name: 'Max Energy Drink!',
-    description: 'Perfect drink for speedtesters who wants to die by a heart attack.',
-    image: '/max_energy_drink.jpg',
-    price: 6.5,
-  },
-  {
-    id: 6,
-    name: 'Blood Bag',
-    description: 'Preferred by the chef and the most popular on demand!.',
-    image: '/power_special.jpg',
-    price: 6.5,
-  },
-]
+const fetchProducts = async (): Promise<Product[]> => {
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_ROOT || 'http://localhost:8000'}/products/`
+  )
+  return res.data
+}
 
-export default function InteractiveMenu() {
-  const handleAdd = (item: MenuItem) => {
-    console.log('Added:', item)
-  }
+export default function InteractiveMenu({ onAdd }: { onAdd: (product: Product) => void }) {
+  const { data: products, isLoading } = useQuery<Product[]>({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  })
+
+  if (isLoading) return <div>Cargando productos...</div>
 
   return (
     <div className="p-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {menuItems.map((item) => (
+      {products?.map((item: any) => (
         <motion.div
           key={item.id}
           whileHover={{ scale: 1.03 }}
@@ -92,7 +58,7 @@ export default function InteractiveMenu() {
                   variant="default"
                   size="sm"
                   className="flex items-center gap-1 bg-white-600 hover:bg-white-700"
-                  onClick={() => handleAdd(item)}
+                  onClick={() => onAdd(item)}
                 >
                   <PlusCircle className="h-4 w-4" /> Add
                 </Button>
