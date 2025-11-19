@@ -94,7 +94,7 @@ class BillViewSet(viewsets.ModelViewSet):
                 })
             
             # Asociar orden a la factura
-            ord.billId = bill_obj
+            ord.billId = bill_obj # type: ignore
             ord.save()
         
         # Calcular IVA (15%)
