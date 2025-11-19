@@ -3,9 +3,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from .models import cashRegister
-from .serializers import CashRegisterSerializer
-
+from .models import cashRegister, cashMovement, billsQuantity
+from .serializers import CashRegisterSerializer, cashMovementSerializer, billsQuantitySerilizer
+from users.permissions import IsCaja, IsAdmin
 
 class CashRegisterViewSet(viewsets.ModelViewSet):
     """
@@ -13,6 +13,11 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
     """
     queryset = cashRegister.objects.all()
     serializer_class = CashRegisterSerializer
+
+    def get_permissions(self):
+        if self.action in ['open_register', 'close_register']:
+            return [IsCaja()]
+        return [IsAdmin()]
 
     @action(detail=False, methods=['post'])
     def open_register(self, request):
@@ -33,17 +38,17 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
             cashierId=cashier_id, 
             status='open'
         )
-        
+
         if open_registers.exists():
             return Response(
                 {'error': 'Ya existe una caja abierta para este cajero'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        register = cashRegister.objects.create(
-            cashierId=cashier_id,
-            status='open'
-        )
+        register = get_object_or_404(cashRegister, cashier_id = cashier_id) 
+
+        register.status = 'open'
+        register.opened_at = timezone.now()
         
         serializer = CashRegisterSerializer(register)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -85,3 +90,29 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
         closed_registers = cashRegister.objects.filter(status='closed')
         serializer = CashRegisterSerializer(closed_registers, many=True)
         return Response(serializer.data)
+    
+class cashMovementViewSet(viewsets.ModelViewSet):
+    queryset = cashMovement.objects.all()
+    serializer_class = cashMovementSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsCaja()]
+        if self.action in ['update', 'partial_update']:
+            return [IsAdmin()]
+        if self.action == 'delete':
+            return [IsAdmin()]
+        return super().get_permissions()
+
+class billsQuantitySerilizerViewSet(viewsets.ModelViewSet):
+    queryset = billsQuantity.objects.all()
+    serializer_class = billsQuantitySerilizer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsCaja()]
+        if self.action in ['update', 'partial_update']:
+            return [IsAdmin()]
+        if self.action == 'delete':
+            return [IsAdmin()]
+        return super().get_permissions()
