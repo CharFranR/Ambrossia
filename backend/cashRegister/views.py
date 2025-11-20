@@ -18,10 +18,10 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
     queryset = cashRegister.objects.all()
     serializer_class = CashRegisterSerializer
 
-    def get_permissions(self):
-        if self.action in ['open_register', 'close_register']:
-            return [IsCaja()]
-        return [IsAdmin()]
+    # def get_permissions(self):
+    #     if self.action in ['open_register', 'close_register']:
+    #         return [IsCaja()]
+    #     return [IsAdmin()]
 
     @action(detail=False, methods=['post'])
     def open_register(self, request):
@@ -112,23 +112,23 @@ class CashMovementViewSet(viewsets.ModelViewSet):
     queryset = cashMovement.objects.all()
     serializer_class = cashMovementSerializer
 
-    def get_permissions(self):
-        if self.action == 'create':
-            return [IsCaja()]
-        if self.action in ['update', 'partial_update', 'destroy']:
-            return [IsAdmin()]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.action == 'create':
+    #         return [IsCaja()]
+    #     if self.action in ['update', 'partial_update', 'destroy']:
+    #         return [IsAdmin()]
+    #     return super().get_permissions()
 
 class BillsQuantityViewSet(viewsets.ModelViewSet):
     queryset = billsQuantity.objects.all()
     serializer_class = billsQuantitySerilizer
 
-    def get_permissions(self):
-        if self.action == 'create':
-            return [IsCaja()]
-        if self.action in ['update', 'partial_update', 'destroy']:
-            return [IsAdmin()]
-        return super().get_permissions()
+    # def get_permissions(self):
+    #     if self.action == 'create':
+    #         return [IsCaja()]
+    #     if self.action in ['update', 'partial_update', 'destroy']:
+    #         return [IsAdmin()]
+    #     return super().get_permissions()
     
 def generate_daily_report(date, register_id):
 
