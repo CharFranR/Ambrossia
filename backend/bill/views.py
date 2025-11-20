@@ -12,6 +12,7 @@ from .models import bill
 from .serializers import billSerializer
 from tables.models import order, orderItem
 
+from cashRegister.models import cashMovement
 
 class BillViewSet(viewsets.ModelViewSet):
     """
@@ -123,7 +124,6 @@ class BillViewSet(viewsets.ModelViewSet):
             with open(pdf_path, "wb") as f:
                 f.write(pdf_buffer.getvalue())
         except Exception as e:
-            # Si falla la generación del PDF, continuar sin él
             pass
 
         serializer = billSerializer(bill_obj)
@@ -188,6 +188,14 @@ class BillViewSet(viewsets.ModelViewSet):
             if paid_amount:
                 bill_obj.paidAmount = float(paid_amount)
         
+        total = bill_obj.total
+        method_used = bill_obj.paymentMethod
+        cash_register_id = request.data.get('cashRegisterId')
+        
+        movement = cashMovement.objects.create(cash_inflow = paid_amount, cash_outflow = total-paid_amount,
+                                               amount = total, method = method_used, denominations = {},
+                                               cashierId = bill_obj.cashier, cashRegisterNumber = cash_register_id)
+
         bill_obj.save()
         serializer = billSerializer(bill_obj)
         return Response(serializer.data)

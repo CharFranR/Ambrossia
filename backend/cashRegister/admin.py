@@ -10,6 +10,6 @@ class CashRegisterAdmin(admin.ModelAdmin):
 @admin.register(cashMovement)
 class cashMovementAdmin(admin.ModelAdmin):
     list_display = ("cash_inflow", "cash_outflow", "amount", "method", "description",
-                    "created_at", "denominations", "cashierId")
+                    "created_at", "denominations", "cashierId", "cashRegisterNumber")
     search_fields = ("cashierId", "created_at")
     list_filter = ("amount", "cashierId")
