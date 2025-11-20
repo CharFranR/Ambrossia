@@ -16,6 +16,7 @@ class cashMovement(models.Model):
     created_at = models.DateField()
     denominations = models.JSONField(default=dict)
     cashierId = models.CharField(max_length=200)
+    cashRegisterNumber = models.ForeignKey(cashRegister, on_delete= models.CASCADE)
      
 class billsQuantity (models.Model):
     bill_5_cordobas = models.IntegerField(default=0)

@@ -7,6 +7,9 @@ from .models import cashRegister, cashMovement, billsQuantity
 from .serializers import CashRegisterSerializer, cashMovementSerializer, billsQuantitySerilizer
 from users.permissions import IsAdmin, IsCaja
 
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 class CashRegisterViewSet(viewsets.ModelViewSet):
     """
@@ -70,6 +73,19 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
         register.status = 'closed'
         register.closedAt = timezone.now()
         register.save()
+
+        generate_daily_report(date = register.closedAt, register_id = register.id)
+
+        try:
+
+            pdf_buffer =  generate_daily_report(date = register.closedAt, register_id= register.pk)
+            pdf_path = f"cashMovements/movements_{register.date}.pdf"
+
+            with open(pdf_path, "wb") as f:
+                f.write(pdf_buffer.getvalue())
+        
+        except Exception as e:
+            return Response (e)
         
         serializer = CashRegisterSerializer(register)
         return Response(serializer.data)
@@ -90,7 +106,7 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
         """
         closed_registers = cashRegister.objects.filter(status='closed')
         serializer = CashRegisterSerializer(closed_registers, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data)     
     
 class CashMovementViewSet(viewsets.ModelViewSet):
     queryset = cashMovement.objects.all()
@@ -113,3 +129,37 @@ class BillsQuantityViewSet(viewsets.ModelViewSet):
         if self.action in ['update', 'partial_update', 'destroy']:
             return [IsAdmin()]
         return super().get_permissions()
+    
+def generate_daily_report(date, register_id):
+
+    movements = cashMovement.objects.filter(created_at = date, cashRegisterNumber = register_id)
+
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    # Título
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, height - 50, f"Reporte Diario Caja {register_id} - {date.date()}")
+
+    # Encabezados
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 80, "ID")
+    p.drawString(120, height - 80, "Metodo")
+    p.drawString(220, height - 80, "Monto")
+    p.drawString(320, height - 80, "Fecha")
+
+    # Listar movimientos
+    y = height - 100
+    p.setFont("Helvetica", 10)
+    for m in movements:
+        p.drawString(50, y, str(m.pk))
+        p.drawString(120, y, str(m.method))
+        p.drawString(220, y, f"${m.amount:.2f}")
+        p.drawString(320, y, m.created_at.strftime("%Y-%m-%d %H:%M"))
+        y -= 20
+        if y < 50:
+            p.showPage()
+            y = height - 50
+    
+    p.save()

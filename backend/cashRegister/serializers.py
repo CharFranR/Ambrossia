@@ -10,10 +10,11 @@ class CashRegisterSerializer(serializers.ModelSerializer):
         read_only_fields = ("createdAt")
 
 class cashMovementSerializer(serializers.ModelSerializer):
+    cashRegisterNumber = serializers.PrimaryKeyRelatedField(queryset = cashRegister.objects.all())
     class Meta:
         model = cashMovement
         fields = ("id", "cash_inflow", "cash_outflow", "amount", "method", "description", 
-                  "created_at", "denominations", "cashierId")
+                  "created_at", "denominations", "cashierId", "cashRegisterNumber")
         read_only_fields = ("createdAt")
 
 class billsQuantitySerilizer(serializers.ModelSerializer):

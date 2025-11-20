@@ -7,6 +7,6 @@ router.register(r'tables', TableViewSet, basename='tables')
 router.register(r'orders', OrderViewSet, basename='orders')
 
 urlpatterns = [
-    path("api/", include(router.urls)),
-    path("api/", include(router.urls)),
+    path("", include(router.urls)),
+    path("", include(router.urls)),
 ]
