@@ -23,7 +23,7 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
     #         return [IsCaja()]
     #     return [IsAdmin()]
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['put'])
     def open_register(self, request):
         """
         Abrir una nueva caja registradora.
@@ -49,10 +49,11 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        register = get_object_or_404(cashRegister, cashier_id = cashier_id) 
+        register = get_object_or_404(cashRegister, cashierId = cashier_id) 
 
         register.status = 'open'
         register.opened_at = timezone.now()
+        register.save()
         
         serializer = CashRegisterSerializer(register)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -71,21 +72,19 @@ class CashRegisterViewSet(viewsets.ModelViewSet):
             )
         
         register.status = 'closed'
-        register.closedAt = timezone.now()
+        register.closed_at = timezone.now()
         register.save()
-
-        generate_daily_report(date = register.closedAt, register_id = register.id)
 
         try:
 
-            pdf_buffer =  generate_daily_report(date = register.closedAt, register_id= register.pk)
-            pdf_path = f"cashMovements/movements_{register.date}.pdf"
+            pdf_buffer =  generate_daily_report(date = register.closed_at, register_id= register.id)
+            pdf_path = f"cashMovements/movements_{register.closed_at.date()}.pdf"
 
             with open(pdf_path, "wb") as f:
                 f.write(pdf_buffer.getvalue())
         
         except Exception as e:
-            return Response (e)
+            return Response ({'error':str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         serializer = CashRegisterSerializer(register)
         return Response(serializer.data)
@@ -132,7 +131,7 @@ class BillsQuantityViewSet(viewsets.ModelViewSet):
     
 def generate_daily_report(date, register_id):
 
-    movements = cashMovement.objects.filter(created_at = date, cashRegisterNumber = register_id)
+    movements = cashMovement.objects.filter(created_at__date = date.date(), cashRegisterNumber = register_id)
 
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
@@ -163,3 +162,5 @@ def generate_daily_report(date, register_id):
             y = height - 50
     
     p.save()
+    buffer.seek(0)
+    return buffer

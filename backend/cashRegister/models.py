@@ -13,7 +13,7 @@ class cashMovement(models.Model):
     amount = models.FloatField()
     method = models.CharField()
     description = models.TextField(default="bill payment")
-    created_at = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
     denominations = models.JSONField(default=dict)
     cashierId = models.CharField(max_length=200)
     cashRegisterNumber = models.ForeignKey(cashRegister, on_delete= models.CASCADE)

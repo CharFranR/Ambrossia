@@ -6,8 +6,8 @@ from .models import cashRegister, cashMovement, billsQuantity
 class CashRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = cashRegister
-        fields = ("id", "opened_at", "closedAt", "status", "cashierId")
-        read_only_fields = ("createdAt")
+        fields = ("id", "opened_at", "closed_at", "status", "cashierId")
+        read_only_fields = ("opened_at", "closed_at")
 
 class cashMovementSerializer(serializers.ModelSerializer):
     cashRegisterNumber = serializers.PrimaryKeyRelatedField(queryset = cashRegister.objects.all())
@@ -15,7 +15,6 @@ class cashMovementSerializer(serializers.ModelSerializer):
         model = cashMovement
         fields = ("id", "cash_inflow", "cash_outflow", "amount", "method", "description", 
                   "created_at", "denominations", "cashierId", "cashRegisterNumber")
-        read_only_fields = ("createdAt")
 
 class billsQuantitySerilizer(serializers.ModelSerializer):
     class Meta:
