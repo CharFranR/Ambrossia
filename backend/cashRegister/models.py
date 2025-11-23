@@ -19,11 +19,5 @@ class cashMovement(models.Model):
     cashRegisterNumber = models.ForeignKey(cashRegister, on_delete= models.CASCADE)
      
 class billsQuantity (models.Model):
-    bill_5_cordobas = models.IntegerField(default=0)
-    bill_10_cordobas = models.IntegerField(default=0)
-    bill_20_cordobas = models.IntegerField(default=0)
-    bill_50_cordobas = models.IntegerField(default=0)
-    bill_100_cordobas = models.IntegerField(default=0)
-    bill_200_cordobas = models.IntegerField(default=0)
-    bill_500_cordobas = models.IntegerField(default=0)
-    bill_1000_cordobas = models.IntegerField(default=0)
+    denomination = models.FloatField(null=True)
+    quantity = models.IntegerField(null=True)

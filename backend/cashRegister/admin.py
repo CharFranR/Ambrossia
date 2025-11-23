@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import cashRegister, cashMovement
+from .models import cashRegister, cashMovement, billsQuantity
 
 @admin.register(cashRegister)
 class CashRegisterAdmin(admin.ModelAdmin):
@@ -13,3 +13,9 @@ class cashMovementAdmin(admin.ModelAdmin):
                     "created_at", "denominations", "cashierId", "cashRegisterNumber")
     search_fields = ("cashierId", "created_at")
     list_filter = ("amount", "cashierId")
+
+@admin.register(billsQuantity)
+class billsQuantityAdmin(admin.ModelAdmin):
+    list_display = ("id", "denomination", "quantity")
+    search_fields = ("id", "denomination")
+    list_filter = ("denomination", "quantity")

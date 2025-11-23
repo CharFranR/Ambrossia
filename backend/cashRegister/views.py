@@ -144,7 +144,7 @@ def generate_daily_report(date, register_id):
     # Encabezados
     p.setFont("Helvetica-Bold", 12)
     p.drawString(50, height - 80, "ID")
-    p.drawString(120, height - 80, "Metodo")
+    p.drawString(120, height - 80, "Método")
     p.drawString(220, height - 80, "Monto")
     p.drawString(320, height - 80, "Fecha")
 
@@ -164,3 +164,45 @@ def generate_daily_report(date, register_id):
     p.save()
     buffer.seek(0)
     return buffer
+
+class BillsQuantityViewSet(viewsets.ModelViewSet):
+    queryset = billsQuantity.objects.all()
+    serializer_class = billsQuantitySerilizer
+
+    @action(detail = False, methods = ['post'])
+    def get_change (self, request):
+        amount = request.data['amount']
+        bills = amount_to_bills(amount)
+
+        if bills == 0:
+            return Response ({'error':'No bills'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = billsQuantitySerilizer(bills, many=True)
+
+        return Response({'amount': amount, 'bills': serializer.data})
+
+def amount_to_bills(amount):
+
+    bills = []
+
+    bills_available = billsQuantity.objects.order_by('-denomination')
+
+    for i in bills_available:
+        bills_count = 0
+        if i.denomination > amount or i.quantity < 0:
+            continue
+        else:
+            while i.quantity > 0:
+                if amount < i.denomination:
+                    break
+                amount -= i.denomination
+                bills_count += 1
+                i.quantity -= 1
+        bills.append ({'denomination': i.denomination, 'quantity': bills_count})
+
+        print(bills)
+
+    if amount == 0:
+        return bills
+    else:
+        return 0
