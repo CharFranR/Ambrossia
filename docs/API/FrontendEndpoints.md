@@ -6,6 +6,10 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 - Formato: `application/json`
 - Las rutas usan barra final `/` (importante en Django REST Framework)
 
+## ⚠️ Nota Importante
+
+**Endpoints de Inventario Deshabilitados**: Los módulos de inventario (inventoryProduct, inventoryIngredient, inventoryItemType, inventoryMovementType, inventoryMovement) existen en el código pero están actualmente comentados en `backend/urls.py` y **NO están disponibles** para uso. Esta documentación solo incluye los endpoints activos y accesibles.
+
 ---
 
 ## Autenticación (JWT)
@@ -1244,7 +1248,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ]
 ```
 
-**Nota**: El campo `orders` es un array de solo lectura que contiene los IDs de las órdenes asociadas a esta factura. Es definido por el serializador pero generalmente está vacío en las respuestas de lista.
+**Nota**: El campo `orders` es un array de solo lectura definido por el serializador. Contiene los IDs de las órdenes asociadas a esta factura. Para obtener los detalles completos de las órdenes, utilice el endpoint `/api/orders/{id}/` con cada ID.
 
 ### 54) Obtener una factura específica
 
@@ -1865,4 +1869,4 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   - Usar tokens JWT obtenidos de `/api/token/` en header `Authorization: Bearer {token}`
   - También se puede usar autenticación basada en Token de DRF (endpoints `/api/users/login/` y `/api/users/register/`)
 - **Roles de usuario**: `mesero`, `cocina`, `caja`, `admin`
-- **Nota sobre inventario**: Los endpoints de inventario existen en el código pero actualmente están deshabilitados en la configuración de URLs
+- **⚠️ Importante - Endpoints deshabilitados**: Los endpoints de inventario (inventoryProduct, inventoryIngredient, inventoryItemType, inventoryMovementType, inventoryMovement) existen en el código backend pero están actualmente deshabilitados en la configuración de URLs (`backend/urls.py`). No están disponibles para uso hasta que se habiliten.
