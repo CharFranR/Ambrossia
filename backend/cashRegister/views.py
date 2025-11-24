@@ -171,16 +171,20 @@ class BillsQuantityViewSet(viewsets.ModelViewSet):
 
     @action(detail = False, methods = ['post'])
     def get_change (self, request):
+        payment = request.data['payment']
         amount = request.data['amount']
+
+        change = payment - amount
+
         cash_register_id = request.data['cash_register_id']
-        bills = amount_to_bills(amount, cash_register_id)
+        bills = amount_to_bills(change, cash_register_id)
 
         if bills == 0:
             return Response ({'error':'No bills'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = ChangeOutputSerializer(bills, many=True)
 
-        return Response({'amount': amount, 'bills': serializer.data})
+        return Response({'change': amount, 'bills': serializer.data})
 
 def amount_to_bills(amount, cash_register_id):
 

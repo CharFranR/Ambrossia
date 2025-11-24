@@ -172,29 +172,33 @@ class BillViewSet(viewsets.ModelViewSet):
         """
         bill_obj = self.get_object()
         new_status = request.data.get('status')
+        payment = request.data.get('payment')
+        change = request.data.get('change')
         
         if new_status not in ['notPayed', 'payed']:
             return Response(
                 {'error': 'Status inválido'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
+        if payment < bill_obj.total:
+            return Response(
+                {'error': 'Can not pay with less than the total amount'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         bill_obj.status = new_status
         
         if new_status == 'payed':
             bill_obj.closedAt = timezone.now()
-            # Actualizar el monto pagado si se proporciona
-
-            paid_amount = request.data.get('paidAmount')
-            if paid_amount:
-                bill_obj.paidAmount = float(paid_amount)
+            paid_amount = bill_obj.paidAmount
 
         total = bill_obj.total
         method_used = bill_obj.paymentMethod
         cash_register_id = request.data.get('cashRegisterId')
         cash_register = CashRegister.objects.get(pk=cash_register_id)
 
-        movement = CashMovement.objects.create(cash_inflow = paid_amount, cash_outflow = 0, # luego implemento esta logica
+        movement = CashMovement.objects.create(cash_inflow = payment, cash_outflow = change,
                                                amount = total, method = method_used, denominations = {},
                                                cashierId = bill_obj.cashier, cashRegisterNumber = cash_register)
 
