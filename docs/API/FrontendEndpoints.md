@@ -6,6 +6,10 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 - Formato: `application/json`
 - Las rutas usan barra final `/` (importante en Django REST Framework)
 
+## ⚠️ Nota Importante
+
+**Endpoints de Inventario Deshabilitados**: Los módulos de inventario (inventoryProduct, inventoryIngredient, inventoryItemType, inventoryMovementType, inventoryMovement) existen en el código pero están actualmente comentados en `backend/urls.py` y **NO están disponibles** para uso. Esta documentación solo incluye los endpoints activos y accesibles.
+
 ---
 
 ## Autenticación (JWT)
@@ -62,7 +66,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 3) Registrar usuario
 
-- Método y ruta: `POST /users/register/`
+- Método y ruta: `POST /api/users/register/`
 
 - Descripción: Crea un nuevo usuario y devuelve un token de autenticación.
 
@@ -82,15 +86,15 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 {
   "token": "...",
   "user": {
-    "username": "nuevo",
-    "id": 1
+    "id": 1,
+    "username": "nuevo"
   }
 }
 ```
 
 ### 4) Login usuario
 
-- Método y ruta: `POST /users/login/`
+- Método y ruta: `POST /api/users/login/`
 
 - Descripción: Autentica un usuario existente y devuelve un token.
 
@@ -109,8 +113,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 {
   "token": "...",
   "user": {
-    "username": "usuario",
-    "id": 1
+    "id": 1,
+    "username": "usuario"
   }
 }
 ```
@@ -121,7 +125,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 5) Crear categoría
 
-- Método y ruta: `POST /productCategory/`
+- Método y ruta: `POST /api/productCategory/`
 
 - Descripción: Crea una nueva categoría de productos.
 
@@ -144,7 +148,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 6) Listar todas las categorías
 
-- Método y ruta: `GET /productCategory/`
+- Método y ruta: `GET /api/productCategory/`
 
 - Descripción: Obtiene todas las categorías de productos.
 
@@ -165,7 +169,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 7) Obtener una categoría específica
 
-- Método y ruta: `GET /productCategory/{id}/`
+- Método y ruta: `GET /api/productCategory/{id}/`
 
 - Descripción: Obtiene los detalles de una categoría específica.
 
@@ -180,7 +184,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 8) Agregar categoría (método alternativo)
 
-- Método y ruta: `POST /productCategory/add_category/`
+- Método y ruta: `POST /api/productCategory/add_category/`
 
 - Descripción: Crea una nueva categoría de productos (método alternativo).
 
@@ -203,7 +207,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 9) Actualizar categoría
 
-- Método y ruta: `PUT /productCategory/{id}/update_category/`
+- Método y ruta: `PUT /api/productCategory/{id}/update_category/`
 
 - Descripción: Actualiza los datos de una categoría existente.
 
@@ -226,7 +230,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 10) Eliminar categoría
 
-- Método y ruta: `DELETE /productCategory/{id}/delete_category/`
+- Método y ruta: `DELETE /api/productCategory/{id}/delete_category/`
 
 - Descripción: Elimina una categoría del sistema.
 
@@ -244,7 +248,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 11) Crear producto
 
-- Método y ruta: `POST /product/`
+- Método y ruta: `POST /api/product/`
 
 - Descripción: Crea un nuevo producto del menú.
 
@@ -271,7 +275,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 12) Listar todos los productos
 
-- Método y ruta: `GET /product/`
+- Método y ruta: `GET /api/product/`
 
 - Descripción: Obtiene todos los productos del menú.
 
@@ -296,7 +300,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 13) Obtener todos los productos (método alternativo)
 
-- Método y ruta: `GET /product/get_all_products/`
+- Método y ruta: `GET /api/product/get_all_products/`
 
 - Descripción: Obtiene todos los productos disponibles en el menú.
 
@@ -315,7 +319,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 14) Obtener productos por categoría
 
-- Método y ruta: `GET /product/get_by_category/?categoryId={category_id}`
+- Método y ruta: `GET /api/product/get_by_category/?categoryId={category_id}`
 
 - Descripción: Filtra productos por ID de categoría.
 
@@ -334,7 +338,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 15) Obtener un producto específico
 
-- Método y ruta: `GET /product/{id}/`
+- Método y ruta: `GET /api/product/{id}/`
 
 - Descripción: Obtiene los detalles de un producto específico.
 
@@ -351,7 +355,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 16) Actualizar producto
 
-- Método y ruta: `PUT /product/{id}/`
+- Método y ruta: `PUT /api/product/{id}/`
 
 - Descripción: Actualiza los datos de un producto existente (actualización parcial permitida).
 
@@ -377,7 +381,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 17) Eliminar producto
 
-- Método y ruta: `DELETE /product/{id}/`
+- Método y ruta: `DELETE /api/product/{id}/`
 
 - Descripción: Elimina un producto del menú.
 
@@ -389,7 +393,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 18) Crear receta
 
-- Método y ruta: `POST /Cookbook/`
+- Método y ruta: `POST /api/Cookbook/`
 
 - Descripción: Crea una nueva receta en el libro de cocina.
 
@@ -414,7 +418,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 19) Listar todas las recetas
 
-- Método y ruta: `GET /Cookbook/`
+- Método y ruta: `GET /api/Cookbook/`
 
 - Descripción: Obtiene todas las recetas del libro de cocina.
 
@@ -437,7 +441,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 20) Obtener una receta específica
 
-- Método y ruta: `GET /Cookbook/{id}/`
+- Método y ruta: `GET /api/Cookbook/{id}/`
 
 - Descripción: Obtiene los detalles de una receta específica.
 
@@ -453,7 +457,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 21) Actualizar receta
 
-- Método y ruta: `PUT /Cookbook/{id}/`
+- Método y ruta: `PUT /api/Cookbook/{id}/`
 
 - Descripción: Actualiza los datos de una receta existente (actualización parcial permitida).
 
@@ -478,7 +482,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 22) Eliminar receta
 
-- Método y ruta: `DELETE /Cookbook/{id}/`
+- Método y ruta: `DELETE /api/Cookbook/{id}/`
 
 - Descripción: Elimina una receta del libro de cocina.
 
@@ -486,7 +490,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 23) Obtener ingredientes de una receta
 
-- Método y ruta: `GET /Cookbook/{id}/get_ingredients/`
+- Método y ruta: `GET /api/Cookbook/{id}/get_ingredients/`
 
 - Descripción: Lista todos los ingredientes asociados a una receta específica.
 
@@ -513,7 +517,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 24) Crear ingrediente
 
-- Método y ruta: `POST /Ingredient/`
+- Método y ruta: `POST /api/Ingredient/`
 
 - Descripción: Crea un nuevo ingrediente en el sistema.
 
@@ -538,7 +542,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 25) Listar todos los ingredientes
 
-- Método y ruta: `GET /Ingredient/`
+- Método y ruta: `GET /api/Ingredient/`
 
 - Descripción: Obtiene todos los ingredientes disponibles.
 
@@ -561,7 +565,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 26) Obtener un ingrediente específico
 
-- Método y ruta: `GET /Ingredient/{id}/`
+- Método y ruta: `GET /api/Ingredient/{id}/`
 
 - Descripción: Obtiene los detalles de un ingrediente específico.
 
@@ -577,7 +581,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 27) Actualizar ingrediente
 
-- Método y ruta: `PUT /Ingredient/{id}/`
+- Método y ruta: `PUT /api/Ingredient/{id}/`
 
 - Descripción: Actualiza los datos de un ingrediente existente (actualización parcial permitida).
 
@@ -602,7 +606,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 28) Eliminar ingrediente
 
-- Método y ruta: `DELETE /Ingredient/{id}/`
+- Método y ruta: `DELETE /api/Ingredient/{id}/`
 
 - Descripción: Elimina un ingrediente del sistema.
 
@@ -610,7 +614,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 29) Agregar ingrediente (método alternativo)
 
-- Método y ruta: `POST /Ingredient/add_ingredient/`
+- Método y ruta: `POST /api/Ingredient/add_ingredient/`
 
 - Descripción: Crea un nuevo ingrediente en el sistema (método alternativo).
 
@@ -635,7 +639,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 30) Actualizar ingrediente (método alternativo)
 
-- Método y ruta: `PUT /Ingredient/{id}/update_ingredient/`
+- Método y ruta: `PUT /api/Ingredient/{id}/update_ingredient/`
 
 - Descripción: Actualiza los datos de un ingrediente existente (método alternativo).
 
@@ -660,7 +664,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 31) Eliminar ingrediente (método alternativo)
 
-- Método y ruta: `DELETE /Ingredient/{id}/delete_ingredient/`
+- Método y ruta: `DELETE /api/Ingredient/{id}/delete_ingredient/`
 
 - Descripción: Elimina un ingrediente del sistema (método alternativo).
 
@@ -678,7 +682,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 32) Crear relación receta-ingrediente
 
-- Método y ruta: `POST /CookbookIngredient/`
+- Método y ruta: `POST /api/CookbookIngredient/`
 
 - Descripción: Asocia un ingrediente a una receta del libro de cocina.
 
@@ -703,7 +707,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 33) Listar todas las relaciones receta-ingrediente
 
-- Método y ruta: `GET /CookbookIngredient/`
+- Método y ruta: `GET /api/CookbookIngredient/`
 
 - Descripción: Obtiene todas las relaciones entre recetas e ingredientes.
 
@@ -726,7 +730,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 34) Obtener una relación específica
 
-- Método y ruta: `GET /CookbookIngredient/{id}/`
+- Método y ruta: `GET /api/CookbookIngredient/{id}/`
 
 - Descripción: Obtiene los detalles de una relación receta-ingrediente específica.
 
@@ -742,7 +746,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 35) Actualizar relación receta-ingrediente
 
-- Método y ruta: `PUT /CookbookIngredient/{id}/`
+- Método y ruta: `PUT /api/CookbookIngredient/{id}/`
 
 - Descripción: Actualiza una relación entre receta e ingrediente (actualización parcial permitida).
 
@@ -767,7 +771,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 36) Eliminar relación receta-ingrediente
 
-- Método y ruta: `DELETE /CookbookIngredient/{id}/`
+- Método y ruta: `DELETE /api/CookbookIngredient/{id}/`
 
 - Descripción: Elimina una relación entre receta e ingrediente.
 
@@ -775,7 +779,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 37) Agregar ingrediente a receta (método alternativo)
 
-- Método y ruta: `POST /CookbookIngredient/add_cookbook_ingredient/`
+- Método y ruta: `POST /api/CookbookIngredient/add_cookbook_ingredient/`
 
 - Descripción: Asocia un ingrediente a una receta (método alternativo).
 
@@ -800,7 +804,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 38) Actualizar ingrediente de receta (método alternativo)
 
-- Método y ruta: `PUT /CookbookIngredient/{id}/update_cookbook_ingredient/`
+- Método y ruta: `PUT /api/CookbookIngredient/{id}/update_cookbook_ingredient/`
 
 - Descripción: Actualiza una relación entre receta e ingrediente (método alternativo).
 
@@ -825,7 +829,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 39) Eliminar ingrediente de receta (método alternativo)
 
-- Método y ruta: `DELETE /CookbookIngredient/{id}/delete_cookbook_ingredient/`
+- Método y ruta: `DELETE /api/CookbookIngredient/{id}/delete_cookbook_ingredient/`
 
 - Descripción: Elimina una relación entre receta e ingrediente (método alternativo).
 
@@ -928,6 +932,55 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 }
 ```
 
+### 43a) Agregar orden a una mesa
+
+- Método y ruta: `POST /api/tables/{id}/add_order/`
+
+- Descripción: Crea una nueva orden asociada a una mesa específica y cambia el estado de la mesa a "occupied".
+
+- Body (JSON):
+
+```json
+{
+  "waiterId": 5,
+  "status": "notCooking"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": null
+}
+```
+
+### 43b) Obtener órdenes de una mesa
+
+- Método y ruta: `GET /api/tables/{id}/get_orders/`
+
+- Descripción: Obtiene todas las órdenes asociadas a una mesa específica.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "tableId": 1,
+    "waiterId": 5,
+    "status": "notCooking",
+    "createdAt": "2025-11-13T20:00:00Z",
+    "updatedAt": null
+  }
+]
+```
+
 ---
 
 ## Órdenes
@@ -957,8 +1010,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "waiterId": 5,
   "status": "notCooking",
   "createdAt": "2025-11-13T20:00:00Z",
-  "updatedAt": null,
-  "billId": null
+  "updatedAt": null
 }
 ```
 
@@ -978,8 +1030,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
     "waiterId": 5,
     "status": "notCooking",
     "createdAt": "2025-11-13T20:00:00Z",
-    "updatedAt": null,
-    "billId": null
+    "updatedAt": null
   }
 ]
 ```
@@ -999,8 +1050,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "waiterId": 5,
   "status": "notCooking",
   "createdAt": "2025-11-13T20:00:00Z",
-  "updatedAt": null,
-  "billId": null
+  "updatedAt": null
 }
 ```
 
@@ -1028,8 +1078,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "waiterId": 3,
   "status": "cooking",
   "createdAt": "2025-11-13T20:00:00Z",
-  "updatedAt": "2025-11-13T20:10:00Z",
-  "billId": null
+  "updatedAt": "2025-11-13T20:10:00Z"
 }
 ```
 
@@ -1056,8 +1105,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "waiterId": 5,
   "status": "cooking",
   "createdAt": "2025-11-13T20:00:00Z",
-  "updatedAt": "2025-11-13T20:10:00Z",
-  "billId": null
+  "updatedAt": "2025-11-13T20:10:00Z"
 }
 ```
 
@@ -1130,7 +1178,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 52) Crear factura para una mesa
 
-- Método y ruta: `POST /bills/create_bill/{table_id}/`
+- Método y ruta: `POST /api/bills/create_bill/{table_id}/`
 
 - Descripción: Crea una factura agrupando todas las órdenes de la mesa que no tienen factura. Calcula automáticamente IVA (15%) y total.
 
@@ -1150,8 +1198,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 {
   "bill": {
     "id": 1,
-    "status": "notPayed",
     "tableId": 1,
+    "status": "notPayed",
     "createdAt": "2025-11-13T20:30:00Z",
     "closedAt": null,
     "paidAmount": 500.0,
@@ -1159,7 +1207,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
     "cashier": "Juan Pérez",
     "IVA": 75.0,
     "discount": 0.0,
-    "total": 575.0
+    "total": 575.0,
+    "orders": []
   },
   "orders": [
     {
@@ -1174,7 +1223,7 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ### 53) Listar todas las facturas
 
-- Método y ruta: `GET /bills/`
+- Método y ruta: `GET /api/bills/`
 
 - Descripción: Obtiene todas las facturas del sistema.
 
@@ -1184,8 +1233,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 [
   {
     "id": 1,
-    "status": "notPayed",
     "tableId": 1,
+    "status": "notPayed",
     "createdAt": "2025-11-13T20:30:00Z",
     "closedAt": null,
     "paidAmount": 500.0,
@@ -1193,14 +1242,17 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
     "cashier": "Juan Pérez",
     "IVA": 75.0,
     "discount": 0.0,
-    "total": 575.0
+    "total": 575.0,
+    "orders": []
   }
 ]
 ```
 
+**Nota**: El campo `orders` es un array de solo lectura definido por el serializador. Contiene los IDs de las órdenes asociadas a esta factura. Para obtener los detalles completos de las órdenes, utilice el endpoint `/api/orders/{id}/` con cada ID.
+
 ### 54) Obtener una factura específica
 
-- Método y ruta: `GET /bills/{id}/`
+- Método y ruta: `GET /api/bills/{id}/`
 
 - Descripción: Obtiene los detalles de una factura específica.
 
@@ -1209,8 +1261,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ```json
 {
   "id": 1,
-  "status": "notPayed",
   "tableId": 1,
+  "status": "notPayed",
   "createdAt": "2025-11-13T20:30:00Z",
   "closedAt": null,
   "paidAmount": 500.0,
@@ -1218,13 +1270,14 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "cashier": "Juan Pérez",
   "IVA": 75.0,
   "discount": 0.0,
-  "total": 575.0
+  "total": 575.0,
+  "orders": []
 }
 ```
 
 ### 55) Listar facturas no pagadas
 
-- Método y ruta: `GET /bills/get_not_payed_bills/`
+- Método y ruta: `GET /api/bills/get_not_payed_bills/`
 
 - Descripción: Lista todas las facturas con estado "notPayed".
 
@@ -1234,8 +1287,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 [
   {
     "id": 1,
-    "status": "notPayed",
     "tableId": 1,
+    "status": "notPayed",
     "createdAt": "2025-11-13T20:30:00Z",
     "closedAt": null,
     "paidAmount": 500.0,
@@ -1243,14 +1296,15 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
     "cashier": "Juan Pérez",
     "IVA": 75.0,
     "discount": 0.0,
-    "total": 575.0
+    "total": 575.0,
+    "orders": []
   }
 ]
 ```
 
 ### 56) Listar facturas pagadas
 
-- Método y ruta: `GET /bills/get_payed_bills/`
+- Método y ruta: `GET /api/bills/get_payed_bills/`
 
 - Descripción: Lista todas las facturas con estado "payed".
 
@@ -1260,8 +1314,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 [
   {
     "id": 2,
-    "status": "payed",
     "tableId": 2,
+    "status": "payed",
     "createdAt": "2025-11-13T19:00:00Z",
     "closedAt": "2025-11-13T19:30:00Z",
     "paidAmount": 350.0,
@@ -1269,14 +1323,15 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
     "cashier": "María López",
     "IVA": 52.5,
     "discount": 35.0,
-    "total": 367.5
+    "total": 367.5,
+    "orders": []
   }
 ]
 ```
 
 ### 57) Actualizar valores de una factura
 
-- Método y ruta: `PUT /bills/{id}/update_bill/`
+- Método y ruta: `PUT /api/bills/{id}/update_bill/`
 
 - Descripción: Actualiza IVA y descuento de una factura. Solo se puede modificar si no está pagada.
 
@@ -1294,8 +1349,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ```json
 {
   "id": 1,
-  "status": "notPayed",
   "tableId": 1,
+  "status": "notPayed",
   "createdAt": "2025-11-13T20:30:00Z",
   "closedAt": null,
   "paidAmount": 500.0,
@@ -1303,21 +1358,44 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "cashier": "Juan Pérez",
   "IVA": 75.0,
   "discount": 50.0,
-  "total": 525.0
+  "total": 525.0,
+  "orders": []
 }
 ```
 
 ### 58) Actualizar estado de una factura
 
-- Método y ruta: `PUT /bills/{id}/update_status/`
+- Método y ruta: `PUT /api/bills/{id}/update_status/`
 
-- Descripción: Cambia el estado de pago de una factura. Estados válidos: `notPayed`, `payed`.
+- Descripción: Cambia el estado de pago de una factura. Estados válidos: `notPayed`, `payed`. 
+
+  **Importante**: Al cambiar el estado a `payed`, se requieren campos adicionales para registrar el pago y los billetes utilizados para el cambio. El endpoint valida que el pago sea mayor o igual al total y registra un movimiento de caja automáticamente.
+
+- Campos requeridos:
+  - `status` (string, requerido): Nuevo estado de la factura
+  - `payment` (float, requerido cuando status='payed'): Monto pagado por el cliente
+  - `change` (float, requerido cuando status='payed'): Cambio devuelto al cliente
+  - `cashRegisterId` (int, requerido cuando status='payed'): ID de la caja registradora
+  - `bills` (array, requerido cuando status='payed'): Lista de billetes usados para el cambio, con denominación y cantidad
 
 - Body (JSON):
 
 ```json
 {
-  "status": "payed"
+  "status": "payed",
+  "payment": 600.0,
+  "change": 25.0,
+  "cashRegisterId": 1,
+  "bills": [
+    {
+      "denomination": 10,
+      "quantity": 2
+    },
+    {
+      "denomination": 5,
+      "quantity": 1
+    }
+  ]
 }
 ```
 
@@ -1326,8 +1404,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ```json
 {
   "id": 1,
-  "status": "payed",
   "tableId": 1,
+  "status": "payed",
   "createdAt": "2025-11-13T20:30:00Z",
   "closedAt": "2025-11-13T20:45:00Z",
   "paidAmount": 500.0,
@@ -1335,13 +1413,18 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "cashier": "Juan Pérez",
   "IVA": 75.0,
   "discount": 0.0,
-  "total": 575.0
+  "total": 575.0,
+  "orders": []
 }
 ```
 
+- Errores comunes:
+  - HTTP 400: Si `payment` es menor que `total`
+  - HTTP 400: Si faltan campos requeridos cuando status es 'payed'
+
 ### 59) Eliminar factura
 
-- Método y ruta: `DELETE /bills/{id}/`
+- Método y ruta: `DELETE /api/bills/{id}/`
 
 - Descripción: Elimina una factura del sistema.
 
@@ -1349,21 +1432,20 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ---
 
-## Inventario - Productos
+## Caja Registradora (Cash Register)
 
-### 60) Crear producto en inventario
+### 60) Crear caja registradora
 
-- Método y ruta: `POST /inventoryProduct/`
+- Método y ruta: `POST /api/cashRegister/`
 
-- Descripción: Crea un nuevo registro de producto en el inventario.
+- Descripción: Crea una nueva caja registradora.
 
 - Body (JSON):
 
 ```json
 {
-  "productId": 1,
-  "quantity": 50,
-  "lastUpdated": "2025-11-14T00:00:00Z"
+  "cashierId": "1",
+  "status": "close"
 }
 ```
 
@@ -1372,17 +1454,18 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ```json
 {
   "id": 1,
-  "productId": 1,
-  "quantity": 50,
-  "lastUpdated": "2025-11-14T00:00:00Z"
+  "opened_at": "2025-11-14T08:00:00Z",
+  "closed_at": null,
+  "status": "close",
+  "cashierId": "1"
 }
 ```
 
-### 61) Listar todos los productos del inventario
+### 61) Listar todas las cajas registradoras
 
-- Método y ruta: `GET /inventoryProduct/`
+- Método y ruta: `GET /api/cashRegister/`
 
-- Descripción: Obtiene todos los productos registrados en el inventario.
+- Descripción: Obtiene todas las cajas registradoras del sistema.
 
 - Respuesta 200 (JSON):
 
@@ -1390,48 +1473,329 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 [
   {
     "id": 1,
-    "productId": 1,
+    "opened_at": "2025-11-14T08:00:00Z",
+    "closed_at": null,
+    "status": "close",
+    "cashierId": "1"
+  }
+]
+```
+
+### 62) Obtener una caja registradora específica
+
+- Método y ruta: `GET /api/cashRegister/{id}/`
+
+- Descripción: Obtiene los detalles de una caja registradora específica.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "opened_at": "2025-11-14T08:00:00Z",
+  "closed_at": null,
+  "status": "open",
+  "cashierId": "1"
+}
+```
+
+### 63) Abrir caja registradora
+
+- Método y ruta: `PUT /api/cashRegister/open_register/`
+
+- Descripción: Abre una caja registradora existente. Requiere cashierId y verifica que no haya otra caja abierta para el mismo cajero.
+
+- Body (JSON):
+
+```json
+{
+  "cashierId": "1"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "opened_at": "2025-11-14T08:00:00Z",
+  "closed_at": null,
+  "status": "open",
+  "cashierId": "1"
+}
+```
+
+### 64) Cerrar caja registradora
+
+- Método y ruta: `PUT /api/cashRegister/{id}/close_register/`
+
+- Descripción: Cierra una caja registradora y genera un reporte PDF de los movimientos del día.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "opened_at": "2025-11-14T08:00:00Z",
+  "closed_at": "2025-11-14T18:00:00Z",
+  "status": "closed",
+  "cashierId": "1"
+}
+```
+
+### 65) Obtener cajas registradoras abiertas
+
+- Método y ruta: `GET /api/cashRegister/get_open_registers/`
+
+- Descripción: Lista todas las cajas registradoras con estado "open".
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "opened_at": "2025-11-14T08:00:00Z",
+    "closed_at": null,
+    "status": "open",
+    "cashierId": "1"
+  }
+]
+```
+
+### 66) Obtener cajas registradoras cerradas
+
+- Método y ruta: `GET /api/cashRegister/get_closed_registers/`
+
+- Descripción: Lista todas las cajas registradoras con estado "closed".
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 2,
+    "opened_at": "2025-11-13T08:00:00Z",
+    "closed_at": "2025-11-13T18:00:00Z",
+    "status": "closed",
+    "cashierId": "1"
+  }
+]
+```
+
+---
+
+## Movimientos de Caja (Cash Movement)
+
+### 67) Crear movimiento de caja
+
+- Método y ruta: `POST /api/cashMovement/`
+
+- Descripción: Registra un nuevo movimiento de caja (entrada o salida de efectivo).
+
+- Body (JSON):
+
+```json
+{
+  "cash_inflow": 600.0,
+  "cash_outflow": 25.0,
+  "amount": 575.0,
+  "method": "cash",
+  "description": "bill payment",
+  "denominations": {},
+  "cashierId": "1",
+  "cashRegisterNumber": 1
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "cash_inflow": 600.0,
+  "cash_outflow": 25.0,
+  "amount": 575.0,
+  "method": "cash",
+  "description": "bill payment",
+  "created_at": "2025-11-14T10:00:00Z",
+  "denominations": {},
+  "cashierId": "1",
+  "cashRegisterNumber": 1
+}
+```
+
+### 68) Listar todos los movimientos de caja
+
+- Método y ruta: `GET /api/cashMovement/`
+
+- Descripción: Obtiene todos los movimientos de caja registrados.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "cash_inflow": 600.0,
+    "cash_outflow": 25.0,
+    "amount": 575.0,
+    "method": "cash",
+    "description": "bill payment",
+    "created_at": "2025-11-14T10:00:00Z",
+    "denominations": {},
+    "cashierId": "1",
+    "cashRegisterNumber": 1
+  }
+]
+```
+
+### 69) Obtener un movimiento de caja específico
+
+- Método y ruta: `GET /api/cashMovement/{id}/`
+
+- Descripción: Obtiene los detalles de un movimiento de caja específico.
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "cash_inflow": 600.0,
+  "cash_outflow": 25.0,
+  "amount": 575.0,
+  "method": "cash",
+  "description": "bill payment",
+  "created_at": "2025-11-14T10:00:00Z",
+  "denominations": {},
+  "cashierId": "1",
+  "cashRegisterNumber": 1
+}
+```
+
+### 70) Actualizar movimiento de caja
+
+- Método y ruta: `PUT /api/cashMovement/{id}/`
+
+- Descripción: Actualiza los datos de un movimiento de caja (actualización parcial permitida).
+
+- Body (JSON):
+
+```json
+{
+  "description": "corrección de pago"
+}
+```
+
+- Respuesta 200 (JSON):
+
+```json
+{
+  "id": 1,
+  "cash_inflow": 600.0,
+  "cash_outflow": 25.0,
+  "amount": 575.0,
+  "method": "cash",
+  "description": "corrección de pago",
+  "created_at": "2025-11-14T10:00:00Z",
+  "denominations": {},
+  "cashierId": "1",
+  "cashRegisterNumber": 1
+}
+```
+
+### 71) Eliminar movimiento de caja
+
+- Método y ruta: `DELETE /api/cashMovement/{id}/`
+
+- Descripción: Elimina un movimiento de caja del sistema.
+
+- Respuesta 204 (sin contenido)
+
+---
+
+## Cantidad de Billetes (Bills Quantity)
+
+### 72) Crear registro de cantidad de billetes
+
+- Método y ruta: `POST /api/billsQuantity/`
+
+- Descripción: Registra la cantidad de billetes de una denominación específica en una caja registradora.
+
+- Body (JSON):
+
+```json
+{
+  "denomination": 100,
+  "quantity": 50,
+  "cash_register": 1
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "denomination": 100,
+  "quantity": 50,
+  "cash_register": 1
+}
+```
+
+### 73) Listar todas las cantidades de billetes
+
+- Método y ruta: `GET /api/billsQuantity/`
+
+- Descripción: Obtiene todos los registros de cantidades de billetes.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "denomination": 100,
     "quantity": 50,
-    "lastUpdated": "2025-11-14T00:00:00Z"
+    "cash_register": 1
   },
   {
     "id": 2,
-    "productId": 2,
-    "quantity": 30,
-    "lastUpdated": "2025-11-14T00:00:00Z"
+    "denomination": 50,
+    "quantity": 100,
+    "cash_register": 1
   }
 ]
 ```
 
-### 62) Obtener un producto específico del inventario
+### 74) Obtener cantidad de billetes específica
 
-- Método y ruta: `GET /inventoryProduct/{id}/`
+- Método y ruta: `GET /api/billsQuantity/{id}/`
 
-- Descripción: Obtiene los detalles de un producto específico en el inventario.
+- Descripción: Obtiene los detalles de un registro específico de cantidad de billetes.
 
 - Respuesta 200 (JSON):
 
 ```json
 {
   "id": 1,
-  "productId": 1,
+  "denomination": 100,
   "quantity": 50,
-  "lastUpdated": "2025-11-14T00:00:00Z"
+  "cash_register": 1
 }
 ```
 
-### 63) Actualizar producto en inventario
+### 75) Actualizar cantidad de billetes
 
-- Método y ruta: `PUT /inventoryProduct/{id}/`
+- Método y ruta: `PUT /api/billsQuantity/{id}/`
 
-- Descripción: Actualiza los datos de un producto en el inventario (actualización parcial permitida).
+- Descripción: Actualiza la cantidad de billetes (actualización parcial permitida).
 
 - Body (JSON):
 
 ```json
 {
-  "quantity": 75,
-  "lastUpdated": "2025-11-14T01:00:00Z"
+  "quantity": 45
 }
 ```
 
@@ -1440,57 +1804,33 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ```json
 {
   "id": 1,
-  "productId": 1,
-  "quantity": 75,
-  "lastUpdated": "2025-11-14T01:00:00Z"
+  "denomination": 100,
+  "quantity": 45,
+  "cash_register": 1
 }
 ```
 
-### 64) Eliminar producto del inventario
+### 76) Eliminar registro de cantidad de billetes
 
-- Método y ruta: `DELETE /inventoryProduct/{id}/`
+- Método y ruta: `DELETE /api/billsQuantity/{id}/`
 
-- Descripción: Elimina un producto del inventario.
+- Descripción: Elimina un registro de cantidad de billetes.
 
 - Respuesta 204 (sin contenido)
 
-### 65) Agregar producto al inventario (método alternativo)
+### 77) Calcular cambio
 
-- Método y ruta: `POST /inventoryProduct/add_product/`
+- Método y ruta: `POST /api/billsQuantity/get_change/`
 
-- Descripción: Agrega un nuevo producto al inventario (método alternativo). El campo lastUpdated se genera automáticamente.
-
-- Body (JSON):
-
-```json
-{
-  "productId": 3,
-  "quantity": 100
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 3,
-  "productId": 3,
-  "quantity": 100,
-  "lastUpdated": "2025-11-14T00:30:00Z"
-}
-```
-
-### 66) Actualizar cantidad de producto en inventario
-
-- Método y ruta: `PUT /inventoryProduct/{id}/update_quantity/`
-
-- Descripción: Actualiza únicamente la cantidad de un producto en el inventario. El campo lastUpdated se actualiza automáticamente.
+- Descripción: Calcula el cambio óptimo en billetes disponibles para un pago.
 
 - Body (JSON):
 
 ```json
 {
-  "quantity": 85
+  "payment": 600.0,
+  "bill_id": 1,
+  "cash_register_id": 1
 }
 ```
 
@@ -1498,525 +1838,18 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 ```json
 {
-  "id": 1,
-  "productId": 1,
-  "quantity": 85,
-  "lastUpdated": "2025-11-14T01:15:00Z"
+  "change": 25.0,
+  "bills": [
+    {
+      "denomination": 20,
+      "quantity": 1
+    },
+    {
+      "denomination": 5,
+      "quantity": 1
+    }
+  ]
 }
-```
-
----
-
-## Inventario - Ingredientes
-
-### 67) Crear ingrediente en inventario
-
-- Método y ruta: `POST /inventoryIngredient/`
-
-- Descripción: Crea un nuevo registro de ingrediente en el inventario.
-
-- Body (JSON):
-
-```json
-{
-  "ingredientId": 1,
-  "quantity": 200,
-  "lastUpdated": "2025-11-14T00:00:00Z"
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 1,
-  "ingredientId": 1,
-  "quantity": 200,
-  "lastUpdated": "2025-11-14T00:00:00Z"
-}
-```
-
-### 68) Listar todos los ingredientes del inventario
-
-- Método y ruta: `GET /inventoryIngredient/`
-
-- Descripción: Obtiene todos los ingredientes registrados en el inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 1,
-    "ingredientId": 1,
-    "quantity": 200,
-    "lastUpdated": "2025-11-14T00:00:00Z"
-  },
-  {
-    "id": 2,
-    "ingredientId": 2,
-    "quantity": 150,
-    "lastUpdated": "2025-11-14T00:00:00Z"
-  }
-]
-```
-
-### 69) Obtener un ingrediente específico del inventario
-
-- Método y ruta: `GET /inventoryIngredient/{id}/`
-
-- Descripción: Obtiene los detalles de un ingrediente específico en el inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "ingredientId": 1,
-  "quantity": 200,
-  "lastUpdated": "2025-11-14T00:00:00Z"
-}
-```
-
-### 70) Actualizar ingrediente en inventario
-
-- Método y ruta: `PUT /inventoryIngredient/{id}/`
-
-- Descripción: Actualiza los datos de un ingrediente en el inventario (actualización parcial permitida).
-
-- Body (JSON):
-
-```json
-{
-  "quantity": 180,
-  "lastUpdated": "2025-11-14T01:00:00Z"
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "ingredientId": 1,
-  "quantity": 180,
-  "lastUpdated": "2025-11-14T01:00:00Z"
-}
-```
-
-### 71) Eliminar ingrediente del inventario
-
-- Método y ruta: `DELETE /inventoryIngredient/{id}/`
-
-- Descripción: Elimina un ingrediente del inventario.
-
-- Respuesta 204 (sin contenido)
-
-### 72) Agregar ingrediente al inventario (método alternativo)
-
-- Método y ruta: `POST /inventoryIngredient/add_ingredient/`
-
-- Descripción: Agrega un nuevo ingrediente al inventario (método alternativo). El campo lastUpdated se genera automáticamente.
-
-- Body (JSON):
-
-```json
-{
-  "ingredientId": 3,
-  "quantity": 250
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 3,
-  "ingredientId": 3,
-  "quantity": 250,
-  "lastUpdated": "2025-11-14T00:30:00Z"
-}
-```
-
-### 73) Actualizar cantidad de ingrediente en inventario
-
-- Método y ruta: `PUT /inventoryIngredient/{id}/update_quantity/`
-
-- Descripción: Actualiza únicamente la cantidad de un ingrediente en el inventario. El campo lastUpdated se actualiza automáticamente.
-
-- Body (JSON):
-
-```json
-{
-  "quantity": 190
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "ingredientId": 1,
-  "quantity": 190,
-  "lastUpdated": "2025-11-14T01:15:00Z"
-}
-```
-
----
-
-## Inventario - Tipos de Items
-
-### 74) Crear tipo de item
-
-- Método y ruta: `POST /inventoryItemType/`
-
-- Descripción: Crea un nuevo tipo de item para el inventario (ej: "producto", "ingrediente", "material").
-
-- Body (JSON):
-
-```json
-{
-  "name": "producto"
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "producto"
-}
-```
-
-### 75) Listar todos los tipos de items
-
-- Método y ruta: `GET /inventoryItemType/`
-
-- Descripción: Obtiene todos los tipos de items definidos en el inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 1,
-    "name": "producto"
-  },
-  {
-    "id": 2,
-    "name": "ingrediente"
-  }
-]
-```
-
-### 76) Obtener un tipo de item específico
-
-- Método y ruta: `GET /inventoryItemType/{id}/`
-
-- Descripción: Obtiene los detalles de un tipo de item específico.
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "producto"
-}
-```
-
-### 77) Actualizar tipo de item
-
-- Método y ruta: `PUT /inventoryItemType/{id}/`
-
-- Descripción: Actualiza el nombre de un tipo de item (actualización parcial permitida).
-
-- Body (JSON):
-
-```json
-{
-  "name": "producto terminado"
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "producto terminado"
-}
-```
-
-### 78) Eliminar tipo de item
-
-- Método y ruta: `DELETE /inventoryItemType/{id}/`
-
-- Descripción: Elimina un tipo de item del inventario.
-
-- Respuesta 204 (sin contenido)
-
----
-
-## Inventario - Tipos de Movimientos
-
-### 79) Crear tipo de movimiento
-
-- Método y ruta: `POST /inventoryMovementType/`
-
-- Descripción: Crea un nuevo tipo de movimiento para el inventario (ej: "entrada", "salida", "ajuste").
-
-- Body (JSON):
-
-```json
-{
-  "name": "entrada"
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "entrada"
-}
-```
-
-### 80) Listar todos los tipos de movimientos
-
-- Método y ruta: `GET /inventoryMovementType/`
-
-- Descripción: Obtiene todos los tipos de movimientos definidos en el inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 1,
-    "name": "entrada"
-  },
-  {
-    "id": 2,
-    "name": "salida"
-  }
-]
-```
-
-### 81) Obtener un tipo de movimiento específico
-
-- Método y ruta: `GET /inventoryMovementType/{id}/`
-
-- Descripción: Obtiene los detalles de un tipo de movimiento específico.
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "entrada"
-}
-```
-
-### 82) Actualizar tipo de movimiento
-
-- Método y ruta: `PUT /inventoryMovementType/{id}/`
-
-- Descripción: Actualiza el nombre de un tipo de movimiento (actualización parcial permitida).
-
-- Body (JSON):
-
-```json
-{
-  "name": "entrada por compra"
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "name": "entrada por compra"
-}
-```
-
-### 83) Eliminar tipo de movimiento
-
-- Método y ruta: `DELETE /inventoryMovementType/{id}/`
-
-- Descripción: Elimina un tipo de movimiento del inventario.
-
-- Respuesta 204 (sin contenido)
-
----
-
-## Inventario - Movimientos
-
-### 84) Crear movimiento de inventario
-
-- Método y ruta: `POST /inventoryMovement/`
-
-- Descripción: Crea un nuevo registro de movimiento en el inventario.
-
-- Body (JSON):
-
-```json
-{
-  "itemType": 1,
-  "itemId": 1,
-  "movementType": 1,
-  "createdAt": "2025-11-14T00:00:00Z"
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 1,
-  "itemType": 1,
-  "itemId": 1,
-  "movementType": 1,
-  "createdAt": "2025-11-14T00:00:00Z"
-}
-```
-
-### 85) Listar todos los movimientos de inventario
-
-- Método y ruta: `GET /inventoryMovement/`
-
-- Descripción: Obtiene todos los movimientos registrados en el inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 1,
-    "itemType": 1,
-    "itemId": 1,
-    "movementType": 1,
-    "createdAt": "2025-11-14T00:00:00Z"
-  },
-  {
-    "id": 2,
-    "itemType": 1,
-    "itemId": 2,
-    "movementType": 2,
-    "createdAt": "2025-11-14T01:00:00Z"
-  }
-]
-```
-
-### 86) Obtener un movimiento específico
-
-- Método y ruta: `GET /inventoryMovement/{id}/`
-
-- Descripción: Obtiene los detalles de un movimiento específico del inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "itemType": 1,
-  "itemId": 1,
-  "movementType": 1,
-  "createdAt": "2025-11-14T00:00:00Z"
-}
-```
-
-### 87) Actualizar movimiento de inventario
-
-- Método y ruta: `PUT /inventoryMovement/{id}/`
-
-- Descripción: Actualiza los datos de un movimiento de inventario (actualización parcial permitida).
-
-- Body (JSON):
-
-```json
-{
-  "movementType": 2,
-  "createdAt": "2025-11-14T00:30:00Z"
-}
-```
-
-- Respuesta 200 (JSON):
-
-```json
-{
-  "id": 1,
-  "itemType": 1,
-  "itemId": 1,
-  "movementType": 2,
-  "createdAt": "2025-11-14T00:30:00Z"
-}
-```
-
-### 88) Eliminar movimiento de inventario
-
-- Método y ruta: `DELETE /inventoryMovement/{id}/`
-
-- Descripción: Elimina un movimiento del inventario.
-
-- Respuesta 204 (sin contenido)
-
-### 89) Crear movimiento de inventario (método alternativo)
-
-- Método y ruta: `POST /inventoryMovement/create_movement/`
-
-- Descripción: Crea un nuevo movimiento de inventario (método alternativo). El campo createdAt se genera automáticamente.
-
-- Body (JSON):
-
-```json
-{
-  "itemType": 1,
-  "itemId": 3,
-  "movementType": 1
-}
-```
-
-- Respuesta 201 (JSON):
-
-```json
-{
-  "id": 3,
-  "itemType": 1,
-  "itemId": 3,
-  "movementType": 1,
-  "createdAt": "2025-11-14T02:00:00Z"
-}
-```
-
-### 90) Obtener movimientos por item
-
-- Método y ruta: `GET /inventoryMovement/get_movements_by_item/?itemId={item_id}`
-
-- Descripción: Obtiene todos los movimientos asociados a un item específico del inventario.
-
-- Respuesta 200 (JSON):
-
-```json
-[
-  {
-    "id": 1,
-    "itemType": 1,
-    "itemId": 1,
-    "movementType": 1,
-    "createdAt": "2025-11-14T00:00:00Z"
-  },
-  {
-    "id": 4,
-    "itemType": 1,
-    "itemId": 1,
-    "movementType": 2,
-    "createdAt": "2025-11-14T03:00:00Z"
-  }
-]
 ```
 
 ---
@@ -2026,9 +1859,14 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 - **Base URL de desarrollo**: `http://localhost:8000`
 - **Contenido**: Todos los endpoints esperan y responden JSON. Usar header `Content-Type: application/json`.
 - **Barras finales**: Django REST Framework requiere `/` al final de las rutas.
+- **Prefijo de rutas**: Todos los endpoints (excepto los de autenticación JWT) están bajo el prefijo `/api/`
 - **Estados válidos**:
   - Mesa: `available`, `occupied`, `reserved`, `in_cleaning`
   - Orden: `notCooking`, `cooking`, `ready`
   - Factura: `notPayed`, `payed`
-- **Autenticación**: Usar tokens JWT en header `Authorization: Bearer {token}`
+  - Caja Registradora: `open`, `closed`
+- **Autenticación**: 
+  - Usar tokens JWT obtenidos de `/api/token/` en header `Authorization: Bearer {token}`
+  - También se puede usar autenticación basada en Token de DRF (endpoints `/api/users/login/` y `/api/users/register/`)
 - **Roles de usuario**: `mesero`, `cocina`, `caja`, `admin`
+- **⚠️ Importante - Endpoints deshabilitados**: Los endpoints de inventario (inventoryProduct, inventoryIngredient, inventoryItemType, inventoryMovementType, inventoryMovement) existen en el código backend pero están actualmente deshabilitados en la configuración de URLs (`backend/urls.py`). No están disponibles para uso hasta que se habiliten.
