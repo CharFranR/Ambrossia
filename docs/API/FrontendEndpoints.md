@@ -928,6 +928,55 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 }
 ```
 
+### 43a) Agregar orden a una mesa
+
+- Método y ruta: `POST /api/tables/{id}/add_order/`
+
+- Descripción: Crea una nueva orden asociada a una mesa específica y cambia el estado de la mesa a "occupied".
+
+- Body (JSON):
+
+```json
+{
+  "waiterId": 5,
+  "status": "notCooking"
+}
+```
+
+- Respuesta 201 (JSON):
+
+```json
+{
+  "id": 1,
+  "tableId": 1,
+  "waiterId": 5,
+  "status": "notCooking",
+  "createdAt": "2025-11-13T20:00:00Z",
+  "updatedAt": null
+}
+```
+
+### 43b) Obtener órdenes de una mesa
+
+- Método y ruta: `GET /api/tables/{id}/get_orders/`
+
+- Descripción: Obtiene todas las órdenes asociadas a una mesa específica.
+
+- Respuesta 200 (JSON):
+
+```json
+[
+  {
+    "id": 1,
+    "tableId": 1,
+    "waiterId": 5,
+    "status": "notCooking",
+    "createdAt": "2025-11-13T20:00:00Z",
+    "updatedAt": null
+  }
+]
+```
+
 ---
 
 ## Órdenes
