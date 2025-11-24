@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import CashRegister, CashMovement, BillsQuantity
+from bill.models import bill
 from .serializers import CashRegisterSerializer, CashMovementSerializer, BillsQuantitySerializer, ChangeOutputSerializer
 # from users.permissions import IsAdmin, IsCaja
 
@@ -172,9 +173,16 @@ class BillsQuantityViewSet(viewsets.ModelViewSet):
     @action(detail = False, methods = ['post'])
     def get_change (self, request):
         payment = request.data['payment']
-        amount = request.data['amount']
+        bill_id = request.data['bill_id']
+
+        temp = bill.objects.get(id = bill_id)
+        amount = temp.total
 
         change = payment - amount
+
+        print(f"payment: {payment}" )
+        print(f"amount: {amount}" )
+        print(f"change: {change}" )
 
         cash_register_id = request.data['cash_register_id']
         bills = amount_to_bills(change, cash_register_id)
@@ -184,7 +192,7 @@ class BillsQuantityViewSet(viewsets.ModelViewSet):
 
         serializer = ChangeOutputSerializer(bills, many=True)
 
-        return Response({'change': amount, 'bills': serializer.data})
+        return Response({'change': change, 'bills': serializer.data})
 
 def amount_to_bills(amount, cash_register_id):
 
