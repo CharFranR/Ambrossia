@@ -12,7 +12,7 @@ from .models import bill
 from .serializers import billSerializer
 from tables.models import order, orderItem
 
-from cashRegister.models import cashMovement
+from cashRegister.models import CashMovement, BillsQuantity, CashRegister
 
 class BillViewSet(viewsets.ModelViewSet):
     """
@@ -184,17 +184,26 @@ class BillViewSet(viewsets.ModelViewSet):
         if new_status == 'payed':
             bill_obj.closedAt = timezone.now()
             # Actualizar el monto pagado si se proporciona
+
             paid_amount = request.data.get('paidAmount')
             if paid_amount:
                 bill_obj.paidAmount = float(paid_amount)
-        
+
         total = bill_obj.total
         method_used = bill_obj.paymentMethod
         cash_register_id = request.data.get('cashRegisterId')
-        
-        movement = cashMovement.objects.create(cash_inflow = paid_amount, cash_outflow = total-paid_amount,
+        cash_register = CashRegister.objects.get(pk=cash_register_id)
+
+        movement = CashMovement.objects.create(cash_inflow = paid_amount, cash_outflow = 0, # luego implemento esta logica
                                                amount = total, method = method_used, denominations = {},
-                                               cashierId = bill_obj.cashier, cashRegisterNumber = cash_register_id)
+                                               cashierId = bill_obj.cashier, cashRegisterNumber = cash_register)
+
+        out_flow_bills = request.data["bills"]
+        for i in out_flow_bills:
+            new_bill = get_object_or_404(BillsQuantity, cash_register=cash_register_id,
+                                         denomination=i["denomination"])
+            new_bill.quantity -= i["quantity"]
+            new_bill.save()
 
         bill_obj.save()
         serializer = billSerializer(bill_obj)
