@@ -1244,6 +1244,8 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 ]
 ```
 
+**Nota**: El campo `orders` es un array de solo lectura que contiene los IDs de las órdenes asociadas a esta factura. Es definido por el serializador pero generalmente está vacío en las respuestas de lista.
+
 ### 54) Obtener una factura específica
 
 - Método y ruta: `GET /api/bills/{id}/`
@@ -1361,7 +1363,16 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
 
 - Método y ruta: `PUT /api/bills/{id}/update_status/`
 
-- Descripción: Cambia el estado de pago de una factura. Estados válidos: `notPayed`, `payed`. Requiere campos adicionales para el pago.
+- Descripción: Cambia el estado de pago de una factura. Estados válidos: `notPayed`, `payed`. 
+
+  **Importante**: Al cambiar el estado a `payed`, se requieren campos adicionales para registrar el pago y los billetes utilizados para el cambio. El endpoint valida que el pago sea mayor o igual al total y registra un movimiento de caja automáticamente.
+
+- Campos requeridos:
+  - `status` (string, requerido): Nuevo estado de la factura
+  - `payment` (float, requerido cuando status='payed'): Monto pagado por el cliente
+  - `change` (float, requerido cuando status='payed'): Cambio devuelto al cliente
+  - `cashRegisterId` (int, requerido cuando status='payed'): ID de la caja registradora
+  - `bills` (array, requerido cuando status='payed'): Lista de billetes usados para el cambio, con denominación y cantidad
 
 - Body (JSON):
 
@@ -1402,6 +1413,10 @@ Esta guía documenta todos los endpoints disponibles del backend de Ambrossia, c
   "orders": []
 }
 ```
+
+- Errores comunes:
+  - HTTP 400: Si `payment` es menor que `total`
+  - HTTP 400: Si faltan campos requeridos cuando status es 'payed'
 
 ### 59) Eliminar factura
 
