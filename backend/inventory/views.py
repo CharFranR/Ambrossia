@@ -4,8 +4,8 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import (
-    inventoryProduct,
-    inventoryProductType,
+    inventorySupply,
+    inventorySupplyType,
     inventoryMovementType,
     inventoryMovement,
 )
@@ -16,11 +16,11 @@ from .serializers import (
     InventoryMovementSerializer,
 )
 
-class InventoryProductViewSet(viewsets.ModelViewSet):
+class InventoryTypetViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar productos en inventario.
     """
-    queryset = inventoryProduct.objects.all()
+    queryset = inventorySupply.objects.all()
     serializer_class = InventoryProductSerializer
 
     @action(detail=False, methods=['post'])
@@ -59,7 +59,7 @@ class InventoryProductTypeViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar tipos de items en inventario.
     """
-    queryset = inventoryProductType.objects.all()
+    queryset = inventorySupplyType.objects.all()
     serializer_class = InventoryProductTypeSerializer
 
 

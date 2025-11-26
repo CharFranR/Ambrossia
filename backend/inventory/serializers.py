@@ -2,8 +2,8 @@ from rest_framework import serializers
 from django.utils import timezone
 from django.db import models
 from .models import (
-    inventoryProduct,
-    inventoryProductType,
+    inventorySupply,
+    inventorySupplyType,
     inventoryMovementType,
     inventoryMovement,
 )
@@ -11,11 +11,11 @@ from .models import (
 # Serializer de tipos 
 class InventoryProductTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = inventoryProductType
+        model = inventorySupplyType
         fields = ("id", "name")
 
     def create(self, validated_data):
-        return inventoryProductType.objects.create(**validated_data)
+        return inventorySupplyType.objects.create(**validated_data)
 
 class InventoryMovementTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,15 +28,15 @@ class InventoryMovementTypeSerializer(serializers.ModelSerializer):
 # Serializer de modelos
 class InventoryProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = inventoryProduct
+        model = inventorySupply
         fields = ("id", "name", "quantity","type", "lastUpdated")
 
     def create(self, validated_data):
         user_id = self.context.get('userId') or 1
-        product_type = inventoryProductType.objects.get(name = validated_data['type'])
+        product_type = inventorySupplyType.objects.get(name = validated_data['type'])
 
         # Creamos el producto
-        new_product = inventoryProduct.objects.create()
+        new_product = inventorySupply.objects.create()
         new_product.name = validated_data['name']
         new_product.type = product_type
         new_product.quantity = validated_data['quantity']
@@ -54,7 +54,7 @@ class InventoryProductSerializer(serializers.ModelSerializer):
         user_id = self.context.get('userId') or 1
         
         # Eliminamos el producto
-        deleted_product = inventoryProduct.objects.get(id=product_id)
+        deleted_product = inventorySupply.objects.get(id=product_id)
         deleted_product.delete()
 
         # Guardamos el movimient0
@@ -69,7 +69,7 @@ class InventoryProductSerializer(serializers.ModelSerializer):
         user_id = self.context.get('userId') or 1
 
         # Actualizamos el producto
-        updated_product = inventoryProduct.objects.get(id = product_id)
+        updated_product = inventorySupply.objects.get(id = product_id)
         updated_product.name = validated_data['name']
         updated_product.quantity = validated_data['quantity']
         updated_product.type = validated_data['type']
@@ -86,8 +86,8 @@ class InventoryProductSerializer(serializers.ModelSerializer):
 
 
 class InventoryMovementSerializer(serializers.ModelSerializer):
-    itemType = serializers.PrimaryKeyRelatedField(queryset=inventoryProductType.objects.all())
-    itemId = serializers.PrimaryKeyRelatedField(queryset=inventoryProduct.objects.all())
+    itemType = serializers.PrimaryKeyRelatedField(queryset=inventorySupplyType.objects.all())
+    itemId = serializers.PrimaryKeyRelatedField(queryset=inventorySupply.objects.all())
     movementType = serializers.PrimaryKeyRelatedField(queryset=inventoryMovementType.objects.all())
 
     class Meta:
