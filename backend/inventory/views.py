@@ -5,15 +5,13 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import (
     inventoryProduct,
-    inventoryIngredient,
-    inventoryItemType,
+    inventoryProductType,
     inventoryMovementType,
     inventoryMovement,
 )
 from .serializers import (
     InventoryProductSerializer,
-    InventoryIngredientSerializer,
-    InventoryItemTypeSerializer,
+    InventoryProductTypeSerializer,
     InventoryMovementTypeSerializer,
     InventoryMovementSerializer,
 )
@@ -30,7 +28,7 @@ class InventoryProductViewSet(viewsets.ModelViewSet):
         """
         Agregar un nuevo producto al inventario.
         """
-        serializer = InventoryProductSerializer(data=request.data)
+        serializer = InventoryProductSerializer(data=request.data, context = {'userId'})
         serializer.is_valid(raise_exception=True)
         serializer.save(lastUpdated=timezone.now())
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -57,51 +55,12 @@ class InventoryProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class InventoryIngredientViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet para gestionar ingredientes en inventario.
-    """
-    queryset = inventoryIngredient.objects.all()
-    serializer_class = InventoryIngredientSerializer
-
-    @action(detail=False, methods=['post'])
-    def add_ingredient(self, request):
-        """
-        Agregar un nuevo ingrediente al inventario.
-        """
-        serializer = InventoryIngredientSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(lastUpdated=timezone.now())
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @action(detail=True, methods=['put'])
-    def update_quantity(self, request, pk=None):
-        """
-        Actualizar la cantidad de un ingrediente en inventario.
-        """
-        ingredient = self.get_object()
-        quantity = request.data.get('quantity')
-        
-        if quantity is None:
-            return Response(
-                {'error': 'quantity es requerido'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        ingredient.quantity = quantity
-        ingredient.lastUpdated = timezone.now()
-        ingredient.save()
-        
-        serializer = InventoryIngredientSerializer(ingredient)
-        return Response(serializer.data)
-
-
-class InventoryItemTypeViewSet(viewsets.ModelViewSet):
+class InventoryProductTypeViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar tipos de items en inventario.
     """
-    queryset = inventoryItemType.objects.all()
-    serializer_class = InventoryItemTypeSerializer
+    queryset = inventoryProductType.objects.all()
+    serializer_class = InventoryProductTypeSerializer
 
 
 class InventoryMovementTypeViewSet(viewsets.ModelViewSet):
@@ -110,7 +69,6 @@ class InventoryMovementTypeViewSet(viewsets.ModelViewSet):
     """
     queryset = inventoryMovementType.objects.all()
     serializer_class = InventoryMovementTypeSerializer
-
 
 class InventoryMovementViewSet(viewsets.ModelViewSet):
     """
