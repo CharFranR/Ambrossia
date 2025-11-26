@@ -35,20 +35,16 @@ class inventorySupplySerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_id = self.context.get('userId') or 1
-        product_type = inventorySupplyType.objects.get(name = validated_data['type'])
-
-        # Creamos el producto
-        new_product = inventorySupply.objects.create()
-        new_product.name = validated_data['name']
-        new_product.type = product_type
-        new_product.quantity = validated_data['quantity']
-
-        # Guardamos el movimiento
-        new_movement = inventoryMovement.objects.create()
-        new_movement.itemId = new_product
-        new_movement.movementType,_ = inventoryMovementType.objects.get_or_create(name="add")
-        new_movement.userId = user_id
-
+        new_product = inventorySupply.objects.create(
+            name=validated_data['name'],
+            type=validated_data['type'],
+            quantity=validated_data['quantity']
+        )
+        new_movement = inventoryMovement.objects.create(
+            itemId=new_product,
+            movementType=inventoryMovementType.objects.get_or_create(name="add")[0],
+            userId=user_id
+        )
         return new_product
     
     def destoy(self, validated_data):

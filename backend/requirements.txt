@@ -8,3 +8,6 @@ djangorestframework-simplejwt
 reportlab
 django-redis
 channels_redis
+pytest
+pytest-django
+requests

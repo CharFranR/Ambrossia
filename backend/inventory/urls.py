@@ -3,12 +3,10 @@ from django.urls import include, path
 from .views import inventorySupplyViewSet, InventorySupplyTypeViewSet, InventoryMovementTypeViewSet
 
 router = DefaultRouter()
-router.register(r'InventorySupply', inventorySupplyViewSet, basename = 'InventorySupply')
-router.register(r'InventorySupplyType', InventorySupplyTypeViewSet, basename='InventorySupplyType')
-router.register(r'InventoryMovementType', InventoryMovementTypeViewSet, basename='InventoryMovementType')
+router.register(r'inventorysupply', inventorySupplyViewSet, basename = 'inventorysupply')
+router.register(r'inventorySupplyType', InventorySupplyTypeViewSet, basename='InventorySupplyType')
+router.register(r'inventoryMovementType', InventoryMovementTypeViewSet, basename='InventoryMovementType')
 
-URLPattern = [
+urlpatterns = [
     path('', include(router.urls)),
-    path('',include(router.urls)),
-    path('',include(router.urls))
 ]

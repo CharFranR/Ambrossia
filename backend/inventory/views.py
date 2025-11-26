@@ -29,7 +29,7 @@ class inventorySupplyViewSet(viewsets.ModelViewSet):
         Agregar un nuevo producto al inventario.
         """
         user_id = getattr(request.user, 'id', 1)
-        serializer = inventorySupplySerializer(data=request.data, context = {'userId'})
+        serializer = inventorySupplySerializer(data=request.data, context = {'userId': user_id})
         serializer.is_valid(raise_exception=True)
         serializer.save(lastUpdated=timezone.now())
         return Response(serializer.data, status=status.HTTP_201_CREATED)

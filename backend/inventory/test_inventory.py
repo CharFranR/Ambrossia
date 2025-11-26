@@ -1,8 +1,8 @@
 import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
-from backend.inventory.models import inventorySupply, inventorySupplyType, inventoryMovementType, inventoryMovement
-from backend.inventory.serializers import inventorySupplySerializer
+from inventory.models import inventorySupply, inventorySupplyType, inventoryMovementType, inventoryMovement
+from inventory.serializers import inventorySupplySerializer
 
 pytestmark = pytest.mark.django_db
 
@@ -22,14 +22,14 @@ def test_inventory_product_serializer_create():
 	data = {
 		"name": "Azúcar",
 		"quantity": 5,
-		"type": supply_type.id
+		"type": supply_type.id # type: ignore
 	}
 	serializer = inventorySupplySerializer(data=data, context={"userId": 1})
 	assert serializer.is_valid(), serializer.errors
 	product = serializer.save()
-	assert product.name == "Azúcar"
-	assert product.quantity == 5
-	assert product.type == supply_type
+	assert product.name == "Azúcar" # type: ignore
+	assert product.quantity == 5 # type: ignore
+	assert product.type == supply_type # type: ignore
 
 def test_inventory_movement_created_on_product_create():
 	supply_type = inventorySupplyType.objects.create(name="Materia Prima")
@@ -37,7 +37,7 @@ def test_inventory_movement_created_on_product_create():
 	data = {
 		"name": "Sal",
 		"quantity": 3,
-		"type": supply_type.id
+		"type": supply_type.id  # type: ignore
 	}
 	serializer = inventorySupplySerializer(data=data, context={"userId": 2})
 	assert serializer.is_valid(), serializer.errors
@@ -52,7 +52,7 @@ def test_inventory_supply_api_create():
 	data = {
 		"name": "Aceite",
 		"quantity": 7,
-		"type": supply_type.id
+		"type": supply_type.id # type: ignore
 	}
 	response = client.post(url, data, format="json")
 	assert response.status_code == 201 # type: ignore
