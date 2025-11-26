@@ -21,8 +21,9 @@ class ProductCategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 class CookBookAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "note")
+    list_display = ("id", "name", "note", "preparation_time", "servings", "is_active", "version")
     search_fields = ("name",)
+    list_filter = ("is_active", "preparation_time")
 
 class InventoryProductAdmin(admin.ModelAdmin):
     list_display = ("id", "product_name", "quantity", "lastUpdated")

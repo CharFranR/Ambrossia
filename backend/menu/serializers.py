@@ -15,7 +15,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 class CookBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = CookBook
-        fields = ("id", "name", "note")
+        fields = ("id", "name", "note", "preparation_time", "servings", "instructions", "is_active", "version", "image")
 
     def create(self, validated_data):
         return CookBook.objects.create(**validated_data)
