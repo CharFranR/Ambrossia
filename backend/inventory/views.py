@@ -28,32 +28,28 @@ class inventorySupplyViewSet(viewsets.ModelViewSet):
         """
         Agregar un nuevo producto al inventario.
         """
+        user_id = getattr(request.user, 'id', 1)
         serializer = inventorySupplySerializer(data=request.data, context = {'userId'})
         serializer.is_valid(raise_exception=True)
         serializer.save(lastUpdated=timezone.now())
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['put'])
-    def update_quantity(self, request, pk=None):
-        """
-        Actualizar la cantidad de un producto en inventario.
-        """
-        product = self.get_object()
-        quantity = request.data.get('quantity')
-        
-        if quantity is None:
-            return Response(
-                {'error': 'quantity es requerido'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        product.quantity = quantity
-        product.lastUpdated = timezone.now()
-        product.save()
-        
-        serializer = InventoryProductSerializer(product)
+    def update_product(self, request, pk=None):
+        user_id = getattr(request.user, 'id', 1)
+        instance = self.get_object()
+        serializer = InventoryProductSerializer(instance, data=request.data, context={'userId': user_id}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
-
+    
+    @action(detail=True, methods=['delete'])
+    def delete_product(self, request, pk=None):
+        user_id = getattr(request.user, 'id', 1)
+        instance = self.get_object()
+        serializer = InventoryProductSerializer(instance, context={'userId': user_id})
+        serializer.destoy({'product_id': instance.id})
+        return Response({'detail': 'Delete successful'}, status=status.HTTP_204_NO_CONTENT)
 
 class InventorySupplyTypeViewSet(viewsets.ModelViewSet):
     """
