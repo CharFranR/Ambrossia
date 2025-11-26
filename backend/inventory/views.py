@@ -10,25 +10,25 @@ from .models import (
     inventoryMovement,
 )
 from .serializers import (
-    InventoryProductSerializer,
-    InventoryProductTypeSerializer,
+    inventorySupplySerializer,
+    InventorySupplyTypeSerializer,
     InventoryMovementTypeSerializer,
     InventoryMovementSerializer,
 )
 
-class InventoryTypetViewSet(viewsets.ModelViewSet):
+class inventorySupplyViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar productos en inventario.
     """
     queryset = inventorySupply.objects.all()
-    serializer_class = InventoryProductSerializer
+    serializer_class = inventorySupplySerializer
 
     @action(detail=False, methods=['post'])
     def add_product(self, request):
         """
         Agregar un nuevo producto al inventario.
         """
-        serializer = InventoryProductSerializer(data=request.data, context = {'userId'})
+        serializer = inventorySupplySerializer(data=request.data, context = {'userId'})
         serializer.is_valid(raise_exception=True)
         serializer.save(lastUpdated=timezone.now())
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -55,12 +55,12 @@ class InventoryTypetViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class InventoryProductTypeViewSet(viewsets.ModelViewSet):
+class InventorySupplyTypeViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar tipos de items en inventario.
     """
     queryset = inventorySupplyType.objects.all()
-    serializer_class = InventoryProductTypeSerializer
+    serializer_class = InventorySupplyTypeSerializer
 
 
 class InventoryMovementTypeViewSet(viewsets.ModelViewSet):

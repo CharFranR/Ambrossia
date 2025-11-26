@@ -1,15 +1,14 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import include, path
-from .views import InventoryTypetViewSet, InventoryProductTypeViewSet, InventoryMovementTypeViewSet
+from .views import inventorySupplyViewSet, InventorySupplyTypeViewSet, InventoryMovementTypeViewSet
 
 router = DefaultRouter()
-router.register(r'InventoryProduct', InventoryTypetViewSet, basename = 'InventoryProduct')
-router.register(r'InventoryProductType', InventoryProductTypeViewSet, basename='InventoryProductType')
-router.register(r'InventoryMovement', InventoryMovementTypeViewSet, basename='InventoryMovementT')
+router.register(r'InventorySupply', inventorySupplyViewSet, basename = 'InventorySupply')
+router.register(r'InventorySupplyType', InventorySupplyTypeViewSet, basename='InventorySupplyType')
+router.register(r'InventoryMovementType', InventoryMovementTypeViewSet, basename='InventoryMovementType')
 
 URLPattern = [
     path('', include(router.urls)),
-    path('',include(router.urls)),
     path('',include(router.urls)),
     path('',include(router.urls))
 ]

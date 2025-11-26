@@ -9,7 +9,7 @@ from .models import (
 )
 
 # Serializer de tipos 
-class InventoryProductTypeSerializer(serializers.ModelSerializer):
+class InventorySupplyTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = inventorySupplyType
         fields = ("id", "name")
@@ -25,8 +25,10 @@ class InventoryMovementTypeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return inventoryMovementType.objects.create(**validated_data)
 
+
+
 # Serializer de modelos
-class InventoryProductSerializer(serializers.ModelSerializer):
+class inventorySupplySerializer(serializers.ModelSerializer):
     class Meta:
         model = inventorySupply
         fields = ("id", "name", "quantity","type", "lastUpdated")
