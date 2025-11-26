@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import table, order, orderItem
-from menu.models import product
+from menu.models import Product
 
 class tableSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +20,7 @@ class orderSerializer(serializers.ModelSerializer):
         return order.objects.create(**validated_data)
     
 class orderItemSerializer(serializers.ModelSerializer):
-    productId = serializers.PrimaryKeyRelatedField(queryset=product.objects.all())
+    productId = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     orderId = serializers.PrimaryKeyRelatedField(queryset=order.objects.all())
 
     class Meta:

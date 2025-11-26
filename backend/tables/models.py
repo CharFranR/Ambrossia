@@ -1,5 +1,5 @@
 from django.db import models
-from menu.models import product
+from menu.models import Product
 
 class table(models.Model):
     STATUS_CHOICES = [
@@ -29,6 +29,6 @@ class order(models.Model):
 
 class orderItem(models.Model):
     orderId = models.ForeignKey(order, on_delete=models.CASCADE)
-    productId = models.ForeignKey(product, on_delete=models.CASCADE)
+    productId = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     note = models.TextField(null=True, blank=True)

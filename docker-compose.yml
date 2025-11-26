@@ -19,6 +19,7 @@ services:
     environment:
       - DJANGO_DEBUG=True
       - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=backend.settings
 
   db:
     image: postgres:16
